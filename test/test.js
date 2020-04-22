@@ -204,3 +204,71 @@
 // 3、赋值
 // 4、返回 this
 
+
+// ---------------------------------------- 排序算法
+// 冒泡排序  前后两个两两对比
+function bubbleSort(arr = [], flag = true) {
+    let len = arr.length
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - i - 1; j++) {
+            if (flag) {
+                // 小到大
+                if (arr[j] >= arr[j + 1]) {
+                    [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+                }
+            } else {
+                if (arr[j] <= arr[j + 1]) {
+                    [arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
+                }
+            }
+        }
+    }
+
+    return arr
+}
+console.log(bubbleSort([1, 5, 4, 9, 2, 11, 8, 7], false));
+
+// 选择排序  找到数据结构中的最小值并将其放置在第一位,接着找到第二个最小值并将其放到第二位,依次类推.
+function selectSort(arr) {
+    let len = arr.length
+    let idx
+    for (let i = 0; i < len - 1; i++) {
+        idx = i
+        for (let j = i; j < len; j++) {
+            if (arr[idx] > arr[j]) {
+                idx = j
+            }
+        }
+        if (i !== idx) {
+            [arr[i], arr[idx]] = [arr[idx], arr[i]]
+        }
+    }
+
+    return arr
+}
+console.log(selectSort([1, 5, 4, 9, 2, 11, 8, 7]));
+
+// 快速排序
+// 1）在数据集之中，选择一个元素作为"基准"（pivot）。
+// 2）所有小于"基准"的元素，都移到"基准"的左边；所有大于"基准"的元素，都移到"基准"的右边。
+// 3）对"基准"左边和右边的两个子集，不断重复第一步和第二步，直到所有子集只剩下一个元素为止。
+function quickSort(arr) {
+    if (arr.length <= 1) return arr
+
+    // 先选取一个基准
+    let pivotIdx = Math.floor(arr.length / 2)
+    let pivot = arr.splice(pivotIdx, 1)[0]
+
+    let left = []
+    let right = []
+    for (let i = 0, len = arr.length; i < len; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i])
+        } else {
+            right.push(arr[i])
+        }
+    }
+
+    return quickSort(left).concat([pivot], quickSort(right))
+}
+console.log(quickSort([1, 5, 4, 9, 2, 11, 8, 7]));
