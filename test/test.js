@@ -337,7 +337,7 @@ function debounce(fn, delay) {
     let timeId = null
 
     return function () {
-        if (timeout !== null) clearTimeout(timeId);
+        if (timeId !== null) clearTimeout(timeId);
 
         let _this = this
         let args = arguments
@@ -375,4 +375,25 @@ let throttleButton = document.querySelector('.throttle')
 let clickFn1 = function () {
     console.log("2222222");
 }
-throttleButton.addEventListener('click', throttle(clickFn1, 1000))
+throttleButton.addEventListener('click', throttle(clickFn1, 1500))
+
+
+// ---------------------------------------- 获取 url 参数
+let url = "http://item.taobao.com/item.htm?a=1&b=2&c=&d=xxx&e"
+
+function paramUrl(url) {
+    let ret = url.split("?")[1]
+    let params = ret.split("&")
+
+    let obj = {}
+    params.forEach(item => {
+        let kv = item.split("=")
+        obj[kv[0]] = kv[1]
+    })
+
+    return obj
+}
+console.log(paramUrl(url));
+
+
+// ---------------------------------------- 深拷贝

@@ -1,20 +1,3 @@
-// function MyPromise(executor) {
-//     executor(resolve, reject)
-
-//     function resolve() {
-
-//     }
-
-//     function reject() {
-
-//     }
-// }
-
-// MyPromise.prototype.then = function () {
-//     console.log("哈哈哈");
-// }
-
-
 class MyPromise {
     constructor(executor) {
         // 初始化 status 为 pending 等待状态
