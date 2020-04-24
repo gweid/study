@@ -397,3 +397,118 @@ console.log(paramUrl(url));
 
 
 // ---------------------------------------- 深拷贝
+function checkType(val) {
+    return Object.prototype.toString.call(val).slice(8, -1)
+}
+
+function deepClone(source) {
+    let ret
+    if (checkType(source) === 'Object') {
+        ret = {}
+    } else if (checkType(source) === 'Array') {
+        ret = []
+    } else {
+        return source
+    }
+
+    for (let key in source) {
+        let value = source[key]
+        if (checkType(key) === 'Object' || checkType(source) === 'Array') {
+            deepClone(value)
+        } else {
+            ret[key] = value
+        }
+    }
+
+    return ret
+}
+
+let obj = {
+    a: "222"
+}
+let cloneRet = deepClone(obj)
+cloneRet.a = "333"
+console.log(cloneRet.a);
+console.log(obj.a);
+
+
+// ----------------------------------------- 手写 call、bind、apply、new
+// call  1、更改this指向    2、函数立刻执行
+Function.prototype.myCall = function (context) {
+    // 没有传值，则 context 指向 window
+    context = context || window
+
+    context.fn = this
+
+    // arguments 第一个参数是 this,后面是其余参数； 主要是取出参数
+    const args = [...arguments].slice(1)
+
+    let ret = context.fn(...args)
+
+    delete context.fn
+
+    return ret
+}
+
+let testObj = {
+    value: "aaaa"
+}
+
+function fntest(name, age) {
+    return {
+        value: this.value,
+        name,
+        age
+    }
+}
+
+console.log(fntest.myCall(testObj, "哈哈", 22));
+
+// apply  apply 跟 call 一样，只是传递的参数不一样
+Function.prototype.myApply = function (context, args) {
+    context = context || window
+
+    context.fn = this
+
+    let ret = ""
+
+    // 判断有没有传入 args 
+    if (!args) {
+        ret = context.fn()
+    } else {
+        ret = context.fn(...args)
+    }
+
+    delete context.fn
+
+    return ret
+}
+
+let testObj1 = {
+    value: "aaaa"
+}
+
+function fntest1(name, age) {
+    return {
+        value: this.value,
+        name,
+        age
+    }
+}
+
+console.log(fntest1.myApply(testObj1, ["哈哈", 22]));
+
+// bind  返回一个函数  1、指定this；2、返回一个函数；3、传递参数并柯里化
+Function.prototype.myBind = function (context) {
+    // 判断调用 bind 是不是函数
+    if (typeof this !== 'function') {
+        throw new Error("不是一个函数")
+    }
+
+    const _this = this
+    const args = [...arguments].slice(1)
+
+    return function () {
+        return _this.apply(context, args.concat(...arguments))
+    }
+}
