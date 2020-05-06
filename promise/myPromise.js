@@ -1,31 +1,39 @@
 class MyPromise {
     constructor(executor) {
-        // 初始化 status 为 pending 等待状态
+        // 初始化 status 为等待状态 pending
         this.status = 'pending'
         // 成功的值
         this.value = undefined
         // 失败原因
         this.reason = undefined
-        // 存放成功的数组
+
+        // 用于保存 then 的成功回调
         this.onResolvedCallbacks = []
-        // 存放失败的数组
+        // 用于保存 then 的失败回调
         this.onRejectedCallbacks = []
 
-
+        // 用于改变状态, 并执行 then 中成功回调
         let resolve = (value) => {
-            this.status = 'resolve' // 使 promise 状态变为不可逆
+            this.status = 'resolve'
             this.value = value
 
-            this.onResolvedCallbacks.forEach(fn => fn())
+            this.onResolvedCallbacks.forEach(cb => cb())
         }
 
+        // 用于改变状态, 并执行 then 中失败回调
         let reject = (reason) => {
-            this.status = 'reject' // 使 promise 状态变为不可逆
+            this.status = 'reject'
             this.reason = reason
 
-            this.onRejectedCallbacks.forEach(fn => fn())
+            this.onRejectedCallbacks.forEach(cb => cb())
         }
-        executor(resolve, reject)
+
+        try {
+            // 执行器函数
+            executor(resolve, reject)
+        } catch (error) {
+            reject(error)
+        }
     }
 
 
@@ -33,43 +41,48 @@ class MyPromise {
         return new MyPromise((resolve, reject) => {
             if (this.status === 'pending') {
                 this.onResolvedCallbacks.push(() => {
-                    try {
-                        let x = onFulfilled(this.value)
-                        resolve(x)
-                    } catch (error) {
-                        reject(error)
-                    }
+                    let x = onFulfilled(this.value)
+                    resolve(x)
                 })
 
                 this.onRejectedCallbacks.push(() => {
-                    try {
-                        let x = onRejected(this.reason)
-                        resolve(x)
-                    } catch (error) {
-                        reject(error)
-                    }
+                    let x = onRejected(this.reason)
+                    reject(x)
                 })
             }
 
-            // 成功
             if (this.status === 'resolve') {
-                try {
-                    let x = onFulfilled(this.value)
-                    resolve(x)
-                } catch (error) {
-                    reject(error)
-                }
+                let x = onFulfilled(this.value)
+                resolve(x)
             }
 
-            // 失败
             if (this.status === 'reject') {
-                try {
-                    let x = onRejected(this.reason)
-                    resolve(x)
-                } catch (error) {
-                    reject(error)
-                }
+                let x = onRejected(this.reason)
+                reject(x)
             }
         })
     }
 }
+
+
+// 使用 MyPromise
+let mp = new MyPromise((resolve, reject) => {
+    const time = Date.now()
+    console.log("start");
+
+    if (time % 2 === 0) {
+        resolve("成功了")
+    } else {
+        reject("失败了")
+    }
+
+    // reject("失败")
+})
+
+mp.then((data) => {
+    console.log(data);
+}, (err) => {
+    console.log(err);
+})
+
+console.log("end");

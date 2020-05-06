@@ -512,3 +512,5 @@ Function.prototype.myBind = function (context) {
         return _this.apply(context, args.concat(...arguments))
     }
 }
+
+// new
