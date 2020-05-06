@@ -379,7 +379,7 @@ throttleButton.addEventListener('click', throttle(clickFn1, 1500))
 
 
 // ---------------------------------------- 获取 url 参数
-let url = "http://item.taobao.com/item.htm?a=1&b=2&c=&d=xxx&e"
+let url = "http://item.taobao.com/item.html?a=1&b=2&c=&d=xxx&e"
 
 function paramUrl(url) {
     let ret = url.split("?")[1]
