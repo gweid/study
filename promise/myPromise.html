@@ -11,22 +11,6 @@
 <body>
 
     <script src="./myPromise.js"></script>
-    <script>
-        let myPromise = new MyPromise((resolve, reject) => {
-            console.log("start");
-            setTimeout(() => {
-                resolve('data')
-            }, 1000)
-            // reject("失败")
-        })
-
-        myPromise.then((data) => {
-            console.log(data);
-        }, (err) => {
-            console.log(err);
-        })
-        console.log("end");
-    </script>
 </body>
 
 </html>
