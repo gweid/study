@@ -198,7 +198,7 @@ class MyPromise {
   }
 }
 
-// 使用 MyPromise
+// -------------------------------------使用 MyPromise
 // setTimeout(() => {
 //   console.log('宏任务')
 // }, 0)
