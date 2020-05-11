@@ -86,5 +86,6 @@ new Promise((resolve, reject) => {
 async function fn() {
   return 1
 }
+
 console.log(fn())
 ```
