@@ -233,7 +233,7 @@ function bubbleSort(arr = [], flag = true) {
 
     return arr
 }
-console.log(bubbleSort([1, 5, 4, 9, 2, 11, 8, 7], false));
+console.log("冒泡排序", bubbleSort([1, 5, 4, 9, 2, 11, 8, 7], true));
 
 // 选择排序  找到数据结构中的最小值并将其放置在第一位, 接着找到第二个最小值并将其放到第二位, 依次类推.
 function selectSort(arr) {
@@ -253,7 +253,7 @@ function selectSort(arr) {
 
     return arr
 }
-console.log(selectSort([1, 5, 4, 9, 2, 11, 8, 7]));
+console.log("选择排序", selectSort([1, 5, 4, 9, 2, 11, 8, 7]));
 
 // 快速排序
 // 1）在数据集之中，选择一个元素作为"基准"（pivot）。
@@ -278,25 +278,28 @@ function quickSort(arr) {
 
     return quickSort(left).concat([pivot], quickSort(right))
 }
-console.log(quickSort([1, 5, 4, 9, 2, 11, 8, 7]));
+console.log("快速排序", quickSort([1, 5, 4, 9, 2, 11, 8, 7]));
 
 // 斐波那契数列
 function fib(n) {
     let obj = {}
-    if (n <= 0) return
-    if (n == 1 || n == 2) {
-        obj[n] = 1
-        return 1
+
+    function fibFn(n) {
+        if (n <= 0) return
+        if (n == 1 || n == 2) {
+            obj[n] = 1
+            return 1
+        }
+
+        if (!obj[n]) {
+            obj[n] = fibFn(n - 2) + fibFn(n - 1)
+        }
+        return obj[n]
     }
 
-    if (obj[n]) {
-        return obj[n]
-    } else {
-        obj[n] = fib(n - 1) + fib(n - 2)
-        return obj[n]
-    }
+    return fibFn(n)
 }
-console.log(fib(10));
+console.log('斐波那契', fib(100));
 
 
 // ---------------------------------------- js 操作 DOM
@@ -316,7 +319,7 @@ console.log(fib(10));
 // es6
 let arr = [1, 2, 3, 2, 3, 4, 5]
 let newArr = [...new Set(arr)]
-console.log(newArr);
+console.log("new Set数组去重", newArr);
 
 // es5
 function unique(arr) {
@@ -328,7 +331,7 @@ function unique(arr) {
     }
     return newArr
 }
-console.log(unique(arr));
+console.log("indexOf数组去重", unique(arr));
 
 
 // --------------------------------------- 防抖、节流
@@ -373,7 +376,7 @@ function throttle(fn, time) {
 
 let throttleButton = document.querySelector('.throttle')
 let clickFn1 = function () {
-    console.log("2222222");
+    console.log("2222222")
 }
 throttleButton.addEventListener('click', throttle(clickFn1, 1500))
 
@@ -393,7 +396,7 @@ function paramUrl(url) {
 
     return obj
 }
-console.log(paramUrl(url));
+console.log(paramUrl(url))
 
 
 // ---------------------------------------- 深拷贝
@@ -428,8 +431,8 @@ let obj = {
 }
 let cloneRet = deepClone(obj)
 cloneRet.a = "333"
-console.log(cloneRet.a);
-console.log(obj.a);
+console.log(cloneRet.a)
+console.log(obj.a)
 
 
 // ----------------------------------------- 手写 call、bind、apply、new
@@ -440,7 +443,7 @@ Function.prototype.myCall = function (context) {
 
     context.fn = this
 
-    // arguments 第一个参数是 this,后面是其余参数； 主要是取出参数
+    // arguments 第一个参数是 context, 后面是其余参数; 主要是取出其余参数
     const args = [...arguments].slice(1)
 
     let ret = context.fn(...args)
@@ -449,6 +452,7 @@ Function.prototype.myCall = function (context) {
 
     return ret
 }
+
 
 let testObj = {
     value: "aaaa"
@@ -506,11 +510,38 @@ Function.prototype.myBind = function (context) {
     }
 
     const _this = this
+    // arguments 第一个参数是 context, 后面是其余参数; 主要是取出其余参数
     const args = [...arguments].slice(1)
 
     return function () {
-        return _this.apply(context, args.concat(...arguments))
+        // 主要就是 bind 可以接收参数, 返回的函数也可以接收参数, 所以 args.concat([...arguments])
+        return _this.apply(context, args.concat([...arguments]))
     }
 }
 
-// new
+
+// 手写 new
+// 首先 new 做了什么
+// 1、创建一个对象
+// 2、把 this 指向这个对象
+// 3、为这个对象添加属性
+// 4、返回这个对象
+function myNew() {
+    // 创建一个对象
+    let obj = {}
+    // 把第一个参数取出来,这里是 Dognew
+    let Con = [].shift.call(arguments)
+    // 把 this 指向这个对象
+    obj.prototype = Con.prototype
+    // 为这个对象添加属性
+    let ret = Con.apply(obj, arguments)
+    // 返回这个对象
+    return typeof ret === 'object' ? ret : obj
+}
+
+function Dognew(name, age) {
+    this.name = name
+    this.age = age
+}
+let dognew = myNew(Dognew, '汪', '2')
+console.log("手写new", dognew.name);
