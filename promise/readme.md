@@ -79,3 +79,12 @@ new Promise((resolve, reject) => {
     队列中添加微任务，那么在下一个宏任务执行前，又会把新添加进去的微任务先执行完，再执行宏任务
  */
 ```
+
+#### async 与 await
+```
+// async 的返回值是一个 promise 对象
+async function fn() {
+  return 1
+}
+console.log(fn())
+```

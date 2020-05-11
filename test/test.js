@@ -519,7 +519,6 @@ Function.prototype.myBind = function (context) {
     }
 }
 
-
 // 手写 new
 // 首先 new 做了什么
 // 1、创建一个对象
@@ -544,4 +543,4 @@ function Dognew(name, age) {
     this.age = age
 }
 let dognew = myNew(Dognew, '汪', '2')
-console.log("手写new", dognew.name);
+console.log("手写new", dognew.name)
