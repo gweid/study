@@ -205,78 +205,78 @@ class MyPromise {
 // }, 0)
 
 let mp = new MyPromise((resolve, reject) => {
-    const time = Date.now()
-    console.log('start')
+  const time = Date.now()
+  console.log('start')
 
-    if (time % 2 === 0) {
-        resolve('成功了')
-    } else {
-        reject('失败了')
-    }
+  if (time % 2 === 0) {
+    resolve('成功了')
+  } else {
+    reject('失败了')
+  }
 
-    // resolve('kakaka')
+  // resolve('kakaka')
 
-    // reject("失败")
+  // reject("失败")
 })
 
 mp.then(
-        (data) => {
-            console.log(data)
-            return MyPromise.resolve({
-                value: '成功'
-            })
-        },
-        (err) => {
-            console.log(err)
-            return MyPromise.reject({
-                reason: '失败'
-            })
-        }
-    )
-    .then((data) => {
-        console.log(data)
-    })
-    .catch((err) => {
-        console.log(err)
-    })
+    (data) => {
+      console.log(data)
+      return MyPromise.resolve({
+        value: '成功'
+      })
+    },
+    (err) => {
+      console.log(err)
+      return MyPromise.reject({
+        reason: '失败'
+      })
+    }
+  )
+  .then((data) => {
+    console.log(data)
+  })
+  .catch((err) => {
+    console.log(err)
+  })
 
 console.log('end')
 
 // 测试 race 和 all
 const mp1 = new MyPromise((resolve, reject) => {
-    resolve('mp1结果')
+  resolve('mp1结果')
 })
 const mp2 = new MyPromise((resolve, reject) => {
-    resolve('mp2结果')
+  resolve('mp2结果')
 })
 const mp3 = new MyPromise((resolve, reject) => {
-    resolve('mp3结果')
+  resolve('mp3结果')
 })
 const mp4 = new MyPromise((resolve, reject) => {
-    resolve('mp4结果')
+  resolve('mp4结果')
 })
 const mp5 = new MyPromise((resolve, reject) => {
-    setTimeout(() => {
-        resolve('mp5结果')
-    }, 1000)
+  setTimeout(() => {
+    resolve('mp5结果')
+  }, 1000)
 })
 
 let raceRet = MyPromise.race([mp1, mp2])
 raceRet.then(
-    (value) => {
-        console.log('race-success==========', value)
-    },
-    (err) => {
-        console.log('race-fail========' + err)
-    }
+  (value) => {
+    console.log('race-success==========', value)
+  },
+  (err) => {
+    console.log('race-fail========' + err)
+  }
 )
 
 let allRet = MyPromise.all([mp5, mp3, mp4])
 allRet.then(
-    (value) => {
-        console.log('all-success==========', value)
-    },
-    (err) => {
-        console.log('all-fail========' + err)
-    }
+  (value) => {
+    console.log('all-success==========', value)
+  },
+  (err) => {
+    console.log('all-fail========' + err)
+  }
 )

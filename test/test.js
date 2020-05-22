@@ -1,4 +1,14 @@
 // ---------------------------------------------闭包
+// 特点：
+// 1.函数嵌套函数
+// 2.内部函数使用外部函数的参数和变量
+// 3.参数和变量不会被垃圾回收机制回收
+// 优点：
+// 1.形成沙箱，避免环境污染
+// 2.变量长期保存, 函数内部可以访问另一个函数内部的变量
+// 缺点：
+// 1.内存长期驻用，增加内存用量，使用不当会导致内存泄漏
+
 // function test() {
 //     let ad = "哈哈"
 //     return function () {
@@ -212,11 +222,13 @@ function bubbleSort(arr = [], flag = true) {
       if (flag) {
         // 小到大
         if (arr[j] >= arr[j + 1]) {
-          ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+          ;
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
         }
       } else {
         if (arr[j] <= arr[j + 1]) {
-          ;[arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
+          ;
+          [arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
         }
       }
     }
@@ -238,7 +250,8 @@ function selectSort(arr) {
       }
     }
     if (i !== idx) {
-      ;[arr[i], arr[idx]] = [arr[idx], arr[i]]
+      ;
+      [arr[i], arr[idx]] = [arr[idx], arr[i]]
     }
   }
 
@@ -596,11 +609,17 @@ let event = new EventEmitter()
 event.on('click', (data) => {
   console.log(data)
 })
-event.emit('click', { name: 'jack' })
-event.emit('click', { age: 18 })
+event.emit('click', {
+  name: 'jack'
+})
+event.emit('click', {
+  age: 18
+})
 
 event.off('click')
-event.emit('click', { like: 'car' })
+event.emit('click', {
+  like: 'car'
+})
 
 // --------------------------------------- js 垃圾回收机制
 /**
@@ -611,3 +630,125 @@ event.emit('click', { like: 'car' })
  * 3、Js垃圾回收，分为栈内存和堆内存。栈内存是函数执行完之后就会回收。而堆内存才会进行标记清除
  * 4、js中管理内存的建议：尽量少用全局变量   尽可能手动清除变量的引用
  */
+
+
+// --------------------------------------- js 数组常用循环方法
+// 1、forEach: 循环，没有返回值，为 undefined
+// const forEachArr = [1, 2, 3]
+// forEachArr.forEach((item, index, initArr) => {
+//   // item: 数组每一项
+//   // index: 数组每一项对应的下标
+//   // initArr: 原数组
+//   console.log(item);
+//   console.log(index);
+//   console.log(initArr);
+// })
+
+// 2、map: 循环，返回一个新数组，不会影响原来数组，只是将原来数组拷贝一份，把拷贝的进行更改，只是链式调用
+// 例子1：将数组 A 的每一项乘以二再返回
+// const listA = [1, 2, 3]
+
+// const listB = listA.map((item, index, initArr) => {
+//   // item: 数组每一项
+//   // index: 数组每一项对应的下标
+//   // initArr: 原数组
+//   return item * 2
+// })
+// console.log(listB);   // [2, 4, 6]
+
+// 例子2：返回数组 A 的每一项的 name，组成数组
+// const listA = [{
+//   name: 'jack',
+//   age: 20
+// }, {
+//   name: 'lusy',
+//   age: 22
+// }, {
+//   name: 'mark',
+//   age: 21
+// }]
+
+// const listB = listA.map((item) => {
+//   return item.name
+// })
+// console.log(listB);   // ["jack", "lusy", "mark"]
+
+// 3、filter: 过滤，返回匹配的结果为 true 的项, 结果为数组，支持链式调用
+// const listA = [{
+//   name: 'jack',
+//   age: 20
+// }, {
+//   name: 'lusy',
+//   age: 22
+// }, {
+//   name: 'mark',
+//   age: 20
+// }]
+
+// const listB = listA.filter((item) => {
+//   return item.age === 20
+// })
+// console.log(listB);
+
+// 4、find: 找到数组中的某一项,当找到第一个，就不会继续往下找了,找不到，返回 undefined; findIndex: 找到数组中某一项的下标，当找到第一个，就不会继续往下找了
+// const listA = [{
+//   name: 'jack',
+//   age: 20
+// }, {
+//   name: 'lusy',
+//   age: 22
+// }, {
+//   name: 'mark',
+//   age: 20
+// }]
+
+// const res1 = listA.find((item) => {
+//   return item.age === 20
+// })
+// console.log(res1);
+// const idx = listA.findIndex((item) => {
+//   return item.age === 20
+// })
+// console.log(idx);
+
+// reduce：累加器
+// array.reduce((accumulator, currentValue, currentIndex, array) => {
+//   // accumulator: 数组每一段的累加值
+//   // currentValue: 当前值
+//   // currentIndex: 当前索引
+//   // array: 原数组
+// }, startValue)  // startValue: 初始累积值, 比如 [1,2,3] 求和，如果初始值为 1，则最后结果为 1 + 1 + 2 + 3 = 7
+
+// // 求和
+// const arrA = [1, 2, 3]
+// const res2 = arrA.reduce((a, b, c) => {
+//   return a + b
+// })
+// console.log(res2);
+
+// 扁平化一个二维数组
+// const arrB = [
+//   [1, 2], 3, [4]
+// ]
+// const res2 = arrB.reduce((a, b) => {
+//   return a.concat(b)
+// }, [])
+// console.log(res2);
+
+// 将数组转换为对象
+// const arrC = [{
+//   id: 1,
+//   name: 'jack',
+//   age: 20
+// }, {
+//   id: 2,
+//   name: 'lusy',
+//   age: 21
+// }]
+
+// const res5 = arrC.reduce((a, b) => {
+//   console.log(a);
+
+//   return {...a, [b.id]: b};
+// }, {})
+// console.log(res5);
