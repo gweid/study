@@ -690,7 +690,7 @@ event.emit('click', {
 // })
 // console.log(listB);
 
-// 4、find: 找到数组中的某一项,当找到第一个，就不会继续往下找了,找不到，返回 undefined; findIndex: 找到数组中某一项的下标，当找到第一个，就不会继续往下找了
+// 4、find: 找到数组中的某一项,当找到第一个，就不会继续往下找了，找不到，返回 undefined; findIndex: 找到数组中某一项的下标，当找到第一个，就不会继续往下找了
 // const listA = [{
 //   name: 'jack',
 //   age: 20
