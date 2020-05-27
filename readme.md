@@ -85,7 +85,7 @@
 
 -   响应报文
 
-        从服务器请求的HTML,CSS,JS文件就放在这里面
+        从服务器请求的 HTML,CSS,JS 文件就放在这里面
 
 #### 1-4、浏览器渲染流程
 
@@ -114,3 +114,79 @@
 -   渲染到页面
 
 ### 2、跨域
+
+#### 2-1、浏览器同源策略
+
+同源策略就是：协议、域名、端口都相同的。同源策略主要是为了保护用户信息安全
+
+同源策略主要是两种，一个是 ajax 同源策略，一个是 DOM 同源策略
+
+-   ajax 同源策略：1、不同源页面不能发起 ajax 请求 2、不同源页面不能获取 cookies。如果没有同源策略，那么只要任意一个脚本就能获取 cookies，去到相应网站发起恶意请求
+-   DOM 同源策略：不同源页面不能获取 DOM。主要防止通过 iframe 嵌套一个真正网站地址，拿取用户信息
+
+#### 2-2、解决跨域
+
+1.jsonp：主要利用 script 标签的 src 天然支持跨域请求的原理
+
+```
+function jsonp({
+  url,
+  params,
+  callback
+}) {
+  params = {
+    ...params,
+    callback
+  }
+
+  const str = Object.keys(params).map(item => {
+    return `${item}=${params[item]}`
+  }).join('&')
+
+  const requestStr = `${url}?${str}`
+
+  const script = document.createElement("script")
+
+  script.setAttribute('src', requestStr)
+
+  document.body.appendChild(script)
+}
+
+jsonp({
+  url: 'http://www.xxxxx.com',
+  params: {
+    name: 'jack'
+  },
+  callback(res) {
+    console.log(res);
+  }
+})
+```
+
+2.CORS：跨域资源共享
+
+这个一般需要服务器配置，通常的几个配置
+
+        Access-Control-Allow-Origin： 服务器允许访问的域名
+
+        Access-Control-Allow-Methods： 服务器允许使用的方法
+
+        Access-Control-Allow-Headers： 服务器允许的首部字段
+
+        Access-Control-Allow-Credentials
+
+        Access-Control-Max-Age： 该响应的有效时间(s),在有效时间内浏览器无需再为同一个请求发送预检请求
+
+-   浏览器根据同源策略，发现是同源，则直接发送请求，如果不同源，发送跨域请求
+-   服务器收到跨域请求，根据自身配置返回请求头；如果没配置过跨域，那么返回不包含 Access-Control-Allow-\*\*
+-   浏览器根据有没有 Access-Control-Allow-\*\* 做判断，如果没有，则报警告
+
+3.服务器代理：同源策略主要存在于浏览器中，当不利用浏览器发起请求，而是直接在两台服务器中，那么就不会存在跨域的问题
+
+-   常见的 webpack 的 devServer
+
+4.websocket：这是一种双向通讯协议，客户端和服务端都可以主动向对方发送东西
+
+5.postMessage: HTML5 中的 API，可以实现跨文档通讯，一个窗口发送消息，另一个窗口接受消息
+
+
