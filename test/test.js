@@ -75,7 +75,7 @@
 // 此时，新增的元素是没有事件的，这只要在新加的元素的时候，给父元素添加事件就可以了
 
 // --------------------------------------------- js 继承
-// 1、原型链继承
+// 1、原型链继承    缺点：所有Child实例原型都指向同一个Parent实例, 父类引用类型变量修改会影响所有的Child实例
 // function SuperType() {
 //     this.name = "jack"
 // }
@@ -110,7 +110,7 @@
 // console.log(type.name);
 // console.log(type.getName()); // 报错：访问不到父类原型上的
 
-// 3、组合继承(就是结合原型链继承和借用构造继承)
+// 3、组合继承(就是结合原型链继承和借用构造继承)   缺点：每次创建子类实例都执行了两次构造函数(SuperType.call()和new Parent())，虽然这并不影响对父类的继承，但子类创建实例时，原型中会存在两份相同的属性和方法，这并不优雅
 // function SuperType(name) {
 //     this.name = name
 // }
@@ -133,11 +133,6 @@
 // console.log(type.getAge());
 
 // 4、寄生组合式继承
-// function inheritPrototype(subType, superType) {
-//     var prototype = Object.create(superType.prototype) // 创建对象，创建父类原型的一个副本
-//     prototype.constructor = subType // 增强对象，弥补因重写原型而失去的默认的constructor 属性
-//     subType.prototype = prototype // 指定对象，将新创建的对象赋值给子类的原型
-// }
 
 // function SuperType(name) {
 //     this.name = name
@@ -151,7 +146,8 @@
 //     this.age = age
 // }
 
-// inheritPrototype(SubType, SuperType)
+// SubType.prototype = Object.create(SuperType.prototype)  //将`指向父类实例`改为`指向父类原型`
+// SubType.prototype.constructor = SubType
 
 // SubType.prototype.getAge = function () {
 //     return this.age
