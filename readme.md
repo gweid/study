@@ -189,4 +189,16 @@ jsonp({
 
 5.postMessage: HTML5 中的 API，可以实现跨文档通讯，一个窗口发送消息，另一个窗口接受消息
 
+### 3、CommonJS 和 ES6 模块，AMD 与 CMD
 
+#### 2-1、区别：
+
+-   CommonJS 输出的是一个值的拷贝，ES6 输出的是值的引用
+-   CommonJS 是在运行的时候加载，ES6 是在编译的时候
+-   CommonJS 的 require 语法是同步的，所以 CommonJS 规范只适合于服务端
+-   CommonJS 的 this 指向当前模块，ES6 的 this 指向 undefined
+
+#### 2-2、AMD 和 CMD 都是异步加载模块，区别是：对依赖模块的执行时机处理不同
+
+-   AMD 推崇依赖前置，在定义模块的时候就要声明其依赖的模块
+-   CMD 推崇就近依赖，只有在用到某个模块的时候再去 require
