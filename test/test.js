@@ -717,7 +717,7 @@ event.emit('click', {
 //   // currentValue: 当前值
 //   // currentIndex: 当前索引
 //   // array: 原数组
-// }, startValue)  // startValue: 初始累积值, 比如 [1,2,3] 求和，如果初始值为 1，则最后结果为 1 + 1 + 2 + 3 = 7
+// }, startValue)  // startValue: 初始累积值, 比如 [1, 2, 3] 求和，如果初始值为 1，则最后结果为 1 + 1 + 2 + 3 = 7
 
 // // 求和
 // const arrA = [1, 2, 3]
