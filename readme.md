@@ -73,11 +73,11 @@
 
         2xx：成功–表示请求已被成功接收、理解、接受。 200：成功
 
-        3xx：重定向–要完成请求必须进行更进一步的操作。304：使用缓存
+        3xx：重定向–要完成请求必须进行更进一步的操作。301：永久重定向  302：临时重定向  304：未修改，使用缓存
 
-        4xx：客户端错误–请求有语法错误或请求无法实现。 401：未授权  403：服务器拒绝请求  404：服务器找不到请求页面
+        4xx：客户端错误–请求有语法错误或请求无法实现。 400：错误请求，比如传参错误  401：未授权  403：服务器拒绝请求  404：服务器找不到请求页面
 
-        5xx：服务器端错误–服务器未能实现合法的请求。  500：服务器遇到错误，无法完成请求
+        5xx：服务器端错误–服务器未能实现合法的请求。  500：服务器遇到错误，无法完成请求  503：服务不可用
 
 -   响应报头
 
@@ -315,6 +315,27 @@ HTTPS 使用的是对称密钥加密和非对称密钥加密组合而成的混�
 
 Keep-Alive 是 HTTP 的一个头部字段 Connection 中的一个值，它是保证我们的 HTTP 请求能建立一个持久连接；在 HTTP/1.1 中所有的连接默认都是持久连接的，但是 HTTP/1.0 并未标准化。
 
+#### 8-5、get 请求和 post 请求区别
+
+-   get 请求参数在 url 上，post 请求参数在请求体里
+-   get 请求的参数有大小限制，post 请求的参数可以无限大
+-   post 请求相对于 get 请求会稍微安全，因为请求参数不暴露在 url 上，但仅仅是相对的
+-   get 请求能缓存，post 不能
+
+#### 8-6、HTTP/1.0 和 HTTP/1.1 有什么区别
+
+-   长连接： HTTP/1.1 支持长连接和请求的流水线，在一个 TCP 连接上可以传送多个 HTTP 请求，避免了因为多次建立 TCP 连接的时间消耗和延时
+-   缓存处理： HTTP/1.1 引入 Entity tag，If-Unmodified-Since, If-Match, If-None-Match 等新的请求头来控制缓存，详见浏览器缓存小节
+-   带宽优化及网络连接的使用： HTTP1.1 则在请求头引入了 range 头域，支持断点续传功能
+-   Host 头处理： 在 HTTP/1.0 中认为每台服务器都有唯一的 IP 地址，但随着虚拟主机技术的发展，多个主机共享一个 IP 地址愈发普遍，HTTP1.1 的请求消息和响应消息都应支持 Host 头域，且请求消息中如果没有 Host 头域会 400 错误
+
+#### 8-7、HTTP 和 HTTPS 有何区别
+
+-   HTTPS 使用 443 端口，而 HTTP 使用 80
+-   HTTPS 需要申请证书
+-   HTTP 是超文本传输协议，是明文传输；HTTPS 是经过 SSL 加密的协议，传输更安全
+-   HTTPS 比 HTTP 慢，因为 HTTPS 除了 TCP 握手的三个包，还要加上 SSL 握手的九个包
+
 ### 9、反向代理
 
 我们将请求发送到服务器，然后服务器对我们的请求进行转发，我们只需要和代理服务器进行通信就好。所以对于客户端来说，是感知不到服务器的
@@ -330,24 +351,20 @@ XSS(Cross Site Script) 跨站脚本攻击。指的是攻击者向网页注入恶
 **主要是分为三种**：
 
 -   存储型：即攻击被存储在服务端，常见的是在评论区插入攻击脚本，如果脚本被储存到服务端，那么所有看见对应评论的用户都会受到攻击。
-
 -   反射型：攻击者将脚本混在 URL 里，服务端接收到 URL 将恶意代码当做参数取出并拼接在 HTML 里返回，浏览器解析此 HTML 后即执行恶意代码
-
 -   DOM 型：将攻击脚本写在 URL 中，诱导用户点击该 URL，如果 URL 被解析，那么攻击脚本就会被运行。和前两者的差别主要在于 DOM 型攻击不经过服务端
 
 **如何防御 XSS 攻击**：
 
 -   输入检查：对输入内容中的 script 和 \<iframe\> 等标签进行转义或者过滤
-
 -   设置 httpOnly：很多 XSS 攻击目标都是窃取用户 cookie 伪造身份认证，设置此属性可防止 JS 获取 cookie
-
 -   开启 CSP：即开启白名单，可阻止白名单以外的资源加载和运行
 
 #### 10-2、CSRF
 
 **CSRF**
 
-CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受信任用户向服务器发送非预期请求的攻击方式，通常情况下，它是攻击者借助受害者的 Cookie 骗取服务器的信任，但是它并不能拿到 Cookie，也看不到 Cookie 的内容，它能做的就是给服务器发送请求，然后执行请求中所描述的命令，以此来改变服务器中的数据，也就是并不能窃取服务器中的数据。
+CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受信任用户向服务器发送非预期请求的攻击方式，通常情况下，它是攻击者借助受害者的 Cookie 骗取服务器的信任，但是它并不能拿到 Cookie，也看不到 Cookie 的内容，它能做的就是给服务器发送请求，然后执行请求中所描述的命令，以此来改变服务器中的数据，也就是并不能窃取服务器中的数据
 
 **防御 CSRF 攻击**
 
@@ -357,9 +374,67 @@ CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受
 
 ### 11、requestAnimationFrame
 
-requestAnimationFrame 是浏览器用于定时循环操作的一个接口，类似于 setTimeout，主要用途是按帧对网页进行重绘。对于 JS 动画，用 requestAnimationFrame 会比 setInterval 效果更好。
-
+requestAnimationFrame 是浏览器用于定时循环操作的一个接口，类似于 setTimeout，主要用途是按帧对网页进行重绘。对于 JS 动画，用 requestAnimationFrame 会比 setInterval 效果更好
 
 ### 12、不使用框架如何实现组件按需加载以及原理
 
-但后来有去了解，babel-plugin-import 就可以实现。
+使用 babel-plugin-import 就可以实现
+
+babel-plugin-import 原理：在 babel 转码的时候，把对整个库的引用，变为具体模块的引用
+
+### 13、V8 如何执行一段 JS 代码
+
+-   预解析：检查语法错误但不生成 AST
+-   生成 AST：经过词法/语法分析，生成抽象语法树
+-   生成字节码：基线编译器 (Ignition) 将 AST 转换成字节码
+-   生成机器码：优化编译器 (Turbofan) 将字节码转换成优化过的机器码，此外在逐行执行字节码的过程中，如果一段代码经常被执行，那么 V8 会将这段代码直接转换成机器码保存起来，下一次执行就不必经过字节码，优化了执行速度
+
+### 14、GPU 加速
+
+-   优点：使用 transform、opacity、filters 等属性时，会直接在 GPU 中完成处理，这些属性的变化不会引起回流重绘
+-   缺点：GPU 渲染字体会导致字体模糊，过多的 GPU 处理会导致内存问题
+
+### 15、HTML 相关
+
+#### 15-1、HTML5 的一些新特性
+
+-   新增语义化标签 （aside / figure / section / header / footer / nav 等），增加多媒体标签 video 与 audio
+-   删除了 s、b 这些语义化不强的标签，使用 del 代替 s、strong 代替 b
+-   增强了表单的 type 属性
+-   增加了 localStorage、sessionStorage 这些本地存储
+-   新的 API：canvas、pushState、地理定位、websocket 等
+
+#### 15-2、href 和 src 有什么区别
+
+-   href：即超文本引用。当浏览器遇到 href 时，会并行地下载资源，不会阻塞页面解释，例如我们使用 \<link\> 引入 CSS，浏览器会并行地下载 CSS 而不阻塞页面解析. 因此我们在引入 CSS 时建议使用 \<link\> 而不是 @import
+-   src：即资源。当浏览器遇到 src 时，会暂停页面解析，直到该资源下载或执行完毕，这也是 script 标签之所以放底部的原因
+
+### 16、CSS 相关
+
+#### 16-1、CSS3 新特性
+
+-   伪类选择器（li:first-child li:last-child li:nth-child） 伪元素选择器（:before :after）
+-   border-radius: 圆角
+-   box-shadow: 盒子阴影 text-shadow: 文字阴影
+-   渐变：线性渐变、径向渐变
+-   过渡：transition(css 属性，时间，曲线，延时)
+-   2D、3D 变换
+-   动画 animation
+-   flex 弹性布局
+-   @media 媒体查询
+
+#### 16-2、如何触发 BFC
+
+-   float 不为 none
+-   overflow 的值不为 visible
+-   position 为 absolute 或 fixed
+-   display 的值为 inline-block 或 table-cell 或 table-caption 或 grid
+
+#### 16-3、BFC 的应用场景
+
+-   清除浮动：BFC 内部的浮动元素会参与高度计算，因此可用于清除浮动，防止高度塌陷
+-   阻止外边距重叠：属于同一个 BFC 的两个相邻 Box 的 margin 会发生折叠，不同 BFC 不会发生折叠
+
+#### 16-4、去除图片底部空隙
+
+给 img 添加 vertical-align:middle | top 等等。 让图片不要和基线对齐。（只能修改图片底部的间隙）

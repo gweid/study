@@ -232,7 +232,30 @@ function bubbleSort(arr = [], flag = true) {
 
   return arr
 }
+
 console.log('冒泡排序', bubbleSort([1, 5, 4, 9, 2, 11, 8, 7], true))
+
+// 优化冒泡排序
+function bubbleSort1(arr) {
+  for (var i = 0; i < arr.length; i++) {
+    let flag = true
+
+    for (var j = 0; j < arr.length - i - 1; j++) {
+      if (arr[j] + arr[j + 1]) {
+        flag = false;
+
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+      }
+    }
+
+    // 这个flag的含义是：如果`某次循环`中没有交换过元素，那么意味着排序已经完成
+    if (flag) break
+  }
+
+  return arr
+}
+
+console.log('优化冒泡排序', bubbleSort([1, 5, 4, 9, 2, 11, 8, 7]))
 
 // 选择排序  找到数据结构中的最小值并将其放置在第一位, 接着找到第二个最小值并将其放到第二位, 依次类推.
 function selectSort(arr) {
@@ -246,7 +269,6 @@ function selectSort(arr) {
       }
     }
     if (i !== idx) {
-      ;
       [arr[i], arr[idx]] = [arr[idx], arr[i]]
     }
   }
@@ -279,6 +301,7 @@ function quickSort(arr) {
   return quickSort(left).concat([pivot], quickSort(right))
 }
 console.log('快速排序', quickSort([1, 5, 4, 9, 2, 11, 8, 7]))
+
 
 // 斐波那契数列
 function fib(n) {
@@ -622,9 +645,9 @@ event.emit('click', {
  * 利用浏览器渲染页面的空闲时间进行垃圾回收
  * 1、原理：执行环境会找出那些不再继续使用的变量，然后释放其占用的内存。
  * 2、js 垃圾回收的策略
- *    - 标记清除：当变量进入环境时，就将这个变量标记为“进入环境”，而当变量离开环境时，则将其标记为“离开环境”。
- *    - 引用计数：声明一个 a 并将 a 赋值给 b，那么就计数加 1， 当 b 重新赋值，则减 1，如果计数为 0，则清除。缺点循环引用永远不会为零
- * 3、Js 垃圾回收，分为栈内存和堆内存。栈内存是函数执行完之后就会回收。而堆内存才会进行标记清除：先遍历所有对象并打上标记，然后对正在使用或被强引用的对象取消标记，回收被标记的对象
+ *    - 标记清除：垃圾收集器先给内存中所有对象加上标记，然后从根节点开始遍历，去掉被引用的对象和运行环境中对象的标记，剩下的被标记的对象就是无法访问的等待回收的对象
+ *    - 引用计数：给一个变量赋值引用类型，则该对象的引用次数+1，如果这个变量变成了其他值，那么该对象的引用次数-1，垃圾回收器会回收引用次数为0的对象。但是当对象循环引用时，会导致引用次数永远无法归零，造成内存无法释放。
+ * 3、Js 垃圾回收，分为栈内存和堆内存。栈内存是函数执行完之后就会回收。而堆内存才会进行标记清除
  * 4、js 中管理内存的建议：尽量少用全局变量   尽可能手动清除变量的引用
  */
 
@@ -749,3 +772,31 @@ event.emit('click', {
 //   return {...a, [b.id]: b};
 // }, {})
 // console.log(res5);
+
+// --------------------------------------- 数组扁平
+// ES6 的 flat
+
+let flatArr = [1, 2, [4, 5],
+  [
+    [6, 7], 8
+  ]
+]
+
+let flatArrRet = flatArr.flat(Infinity)
+console.log("ES6扁平化数组", flatArrRet)
+
+// 递归
+function flatFun(arr) {
+  let res = []
+
+  arr.forEach((item) => {
+    if (Array.isArray(item)) {
+      res = res.concat(flatFun(item))
+    } else {
+      res.push(item)
+    }
+  })
+
+  return res
+}
+console.log("递归扁平化数组", flatFun(flatArr))
