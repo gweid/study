@@ -362,11 +362,8 @@ function debounce(fn, delay) {
   return function () {
     if (timeId !== null) clearTimeout(timeId)
 
-    let _this = this
-    let args = arguments
-
-    timeId = setTimeout(function () {
-      fn.apply(_this, args)
+    timeId = setTimeout(() => {
+      fn.apply(this, arguments)
     }, delay)
   }
 }
@@ -378,18 +375,16 @@ let clickFn = function () {
 debounceButton.addEventListener('click', debounce(clickFn, 1500))
 
 // 节流: 函数节流是指一定时间内执行的操作只执行一次，也就是说即预先设定一个执行周期，当调用动作的时刻大于等于执行周期则执行该动作，然后进入下一个新周期，一个比较形象的例子是如果将水龙头拧紧直到水是以水滴的形式流出，那你会发现每隔一段时间，就会有一滴水流出。
-function throttle(fn, time) {
+function throttle(fn, delay) {
   let timeId = null
 
   return function () {
-    let _this = this
-    let args = arguments
 
     if (!timeId) {
-      timeId = setTimeout(function () {
-        fn.apply(_this, args)
+      timeId = setTimeout(() => {
+        fn.apply(this, arguments)
         timeId = null
-      }, time)
+      }, delay)
     }
   }
 }

@@ -240,7 +240,7 @@ http {
 
 #### 5-2、回流
 
-回流是指元素的几何属性发生变化，例如宽高，引起页面回流
+回流是指元素的几何属性发生变化，例如宽高、增删移动节点等，引起页面回流
 
 **重绘跟回流的成本是非常高的，回流由于发生了 DOM 的变化，会重新渲染，成本比重绘的还要大**
 
@@ -280,9 +280,9 @@ function setNowFontSize() {
     document.documentElement.style.fontSize = nowFontSize + 'px';
 }
 
-//一开始就马上设置
+// 一开始就马上设置
 setNowFontSize();
-//当屏幕宽度一变化马上获取计算当前根元素字体大小 把 setNowFontSize 函数体传递过去的
+// 当屏幕宽度一变化马上获取计算当前根元素字体大小 把 setNowFontSize 函数体传递过去的
 window.addEventListener('resize', setNowFontSize);
 ```
 
@@ -353,6 +353,10 @@ Keep-Alive 是 HTTP 的一个头部字段 Connection 中的一个值，它是保
 
 XSS(Cross Site Script) 跨站脚本攻击。指的是攻击者向网页注入恶意的客户端代码，通过恶意的脚本对客户端网页进行篡改，从而在用户浏览网页时，对用户浏览器进行控制或者获取用户隐私数据的一种攻击方式
 
+**XSS 攻击原理**
+
+-   往 Web 页面里插入恶意 Script 代码
+
 **主要是分为三种**：
 
 -   存储型：即攻击被存储在服务端，常见的是在评论区插入攻击脚本，如果脚本被储存到服务端，那么所有看见对应评论的用户都会受到攻击。
@@ -364,12 +368,21 @@ XSS(Cross Site Script) 跨站脚本攻击。指的是攻击者向网页注入恶
 -   输入检查：对输入内容中的 script 和 \<iframe\> 等标签进行转义或者过滤
 -   设置 httpOnly：很多 XSS 攻击目标都是窃取用户 cookie 伪造身份认证，设置此属性可防止 JS 获取 cookie
 -   开启 CSP：即开启白名单，可阻止白名单以外的资源加载和运行
+-   URL：使用 Javascript 的 encodeURIComponent() 方法对用户的输入进行编码
 
 #### 10-2、CSRF
 
 **CSRF**
 
 CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受信任用户向服务器发送非预期请求的攻击方式，通常情况下，它是攻击者借助受害者的 Cookie 骗取服务器的信任，但是它并不能拿到 Cookie，也看不到 Cookie 的内容，它能做的就是给服务器发送请求，然后执行请求中所描述的命令，以此来改变服务器中的数据，也就是并不能窃取服务器中的数据
+
+**CSRF 攻击原理**
+
+-   用户 C 打开浏览器，访问受信任网站 A，输入用户名和密码请求登录网站 A；
+-   在用户信息通过验证后，网站 A 产生 Cookie 信息并返回给浏览器，此时用户登录网站 A 成功，可以正常发送请求到网站 A；
+-   用户未退出网站 A 之前，在同一浏览器中，打开一个 TAB 页访问网站 B；
+-   网站 B 接收到用户请求后，返回一些攻击性代码，并发出一个请求要求访问第三方站点 A；
+-   浏览器在接收到这些攻击性代码后，根据网站 B 的请求，在用户不知情的情况下携带 Cookie 信息，向网站 A 发出请求。网站 A 并不知道该请求其实是由 B 发起的，所以会根据用户 C 的 Cookie 信息以 C 的权限处理该请求，导致来自网站 B 的恶意代码被执行。
 
 **防御 CSRF 攻击**
 
@@ -488,7 +501,7 @@ box-sizing: border-box;
 
 -   sessionStorage 不在不同的浏览器窗口中共享，即使是同一个页面；
 -   localstorage 在所有同源窗口中都是共享的；也就是说只要浏览器不关闭，数据仍然存在
--   cookie: 也是在所有同源窗口中都是共享的.也就是说只要浏览器不关闭，数据仍然存在
+-   cookie: 也是在所有同源窗口中都是共享的；也就是说只要浏览器不关闭，数据仍然存在
 
 ### 19、session 和 cookie
 
@@ -507,3 +520,68 @@ box-sizing: border-box;
 -   session 会在一定时间内保存在服务器上，当访问增多，会比较占用你服务器的性能，考虑到减轻服务器性能方面，应当使用 cookie
 -   session 中保存的是对象，cookie 中保存的是字符串
 -   session 不能区分路径，同一个用户在访问一个网站期间，所有的 session 在任何一个地方都可以访问到，而 cookie 中如果设置了路径参数，那么同一个网站中不同路径下的 cookie 互相是访问不到的
+
+### 20、为什么 js 是单线程
+
+作为浏览器脚本语言，JavaScript 的主要用途是与用户互动，以及操作 DOM。这决定了它只能是单线程，否则会带来很复杂的同步问题。比如，假定 JavaScript 同时有两个线程，一个线程在某个 DOM 节点上添加内容，另一个线程删除了这个节点，这时浏览器应该以哪个线程为准
+
+### 21、script 标签的 defer 与 async 区别
+
+defer 跟 async 都是异步加载，区别在于脚本加载完之后何时执行，defer 是按照加载顺序执行脚本的，async 则是谁先加载完就先执行。所以 async 使用需要注意脚本的相互依赖问题
+
+### 22、提升页面性能
+
+-   资源压缩合并，减少 HTTP 请求
+-   非核心代码异步加载（异步加载的方式，异步加载的区别） (defer、async)
+-   利用浏览器缓存（缓存的分类，缓存原理）
+-   使用 CDN
+-   预解析 DNS
+
+```
+//强制打开 <a> 标签的 dns 解析
+<meta http-equiv="x-dns-prefetch-controller" content="on">
+//DNS预解析
+<link rel="dns-prefetch" href="//host_name_to_prefetch.com">
+```
+
+### 23、浏览器缓存
+
+强制缓存优先于协商缓存进行，若强制缓存 (Expires 和 Cache-Control) 生效则直接使用缓存，若不生效则进行协商缓存 (Last-Modified / If-Modified-Since 和 Etag / If-None-Match)，协商缓存由服务器决定是否使用缓存，若协商缓存失效，那么代表该请求的缓存失效，返回 200，重新返回资源和缓存标识，再存入浏览器缓存中；生效则返回 304，继续使用缓存。
+
+#### 23-1、强缓存
+
+强缓存：不会向服务器发送请求，直接从缓存中读取资源，在 chrome 控制台的 Network 选项中可以看到该请求返回 200 的状态码，并且 Size 显示 from disk cache 或 from memory cache。强缓存可以通过设置两种 HTTP Header 实现：Expires 和 Cache-Control。
+
+-   Expires：缓存过期时间，用来指定资源到期的时间，是服务器端的具体的时间点
+-   Cache-Control：不仅可以缓存过期时间，还可以配合其他的功能
+
+**Expires 与 Cache-Control 区别**
+
+Expires 是 http1.0 的产物，Cache-Control 是 http1.1 的产物，两者同时存在的话，Cache-Control 优先级高于 Expires
+
+#### 23-2、协商缓存
+
+协商缓存就是强制缓存失效后，浏览器携带缓存标识向服务器发起请求，由服务器根据缓存标识决定是否使用缓存的过程
+
+-   Last-Modified 和 If-Modified-Since：浏览器在第一次访问资源时，服务器返回资源的同时，在 response header 中添加 Last-Modified 的 header，值是这个资源在服务器上的最后修改时间，浏览器接收后缓存文件和 header
+-   ETag 和 If-None-Match：Etag 是服务器响应请求时，返回当前资源文件的一个唯一标识(由服务器生成)，只要资源有变化，Etag 就会重新生成
+
+### 24、错误监控
+
+一般分为两类：1.即时运行错误（代码错误） 2.资源加载错误
+
+#### 24-1、即时运行错误的捕获方式
+
+```
+try...catch
+
+window.onerror
+```
+
+#### 24-2、资源加载错误捕获：
+
+```
+object.onerror
+performance.getEntries()
+Error 事件捕获
+```
