@@ -99,6 +99,8 @@ M: model，数据层，在 Vue 内部就相当于 dada，主要对数据的存�
 
 #### Vue 中的 key 的作用
 
+key 是为 Vue 中 vnode 的唯一标记，通过这个 key，我们的 diff 操作可以更准确、更快速。
+
 #### Vue 中常用事件修饰符
 
 -   stop：阻止事件冒泡
@@ -272,4 +274,105 @@ this.userId = this.$route.query.userId;
 -   路由独享守卫：beforeEnter
 -   组件内路由守卫：beforeRouteEnter、beforeRouteUpdate、beforeRouteLeave
 
-#### 
+#### watch 跟 computed 分别适合哪些场景使用
+
+-   当我们需要进行数值计算，并且依赖于其它数据时，应该使用 computed，因为可以利用 computed 的缓存特性，避免每次获取值时，都要重新计算；
+-   当我们需要在数据变化时执行异步或开销较大的操作时，应该使用 watch，使用  watch  选项允许我们执行异步操作 ( 访问一个 API )，限制我们执行该操作的频率，并在我们得到最终结果前，设置中间状态。这些都是计算属性无法做到的
+
+#### Proxy 与 Object.defineProperty
+
+-   Proxy 可以直接监听对象而非属性；
+-   Proxy 可以直接监听数组的变化；
+-   Proxy 有多达 13 种拦截方法,不限于 apply、ownKeys、deleteProperty、has 等等是 Object.defineProperty 不具备的；
+-   Proxy 返回的是一个新对象,我们可以只操作新的对象达到目的,而 Object.defineProperty 只能遍历对象属性直接修改；
+-   Proxy 作为新标准将受到浏览器厂商重点持续的性能优化，也就是传说中的新标准的性能红利；
+
+#### Vue 的性能优化
+
+[Vue 的性能优化](https://juejin.im/post/5d548b83f265da03ab42471d#heading-14)
+
+**1、代码层面优化：**
+
+-   v-if 和 v-show 区分使用场景
+-   computed 和 watch 区分使用场景
+-   v-for 遍历必须为 item 添加 key，且避免同时使用 v-if
+-   长列表性能优化
+-   事件的销毁
+-   图片资源懒加载
+-   路由懒加载
+-   第三方插件的按需引入
+-   优化无限列表性能
+-   服务端渲染 SSR or 预渲染
+
+**2、webpack 层面优化：**
+
+-   Webpack 对图片进行压缩
+-   减少 ES6 转为 ES5 的冗余代码
+-   提取公共代码
+-   模板预编译
+-   提取组件的 CSS
+-   优化 SourceMap
+-   构建结果输出分析
+-   Vue 项目的编译优化
+
+**基础 web 技术优化：**
+
+-   开启 gzip 压缩
+-   浏览器缓存
+-   CDN 的使用
+-   使用 Chrome Performance 查找性能瓶颈
+
+#### Vue3 虚拟 DOM 与 Vue2 的虚拟 DOM 对比
+
+-   对于模板编译标记的静态节点，Vue2 中依然使用\_c 新建成 vdom，在 diff 的时候需要对比，有一些额外的性能损耗
+
+```
+<div id="app">
+    <h1>技术摸鱼</h1>
+    <p>今天天气真不错</p>
+    <div>{{name}}</div>
+
+</div>
+
+
+function render() {
+  with(this) {
+    return _c('div', {
+      attrs: {
+        "id": "app"
+      }
+    }, [_c('h1', [_v("技术摸鱼")]), _c('p', [_v("今天天气真不错")]), _c('div', [_v(
+      _s(name))])])
+  }
+}
+```
+
+-   在 Vue3 中，最后一个\_createVNode 第四个参数 1，只有带这个参数的，才会被真正的追踪，静态节点不需要遍历
+
+```
+import { createVNode as _createVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createBlock as _createBlock } from "vue"
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createBlock("div", { id: "app" }, [
+    _createVNode("h1", null, "技术摸鱼"),
+    _createVNode("p", null, "今天天气真不错"),
+    _createVNode("div", null, _toDisplayString(_ctx.name), 1 /* TEXT */)
+  ]))
+}
+```
+
+-   事件缓存：传入的事件会自动生成并缓存一个内联函数再 cache 里，变为一个静态节点。这样就算我们自己写内联函数，也不会导致多余的重复渲染
+
+```
+<div id="app">
+  <button @click="handleClick">戳我</button>
+</div>
+
+export function render(_ctx, _cache) {
+  return (_openBlock(), _createBlock("div", { id: "app" }, [
+    _createVNode("button", {
+      onClick: _cache[1] || (_cache[1] = $event => (_ctx.handleClick($event)))
+    }, "戳我")
+  ]))
+}
+```
