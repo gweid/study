@@ -331,7 +331,6 @@ this.userId = this.$route.query.userId;
     <h1>技术摸鱼</h1>
     <p>今天天气真不错</p>
     <div>{{name}}</div>
-
 </div>
 
 
@@ -361,7 +360,7 @@ export function render(_ctx, _cache) {
 }
 ```
 
--   事件缓存：传入的事件会自动生成并缓存一个内联函数再 cache 里，变为一个静态节点。这样就算我们自己写内联函数，也不会导致多余的重复渲染
+-   事件缓存：传入的事件会自动生成并缓存一个内联函数在 cache 里，变为一个静态节点。这样就算我们自己写内联函数，也不会导致多余的重复渲染
 
 ```
 <div id="app">
@@ -399,7 +398,6 @@ export function render(_ctx, _cache) {
 **3、Composition API：**
 
 **4、typescript 支持：**
-
 
 ### Vue3 的 Composition API
 
@@ -440,7 +438,7 @@ const {
 setup(props,context){
     console.log('setup....',)
     console.log('props',props) // 组件参数
-    console.log('context',context) // 上下文对象
+    console.log('context',context) // 上下文对象,就是 Vue 本身，可以调用 Vue 上的方法，比如 Vue.$emit()
 }
 ```
 
