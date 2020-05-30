@@ -237,3 +237,39 @@ var demoData = [
   }
 </script>
 ```
+
+#### 路由跳转，name 形式和 path 形式的区别
+
+```
+// 字符串
+this.$router.push('home')
+
+// 命名的路由
+this.$router.push({
+  name: 'user',
+  params: {userId: '123'}
+})
+//接收参数
+this.userId = this.$route.params.userId
+
+// 带查询参数，变成 /user?userId=123
+this.$router.push({
+  path: '/user',
+  query: {userId: '123'}
+})
+//接收
+this.userId = this.$route.query.userId;
+```
+
+**区别**
+
+-   name 传参用 params，path 传参用 query
+-   用 name 跳转后参数不会携带到 url 上，用 query 传参参数会携带到 url 上
+
+#### 导航守卫
+
+-   全局：beforeEach、afterEach
+-   路由独享守卫：beforeEnter
+-   组件内路由守卫：beforeRouteEnter、beforeRouteUpdate、beforeRouteLeave
+
+#### 
