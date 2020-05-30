@@ -375,4 +375,292 @@ export function render(_ctx, _cache) {
     }, "戳我")
   ]))
 }
+
+// 变为
+<div id="app">
+  <button @click="()=>foo()">戳我</button>
+</div>
+```
+
+#### Vue3 的优点
+
+**1、性能方面：**
+
+-   重写了虚拟 Dom 的实现
+-   编译模板的优化
+-   更高效的组件初始化
+-   update 性能提高 1.3~2 倍
+-   SSR 速度提高了 2~3 倍
+
+**2、支持 tree-shaking**
+
+可以将无用模块“剪辑”，仅打包需要的
+
+**3、Composition API：**
+
+**4、typescript 支持：**
+
+
+### Vue3 的 Composition API
+
+#### 完整 API
+
+```
+const {
+  createApp,
+  reactive, // 创建响应式数据对象
+  ref, // 创建一个响应式的数据对象
+  toRefs, // 将响应式数据对象转换为单一响应式对象
+  isRef, // 判断某值是否是引用类型
+  computed, // 创建计算属性
+  watch, // 创建watch监听
+  // 生命周期钩子
+  onMounted,
+  onUpdated,
+  onUnmounted,
+} = Vue
+```
+
+#### 生命周期钩子替代
+
+| Vue2          | Vue3            |
+| ------------- | --------------- |
+| beforeCreate  | setup(替代)     |
+| created       | setup(替代)     |
+| beforeMount   | onBeforeMount   |
+| mounted       | onMounted       |
+| beforeUpdate  | onBeforeUpdate  |
+| beforeDestroy | onBeforeUnmount |
+| destroyed     | onUnmounted     |
+| errorCaptured | onErrorCaptured |
+
+#### setup: 在 beforeCreate 之后 created 之前执行
+
+```
+setup(props,context){
+    console.log('setup....',)
+    console.log('props',props) // 组件参数
+    console.log('context',context) // 上下文对象
+}
+```
+
+#### reactive: 接受一个普通对象，返回一个响应式数据对象
+
+```
+<template>
+  <div>{{ object.foo }}</div>
+</template>
+
+<script>
+import { reactive } from 'vue'
+
+export default {
+  setup() {
+    const object = reactive({ foo: 'bar' })
+
+    // 暴露至模板中
+    return {
+      object
+    }
+  }
+}
+</script>
+```
+
+#### ref：ref 函数接收一个用于初始化的值并返回一个响应式的和可修改的 ref 对象。该 ref 对象存在一个 value 属性，value 保存着 ref 对象的值
+
+```
+<template>
+  <div class="tf">
+    <div>
+      <!--在模板中使用时不需要使用 count.value, 会自动解包-->
+      <p>{{count}}</p>
+    </div>
+  </div>
+</template>
+<script>
+  import {ref, reactive} from 'vue'
+
+  export default {
+    setup() {
+      const count = ref(0)
+
+      count.value++
+
+      return { count }
+    },
+  }
+</script>
+```
+
+#### isRefs: 判断一个对象是否为 ref 代理对象
+
+```
+const unwrapped = isRef(foo) ? foo.value : foo
+```
+
+#### toRefs: 将一个 reactive 代理对象打平，转换为 ref 代理对象，使得对象的属性可以直接在 template 上使用
+
+```
+<template>
+  <p>{{ obj.count }}</p>
+  <p>{{ count }}
+  <p>{{ value }}
+</template>
+
+<script>
+export default {
+  setup() {
+    const obj = reactive({
+        count: 0,
+        value: 100
+    })
+    return {
+      obj,
+      // 如果这里的 obj 来自另一个文件，
+      // 这里就可以不用包裹一层 key，可以将 obj 的元素直接平铺到这里
+      // template 中可以直接获取属性
+      ...toRefs(obj)
+    }
+  }
+}
+</script>
+```
+
+**toRefs 在 setup 或者 Composition Function 的返回值特别有用**
+
+```
+import {reactive, toRefs} from 'vue'
+function useFeatureX() {
+  const state = reactive({
+    foo: 1,
+    bar: 2
+  })
+  return state
+}
+function useFeature2() {
+  const state = reactive({
+    a: 1,
+    b: 2
+  })
+  return toRefs(state)
+}
+
+export default {
+  setup() {
+    // 使用解构之后 foo 和 bar 都丧失响应式
+    const { foo, bar } = useFeatureX()
+    // 即便使用了解构也不会丧失响应式
+    const {a, b} = useFeature2()
+    return {
+      foo,
+      bar
+    }
+  }
+}
+```
+
+#### readonly:
+
+使用 readonly 函数，可以把 普通 object 对象、reactive 对象、ref 对象 返回一个只读对象。返回的 readonly 对象，一旦修改就会在 console 有 warning 警告。程序还是会照常运行，不会报错
+
+```
+const original = reactive({ count: 0 })
+
+const copy = readonly(original)
+```
+
+#### watch
+
+-   指定依赖源
+
+```
+<template>
+  <div>
+    state2.count: <input type="text" v-model="state2.count">
+    {{state2.count}}<br/><br/>
+    ref2: <input type="text" v-model="ref2">{{ref2}}<br/><br/>
+  </div>
+</template>
+<script>
+  import {watch, reactive, ref} from 'vue'
+
+  export default {
+    setup() {
+      const state2 = reactive({count: ''})
+      const ref2 = ref('')
+
+      // 直接指定ref依赖源
+      watch(ref2,() => {
+        console.log('ref2.value',ref2.value)
+      })
+
+      return {state, inputRef, state2, ref2}
+    }
+  }
+</script>
+```
+
+-   多个数据源
+
+```
+<template>
+  <div>
+    <p>
+      <input type="text" v-model="state.a"><br/><br/>
+      <input type="text" v-model="state.b"><br/><br/>
+    </p>
+    <p>
+      <input type="text" v-model="ref1"><br/><br/>
+      <input type="text" v-model="ref2"><br/><br/>
+    </p>
+  </div>
+</template>
+
+<script>
+  import {reactive, ref, watch} from 'vue'
+
+  export default {
+    setup() {
+      const state = reactive({a: 'a', b: 'b'})
+      // state.a和state.b任意一个改变都会触发watch的回调
+      watch(() => [state.a, state.b],
+       // 回调的第二个参数是对应上一个状态的值
+       ([a, b], [preA, preB]) => {
+        console.log('callback params:', a, b, preA, preB)
+        console.log('state.a', state.a)
+        console.log('state.b', state.b)
+        console.log('****************')
+      })
+
+      const ref1 = ref(1)
+      const ref2 = ref(2)
+      watch([ref1, ref2],([val1, val2], [preVal1, preVal2]) => {
+        console.log('callback params:', val1, val2, preVal1, preVal2)
+        console.log('ref1.value:',ref1.value)
+        console.log('ref2.value:',ref2.value)
+         console.log('##############')
+      })
+      return {state, ref1, ref2}
+    }
+  }
+</script>
+```
+
+#### computed: 与 Vue2.x 中的作用类似，获取一个计算结果。当然功能有所增强，不仅支持取值 get（默认），还支持赋值 set。
+
+```
+const count = ref(1)
+const plusOne = computed(() => count.value + 1)
+console.log(plusOne.value) // 2
+plusOne.value++ // 错误，computed不可改变
+
+// 同样支持set和get属性
+onst count = ref(1)
+const plusOne = computed({
+  get: () => count.value + 1,
+  set: val => { count.value = val - 1 }
+})
+plusOne.value = 1
+console.log(count.value) // 0
 ```
