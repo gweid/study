@@ -75,7 +75,7 @@
 // 此时，新增的元素是没有事件的，这只要在新加的元素的时候，给父元素添加事件就可以了
 
 // --------------------------------------------- js 继承
-// 1、原型链继承    缺点：所有Child实例原型都指向同一个Parent实例, 父类引用类型变量修改会影响所有的Child实例
+// 1、原型链继承    缺点：所有 Child 实例原型都指向同一个 Parent 实例, 父类引用类型变量修改会影响所有的 Child 实例
 // function SuperType() {
 //     this.name = "jack"
 // }
@@ -110,7 +110,7 @@
 // console.log(type.name);
 // console.log(type.getName()); // 报错：访问不到父类原型上的
 
-// 3、组合继承(就是结合原型链继承和借用构造继承)   缺点：每次创建子类实例都执行了两次构造函数(SuperType.call()和new Parent())，虽然这并不影响对父类的继承，但子类创建实例时，原型中会存在两份相同的属性和方法，这并不优雅
+// 3、组合继承(就是结合原型链继承和借用构造继承)   缺点：每次创建子类实例都执行了两次构造函数 (SuperType.call()和new Parent())，虽然这并不影响对父类的继承，但子类创建实例时，原型中会存在两份相同的属性和方法，这并不优雅
 // function SuperType(name) {
 //     this.name = name
 // }
@@ -218,13 +218,11 @@ function bubbleSort(arr = [], flag = true) {
       if (flag) {
         // 小到大
         if (arr[j] >= arr[j + 1]) {
-          ;
-          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+          ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
         }
       } else {
         if (arr[j] <= arr[j + 1]) {
-          ;
-          [arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
+          ;[arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
         }
       }
     }
@@ -242,9 +240,8 @@ function bubbleSort1(arr) {
 
     for (var j = 0; j < arr.length - i - 1; j++) {
       if (arr[j] + arr[j + 1]) {
-        flag = false;
-
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+        flag = false
+        ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
       }
     }
 
@@ -269,7 +266,7 @@ function selectSort(arr) {
       }
     }
     if (i !== idx) {
-      [arr[i], arr[idx]] = [arr[idx], arr[i]]
+      ;[arr[i], arr[idx]] = [arr[idx], arr[i]]
     }
   }
 
@@ -301,7 +298,6 @@ function quickSort(arr) {
   return quickSort(left).concat([pivot], quickSort(right))
 }
 console.log('快速排序', quickSort([1, 5, 4, 9, 2, 11, 8, 7]))
-
 
 // 斐波那契数列
 function fib(n) {
@@ -379,7 +375,6 @@ function throttle(fn, delay) {
   let timeId = null
 
   return function () {
-
     if (!timeId) {
       timeId = setTimeout(() => {
         fn.apply(this, arguments)
@@ -624,15 +619,15 @@ event.on('click', (data) => {
   console.log(data)
 })
 event.emit('click', {
-  name: 'jack'
+  name: 'jack',
 })
 event.emit('click', {
-  age: 18
+  age: 18,
 })
 
 event.off('click')
 event.emit('click', {
-  like: 'car'
+  like: 'car',
 })
 
 // --------------------------------------- js 垃圾回收机制
@@ -645,7 +640,6 @@ event.emit('click', {
  * 3、Js 垃圾回收，分为栈内存和堆内存。栈内存是函数执行完之后就会回收。而堆内存才会进行标记清除
  * 4、js 中管理内存的建议：尽量少用全局变量   尽可能手动清除变量的引用
  */
-
 
 // --------------------------------------- js 数组常用循环方法
 // 1、forEach: 循环，没有返回值，为 undefined
@@ -771,14 +765,10 @@ event.emit('click', {
 // --------------------------------------- 数组扁平
 // ES6 的 flat
 
-let flatArr = [1, 2, [4, 5],
-  [
-    [6, 7], 8
-  ]
-]
+let flatArr = [1, 2, [4, 5], [[6, 7], 8]]
 
 let flatArrRet = flatArr.flat(Infinity)
-console.log("ES6扁平化数组", flatArrRet)
+console.log('ES6扁平化数组', flatArrRet)
 
 // 递归
 function flatFun(arr) {
@@ -794,4 +784,4 @@ function flatFun(arr) {
 
   return res
 }
-console.log("递归扁平化数组", flatFun(flatArr))
+console.log('递归扁平化数组', flatFun(flatArr))
