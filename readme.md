@@ -340,7 +340,7 @@ HTTPS 使用的是对称密钥加密和非对称密钥加密组合而成的混�
 
 #### 8-4、http 中的 keep-alive
 
-Keep-Alive 是 HTTP 的一个头部字段 Connection 中的一个值，它是保证我们的 HTTP 请求能建立一个持久连接；在 HTTP/1.1 中所有的连接默认都是持久连接的，但是 HTTP/1.0 并未标准化。
+Keep-Alive 是 HTTP 的一个头部字段 Connection 中的一个值，它是保证我们的 HTTP 请求能建立一个持久连接；在 HTTP/1.1 中所有的连接默认都是持久连接的，但是 HTTP/1.0 并未标准化。Keep-Alive 功能使客户端到服务器端的连接持续有效，当出现对服务器的后继请求时，Keep-Alive 功能避免了建立或者重新建立连接
 
 #### 8-5、get 请求和 post 请求区别
 
@@ -376,6 +376,7 @@ Keep-Alive 是 HTTP 的一个头部字段 Connection 中的一个值，它是保
 - 多路复用
 - Header 压缩
 - 服务器 push
+- 双向通讯
 - 更安全
 
 #### 8-10、21. TCP 和 UDP 的区别
@@ -723,3 +724,71 @@ Error 事件捕获
 
 本质就是编译器，当代码转为字符串生成 AST，对 AST 进行转变最后再生成新的代码
 分为三步：词法分析生成 Token，语法分析生成 AST，遍历 AST，根据插件变换相应的节点，最后把 AST 转换为代码
+
+### target 和 currentTarget 的区别
+
+- target 是事件触发的真实元素
+- currentTarget 是事件绑定的元素
+
+```
+<body>
+   <ul id="box">
+       <Li id="apple">苹果</Li>
+       <li>香蕉</li>
+       <li>桃子</li>
+   </ul>
+</body>
+<script type="text/javascript">
+   var box = document.getElementById('box');
+   var apple = document.getElementById('apple');
+
+   box.onclick = function (e){
+       console.log(e.target);           // <li id="apple">苹果</li>
+       console.log(e.currentTarget);       //<ul id="box">...</ul>
+       console.log(this);                  //<ul id="box">...</ul>
+       console.log(e.currentTarget===this);      //true
+       console.log(e.target === e.currentTarget);        //false
+       console.log(e.target === this);           //false
+   }
+
+</script>
+```
+
+### prototype 和 \_\_proto\_\_
+
+- prototype：显式原型，函数所独有的
+- \_\_proto\_\_：隐式原型，实例对象所独有
+
+### iframe 有那些缺点
+
+- iframe 会阻塞主页面的 Onload 事件
+- 搜索引擎的检索程序无法解读这种页面，不利于 SEO
+- iframe 和主页面共享连接池，而浏览器对相同域的连接有限制，所以会影响页面的并行加载
+- 使用 iframe 之前需要考虑这两个缺点。如果需要使用 iframe，最好是通过 javascript 动态给 iframe 添加 src 属性值，这样可以绕开以上两个问题
+
+### this 的理解
+
+- this 总是指向函数的直接调用者（而非间接调用者）
+- 如果有 new 关键字，this 指向 new 出来的那个对象
+- 在事件中，this 指向触发这个事件的对象，特殊的是，IE 中的 attachEvent 中的 this 总是指向全局对象 Window
+
+### 实现异步编程的方式
+
+#### 回调函数
+
+```
+function foo(callback){//定义函数的时候将另一个函数（回调函数）作为参数传入定义的函数中。
+    $ajax({
+        //...
+        success:callback//异步操作执行完毕后，再执行该回调函数，确保回调在异步操作之后执行。
+    });
+}
+function myCallback(result){
+    //...
+}
+foo(myCallback);
+```
+
+#### Promise
+
+#### async...await
