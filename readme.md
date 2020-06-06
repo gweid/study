@@ -340,7 +340,7 @@ HTTPS 使用的是对称密钥加密和非对称密钥加密组合而成的混�
 
 #### 8-4、http 中的 keep-alive
 
-Keep-Alive 是 HTTP 的一个头部字段 Connection 中的一个值，它是保证我们的 HTTP 请求能建立一个持久连接；在 HTTP/1.1 中所有的连接默认都是持久连接的，但是 HTTP/1.0 并未标准化。
+Keep-Alive 是 HTTP 的一个头部字段 Connection 中的一个值，它是保证我们的 HTTP 请求能建立一个持久连接；在 HTTP/1.1 中所有的连接默认都是持久连接的，但是 HTTP/1.0 并未标准化。Keep-Alive 功能使客户端到服务器端的连接持续有效，当出现对服务器的后继请求时，Keep-Alive 功能避免了建立或者重新建立连接
 
 #### 8-5、get 请求和 post 请求区别
 
@@ -372,11 +372,12 @@ Keep-Alive 是 HTTP 的一个头部字段 Connection 中的一个值，它是保
 
 #### 8-9、http2.0 特点
 
--   二进制传输
--   多路复用
--   Header 压缩
--   服务器 push
--   更安全
+- 二进制传输
+- 多路复用
+- Header 压缩
+- 服务器 push
+- 双向通讯
+- 更安全
 
 #### 8-10、21. TCP 和 UDP 的区别
 
