@@ -218,11 +218,13 @@ function bubbleSort(arr = [], flag = true) {
       if (flag) {
         // 小到大
         if (arr[j] >= arr[j + 1]) {
-          ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+          ;
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
         }
       } else {
         if (arr[j] <= arr[j + 1]) {
-          ;[arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
+          ;
+          [arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
         }
       }
     }
@@ -239,9 +241,9 @@ function bubbleSort1(arr) {
     let flag = true
 
     for (var j = 0; j < arr.length - i - 1; j++) {
-      if (arr[j] + arr[j + 1]) {
-        flag = false
-        ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+      if (arr[j] > arr[j + 1]) {
+        flag = false;
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
       }
     }
 
@@ -266,7 +268,8 @@ function selectSort(arr) {
       }
     }
     if (i !== idx) {
-      ;[arr[i], arr[idx]] = [arr[idx], arr[i]]
+      ;
+      [arr[i], arr[idx]] = [arr[idx], arr[i]]
     }
   }
 
@@ -765,7 +768,11 @@ event.emit('click', {
 // --------------------------------------- 数组扁平
 // ES6 的 flat
 
-let flatArr = [1, 2, [4, 5], [[6, 7], 8]]
+let flatArr = [1, 2, [4, 5],
+  [
+    [6, 7], 8
+  ]
+]
 
 let flatArrRet = flatArr.flat(Infinity)
 console.log('ES6扁平化数组', flatArrRet)
