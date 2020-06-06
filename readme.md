@@ -39,7 +39,7 @@
 -   请求报头：请求报头允许客户端向服务器传递请求的附加信息和客户端自身的信息，比如 cookies、user-agent
 -   请求正文：一般是需要向服务端传输的数据
 
-    2.http 缓存
+2.http 缓存
 
 -   强制缓存：当有强缓存并且强缓存没有过期，那么会直接使用强缓存。对于强制缓存，服务器响应的 header 中会用两个字段来表明 Expires 和 Cache-Control，而现在一般是 htpp1.1 版本，所以一般使用 Cache-Control
 
@@ -65,7 +65,7 @@
 
             3.加快了客户端加载网页的速度 这也正是 HTTP 缓存属于客户端缓存的原因。
 
-    3.响应体
+3.响应体
 
 -   状态码
 
@@ -483,10 +483,10 @@ babel-plugin-import 原理：在 babel 转码的时候，把对整个库的引�
 #### 15-1、HTML5 的一些新特性
 
 -   新增语义化标签 （aside / figure / section / header / footer / nav 等），增加多媒体标签 video 与 audio
--   删除了 s、b 这些语义化不强的标签，使用 del 代替 s、strong 代替 b
+-   删除了一些纯表现的元素 <u> 下划线、<\big>字体等
 -   增强了表单的 type 属性
--   增加了 localStorage、sessionStorage 这些本地存储
--   新的 API：canvas、pushState、地理定位、websocket 等
+-   增加了 localStorage、sessionStorage 本地存储
+-   新的 API、新的技术：canvas、pushState、地理定位、webworker、websocket 等；
 
 #### 15-2、href 和 src 有什么区别
 
@@ -552,18 +552,18 @@ box-sizing: border-box;
 -   cookie 数据始终在同源的 http 请求中携带（即使不需要），即 cookie 在浏览器和服务器间来回传递。cookie 数据还有路径（path）的概念，可以限制 cookie 只属于某个路径下
 -   sessionStorage 和 localStorage 不会自动把数据发送给服务器，仅在本地保存
 
-    2.存储数据大小
+2.存储数据大小
 
 -   存储大小限制也不同，cookie 数据不能超过 4K，同时因为每次 http 请求都会携带 cookie、所以 cookie 只适合保存很小的数据，如会话标识
 -   sessionStorage 和 localStorage 虽然也有存储大小的限制，但比 cookie 大得多，可以达到 5M 或更大
 
-    3.数据存储有效期
+3.数据存储有效期
 
 -   sessionStorage：仅在当前浏览器窗口关闭之前有效
 -   localStorage：始终有效，窗口或浏览器关闭也一直保存，本地存储，因此用作持久数据
 -   cookie：只在设置的 cookie 过期时间之前有效，即使窗口关闭或浏览器关闭
 
-    4.作用域不同
+4.作用域不同
 
 -   sessionStorage 不在不同的浏览器窗口中共享，即使是同一个页面；
 -   localstorage 在所有同源窗口中都是共享的；也就是说只要浏览器不关闭，数据仍然存在
@@ -766,3 +766,31 @@ const asyncReadFile = async function () {
   console.log(f2.toString());
 }
 ```
+
+### iframe 的优缺点
+
+#### 优点
+
+-   iframe 可以实现无刷新文件上传；
+-   iframe 能够原封不动的把嵌入的网页展现出来；
+-   如果遇到加载缓慢的第三方内容如图标和广告，这些问题可以由 iframe 来解决
+
+#### 缺点
+
+-   iframe 会阻塞主页面的 Onload 事件;
+-   无法被一些搜索引擎索引到;
+-   页面会增加服务器的 http 请求;
+-   会产生很多页面，不容易管理。
+
+### Html5 应用程序缓存和 HTML 浏览器缓存有什么区别
+
+新的 HTML5 规范的应用缓存最关键的就是支持离线应用，允许浏览器在链接客户端时预取一些或全部网站资产，如 HTML 文件，图像，CSS 以及 JS 等，预取文件加速了站点的性能。换句话说，应用程序缓存可以预取完全未被访问的页面，从而在常规的浏览器缓存中不可用。与传统的浏览器缓存比较，该特性并不强制要求用户访问网站。
+
+### 浏览器如何对 HTML5 的离线储存资源进行管理和加载
+
+有线情况下：
+
+（1），浏览器发现 html 头部有 manifest 属性，它会请求 manifest 文件，如果是第一次访问 app，那么浏览器就会根据 manifest 文件的内容下载相应的资源并且进行离线存储。
+（2），如果已经访问过 app 并且资源已经离线存储了，那么浏览器就会使用离线的资源加载页面，然后 浏览器会对比新的 manifest 文件与旧的 manifest 文件，如果文件没有发生改变，就不做任何操作，如果文件改变了，那么就会重新下载文件中的资源并进行离线存储。
+
+在离线情况下： 浏览器直接使用离线缓存的资源；
