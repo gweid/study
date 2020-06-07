@@ -777,10 +777,10 @@ Error 事件捕获
 #### 回调函数
 
 ```
-function foo(callback){//定义函数的时候将另一个函数（回调函数）作为参数传入定义的函数中。
+function foo(callback){ //定义函数的时候将另一个函数（回调函数）作为参数传入定义的函数中。
     $ajax({
-        //...
-        success:callback//异步操作执行完毕后，再执行该回调函数，确保回调在异步操作之后执行。
+        // ...
+        success:callback //异步操作执行完毕后，再执行该回调函数，确保回调在异步操作之后执行。
     });
 }
 function myCallback(result){
