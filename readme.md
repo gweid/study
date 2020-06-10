@@ -47,15 +47,15 @@
 
 -   强制缓存：当有强缓存并且强缓存没有过期，那么会直接使用强缓存。对于强制缓存，服务器响应的 header 中会用两个字段来表明 Expires 和 Cache-Control，而现在一般是 htpp1.1 版本，所以一般使用 Cache-Control
 
-        private：客户端可以缓存
+    private：客户端可以缓存
 
-        public：客户端和代理服务器都可以缓存
+    public：客户端和代理服务器都可以缓存
 
-        max-age=t：缓存内容将在 t 秒后失效
+    max-age=t：缓存内容将在 t 秒后失效
 
-        no-cache：需要使用协商缓存来验证缓存数据
+    no-cache：需要使用协商缓存来验证缓存数据
 
-        no-store：所有内容都不会缓存。
+    no-store：所有内容都不会缓存。
 
 -   协商缓存：浏览器第一次请求数据时，服务器会将缓存标识与数据一起响应给客户端，客户端将它们备份至缓存中。再次请求时，客户端会先从缓存数据库拿到一个缓存的标识，然后向服务端验证标识是否失效，如果没有失效服务端会返回 304，这样客户端可以直接去缓存数据库拿出数据，如果失效，服务端会返回新的数据
 
@@ -63,11 +63,11 @@
 
 -   缓存的优点
 
-            1.减少了冗余的数据传递，节省宽带流量
+        1.减少了冗余的数据传递，节省宽带流量
 
-            2.减少了服务器的负担，大大提高了网站性能
+        2.减少了服务器的负担，大大提高了网站性能
 
-            3.加快了客户端加载网页的速度 这也正是 HTTP 缓存属于客户端缓存的原因。
+        3.加快了客户端加载网页的速度 这也正是 HTTP 缓存属于客户端缓存的原因。
 
 3.响应体
 
@@ -77,7 +77,7 @@
 
         2xx：成功–表示请求已被成功接收、理解、接受。 200：成功
 
-        3xx：重定向–要完成请求必须进行更进一步的操作。301：永久重定向  302：临时重定向  304：未修改，使用缓存
+        3xx：重定向–要完成请求必须进行更进一步的操作。 301：永久重定向  302：临时重定向  304：未修改，使用缓存
 
         4xx：客户端错误–请求有语法错误或请求无法实现。 400：错误请求，比如传参错误  401：未授权  403：服务器拒绝请求  404：服务器找不到请求页面
 
@@ -89,7 +89,7 @@
 
 -   响应报文
 
-        从服务器请求的 HTML,CSS,JS 文件就放在这里面
+        从服务器请求的 HTML, CSS, JS 文件就放在这里面
 
 #### 1-4、浏览器渲染流程
 
@@ -111,8 +111,19 @@
 -   布局：根据 Render Tree 渲染树，对树中每个节点进行计算，确定每个节点在页面中的宽度、高度和位置
 -   建立图层树：对于一些复杂的场景，比如 3D 动画如何呈现出变换效果，浏览器在构建完布局树之后，还会对特定的节点进行分层，构建一棵图层树
 -   生成绘制列表：接下来渲染引擎会将图层的绘制拆分成一个个绘制指令，比如先画背景、再描绘边框......然后将这些指令按顺序组合成一个待绘制列表
--   生成图块和生成位图
+-   生成图块和生成位图；渲染进程中专门维护了一个栅格化线程池，专门负责把图块转换为位图数据。然后合成线程会选择视口附近的图块，把它交给栅格化线程池生成位图
 -   显示器显示内容
+
+#### 1-5、GPU 加速
+
+利用 CSS3 的 transform、opacity、filter 这些属性就可以实现 GPU 加速
+
+**GPU 加速的原因**
+
+在合成的情况下，会直接跳过布局和绘制流程，直接进入非主线程处理的部分，即直接交给合成线程处理。交给它处理有两大好处:
+
+-   能够充分发挥 GPU 的优势。合成线程生成位图的过程中会调用线程池，并在其中使用 GPU 进行加速生成，而 GPU 是擅长处理位图数据的。
+-   没有占用主线程的资源，即使主线程卡住了，效果依然能够流畅地展示。
 
 ### 2、跨域
 
@@ -182,15 +193,15 @@ jsonp({
 -   服务器收到跨域请求，根据自身配置返回请求头；如果没配置过跨域，那么返回不包含 Access-Control-Allow-\*\*
 -   浏览器根据有没有 Access-Control-Allow-\*\* 做判断，如果没有，则报警告
 
-    3.服务器代理：同源策略主要存在于浏览器中，当不利用浏览器发起请求，而是直接在两台服务器中，那么就不会存在跨域的问题
+3.服务器代理：同源策略主要存在于浏览器中，当不利用浏览器发起请求，而是直接在两台服务器中，那么就不会存在跨域的问题
 
-        常见的 webpack 的 devServer
+    常见的 webpack 的 devServer
 
-    4.websocket：这是一种双向通讯协议，客户端和服务端都可以主动向对方发送东西
+4.websocket：这是一种双向通讯协议，客户端和服务端都可以主动向对方发送东西
 
-    5.postMessage: HTML5 中的 API，可以实现跨文档通讯，一个窗口发送消息，另一个窗口接受消息
+5.postMessage: HTML5 中的 API，可以实现跨文档通讯，一个窗口发送消息，另一个窗口接受消息
 
-    6.ngnix：利用 ngnix 跨域的关键就是在配置文件中设置 server 项，然后设置其中的 location 属性，proxy_pass：需要代理的服务器地址，add_header：给响应报文中添加首部字段，例如 Access-Control-Allow-Origin 设置为 \*，即允许所有的请求源请求。
+6.ngnix：利用 ngnix 跨域的关键就是在配置文件中设置 server 项，然后设置其中的 location 属性，proxy_pass：需要代理的服务器地址，add_header：给响应报文中添加首部字段，例如 Access-Control-Allow-Origin 设置为 \*，即允许所有的请求源请求。
 
 ```
 events {
@@ -335,7 +346,17 @@ HTTPS 使用的是对称密钥加密和非对称密钥加密组合而成的混�
 
 #### 8-3、数字签名
 
-数字签名的产生主要就是为了解决 HTTP 中内容可能被篡改的问题，即校验数据的完整性
+![https过程](imgs/img6.png)
+
+尽管对称加密跟非对称加密混合，能够很好地实现加密传输；但实际上还是存在一些问题。黑客如果采用 DNS 劫持，将目标地址替换成黑客服务器的地址，然后黑客自己造一份公钥和私钥，照样能进行数据传输
+
+数字签名的产生主要就是为了解决 HTTP 中内容可能被篡改的问题，即校验数据的完整性。这个数字证书有两个作用:
+
+    1.服务器向浏览器证明自己的身份。
+
+    2.把公钥传给浏览器。
+
+流程：
 
 -   首先发送方会将原文与数字签名(也就是加密后的摘要)一起发送给接收方
 -   接收方会接收到这两样东西，即原文和数字签名
@@ -421,9 +442,19 @@ XSS(Cross Site Script) 跨站脚本攻击。指的是攻击者向网页注入恶
 
 -   往 Web 页面里插入恶意 Script 代码
 
+**XSS 一般可以做以下事情：**
+
+    1.窃取 Cookie
+
+    2.监听用户行为，比如输入账号密码后直接发送到黑客服务器
+
+    3.修改 DOM 伪造登录表单
+
+    4.在页面中生成浮窗广告
+
 **主要是分为三种**：
 
--   存储型：即攻击被存储在服务端，常见的场景是留言评论区提交一段脚本代码，如果前后端没有做好转义的工作，那评论内容存到了数据库，在页面渲染过程中直接执行, 相当于执行一段未知逻辑的 JS 代码，是非常恐怖的。
+-   存储型：即攻击被存储在服务端，常见的场景是留言评论区提交一段脚本代码，如果前后端没有做好转义的工作，那评论内容存到了数据库，在页面渲染过程中直接执行, 相当于执行一段未知逻辑的 JS 代码，是非常恐怖的
 -   反射型：恶意脚本作为网络请求的一部分。服务端接收到 URL 将恶意代码当做参数取出并拼接在 HTML 里返回，浏览器解析此 HTML 后即执行恶意代码
 
 ```
@@ -432,7 +463,7 @@ XSS(Cross Site Script) 跨站脚本攻击。指的是攻击者向网页注入恶
 http://sanyuan.com?q=<script>alert("你完蛋了")</script>
 ```
 
--   DOM 型：将攻击脚本写在 URL 中，诱导用户点击该 URL，如果 URL 被解析，那么攻击脚本就会被运行。和前两者的差别主要在于 DOM 型攻击不经过服务端
+-   DOM 型：攻击者构造出特殊的 URL，其中包含恶意代码，诱导用户点击该 URL，如果 URL 被解析，那么攻击脚本就会被运行。和前两者的差别主要在于 DOM 型攻击不经过服务端
 
 **如何防御 XSS 攻击**：
 
@@ -458,8 +489,8 @@ CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受
 **防御 CSRF 攻击**
 
 -   验证 Token：浏览器请求服务器时，服务器返回一个 token，每个请求都需要同时带上 token 和 cookie 才会被认为是合法请求
--   验证 Referer：通过验证请求头的 Referer 来验证来源站点，但请求头很容易伪造
--   设置 SameSite：设置 cookie 的 SameSite，可以让 cookie 不随跨域请求发出，但浏览器兼容不一
+-   验证 Referer：通过验证请求头的 Referer 来验证来源站点，Referer 包含了具体的 URL 路径，但请求头很容易伪造
+-   设置 SameSite：设置 cookie 的 SameSite，可以让 cookie 不随跨域请求发出，禁止第三方请求携带 Cookie，但浏览器兼容不一
 
 ### 11、requestAnimationFrame
 
@@ -831,3 +862,88 @@ foo(myCallback);
 （2），如果已经访问过 app 并且资源已经离线存储了，那么浏览器就会使用离线的资源加载页面，然后 浏览器会对比新的 manifest 文件与旧的 manifest 文件，如果文件没有发生改变，就不做任何操作，如果文件改变了，那么就会重新下载文件中的资源并进行离线存储。
 
 在离线情况下： 浏览器直接使用离线缓存的资源；
+
+### 实现图片懒加载
+
+#### 首先有
+
+```
+<img src="default.jpg" data-src="http://www.xxx.com/target.jpg" />
+```
+
+#### 方法一、clientHeight、scrollTop 和 offsetTop
+
+通过监听 scroll 事件判断图片是否到达视口，并且加上节流函数防止频繁触发
+
+```
+let img = document.getElementsByTagName("img");
+let num = img.length;
+let count = 0;//计数器，从第一张图片开始计
+
+lazyload();//首次加载别忘了显示图片
+
+window.addEventListener('scroll', throttle(lazyload, 200)));
+
+function lazyload() {
+  let viewHeight = document.documentElement.clientHeight;//视口高度
+  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;//滚动条卷去的高度
+  for(let i = count; i <num; i++) {
+    // 元素现在已经出现在视口中
+    if(img[i].offsetTop < scrollHeight + viewHeight) {
+      if(img[i].getAttribute("src") !== "default.jpg") continue;
+      img[i].src = img[i].getAttribute("data-src");
+      count ++;
+    }
+  }
+}
+```
+
+#### 方法二：getBoundingClientRect
+
+通过 DOM 元素的 getBoundingClientRect API。
+
+改写 lazyLoad 函数
+
+```
+function lazyload() {
+  for(let i = count; i <num; i++) {
+    // 元素现在已经出现在视口中
+    if(img[i].getBoundingClientRect().top < document.documentElement.clientHeight) {
+      if(img[i].getAttribute("src") !== "default.jpg") continue;
+      img[i].src = img[i].getAttribute("data-src");
+      count ++;
+    }
+  }
+}
+```
+
+#### 方法三：ntersectionObserver
+
+这是浏览器内置的一个 API，实现了监听 window 的 scroll 事件、判断是否在视口中以及节流三大功能
+
+很方便地实现了图片懒加载，当然这个 IntersectionObserver 也可以用作其他资源的预加载，功能非常强大
+
+```
+let img = document.getElementsByTagName("img");
+
+const observer = new IntersectionObserver(changes => {
+  //changes 是被观察的元素集合
+  for(let i = 0, len = changes.length; i < len; i++) {
+    let change = changes[i];
+    // 通过这个属性判断是否在视口中
+    if(change.isIntersecting) {
+      const imgElement = change.target;
+      imgElement.src = imgElement.getAttribute("data-src");
+      observer.unobserve(imgElement);
+    }
+  }
+})
+Array.from(img).forEach(item => observer.observe(item));
+```
+
+### URI 和 URL
+
+URI：注重的是唯一标识符
+URL：注重的是位置
+
+如果用 URI 来表述我们自己，那么 URI 就是我们的身份证号码，URL 就是我们身份证上的家庭住址，通过身份证号（URI）肯定能找到我，但是你通过我的住址（URL）那就不一定能找到我了哦

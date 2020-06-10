@@ -362,12 +362,14 @@ console.log('indexOf数组去重', unique(arr))
 // 防抖： 函数防抖（debounce）是指在一定时间内，在动作被连续频繁触发的情况下，动作只会被执行一次，也就是说当调用动作过n毫秒后，才会执行该动作，若在这n毫秒内又调用此动作则将重新计算执行时间，所以短时间内的连续动作永远只会触发一次。
 function debounce(fn, delay) {
   let timeId = null
+  let args = arguments
+  let that = this
 
   return function () {
     if (timeId !== null) clearTimeout(timeId)
 
     timeId = setTimeout(() => {
-      fn.apply(this, arguments)
+      fn.apply(that, args)
     }, delay)
   }
 }
@@ -381,11 +383,13 @@ debounceButton.addEventListener('click', debounce(clickFn, 1500))
 // 节流: 函数节流是指一定时间内执行的操作只执行一次，也就是说即预先设定一个执行周期，当调用动作的时刻大于等于执行周期则执行该动作，然后进入下一个新周期，一个比较形象的例子是如果将水龙头拧紧直到水是以水滴的形式流出，那你会发现每隔一段时间，就会有一滴水流出。
 function throttle(fn, delay) {
   let timeId = null
+  let args = arguments
+  let that = this
 
   return function () {
     if (!timeId) {
       timeId = setTimeout(() => {
-        fn.apply(this, arguments)
+        fn.apply(that, args)
         timeId = null
       }, delay)
     }
