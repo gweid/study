@@ -350,7 +350,13 @@ HTTPS 使用的是对称密钥加密和非对称密钥加密组合而成的混�
 
 尽管对称加密跟非对称加密混合，能够很好地实现加密传输；但实际上还是存在一些问题。黑客如果采用 DNS 劫持，将目标地址替换成黑客服务器的地址，然后黑客自己造一份公钥和私钥，照样能进行数据传输
 
-数字签名的产生主要就是为了解决 HTTP 中内容可能被篡改的问题，即校验数据的完整性
+数字签名的产生主要就是为了解决 HTTP 中内容可能被篡改的问题，即校验数据的完整性。这个数字证书有两个作用:
+
+    1.服务器向浏览器证明自己的身份。
+
+    2.把公钥传给浏览器。
+
+流程：
 
 -   首先发送方会将原文与数字签名(也就是加密后的摘要)一起发送给接收方
 -   接收方会接收到这两样东西，即原文和数字签名
@@ -847,3 +853,88 @@ const asyncReadFile = async function () {
 （2），如果已经访问过 app 并且资源已经离线存储了，那么浏览器就会使用离线的资源加载页面，然后 浏览器会对比新的 manifest 文件与旧的 manifest 文件，如果文件没有发生改变，就不做任何操作，如果文件改变了，那么就会重新下载文件中的资源并进行离线存储。
 
 在离线情况下： 浏览器直接使用离线缓存的资源；
+
+### 实现图片懒加载
+
+#### 首先有
+
+```
+<img src="default.jpg" data-src="http://www.xxx.com/target.jpg" />
+```
+
+#### 方法一、clientHeight、scrollTop 和 offsetTop
+
+通过监听 scroll 事件判断图片是否到达视口，并且加上节流函数防止频繁触发
+
+```
+let img = document.getElementsByTagName("img");
+let num = img.length;
+let count = 0;//计数器，从第一张图片开始计
+
+lazyload();//首次加载别忘了显示图片
+
+window.addEventListener('scroll', throttle(lazyload, 200)));
+
+function lazyload() {
+  let viewHeight = document.documentElement.clientHeight;//视口高度
+  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;//滚动条卷去的高度
+  for(let i = count; i <num; i++) {
+    // 元素现在已经出现在视口中
+    if(img[i].offsetTop < scrollHeight + viewHeight) {
+      if(img[i].getAttribute("src") !== "default.jpg") continue;
+      img[i].src = img[i].getAttribute("data-src");
+      count ++;
+    }
+  }
+}
+```
+
+#### 方法二：getBoundingClientRect
+
+通过 DOM 元素的 getBoundingClientRect API。
+
+改写 lazyLoad 函数
+
+```
+function lazyload() {
+  for(let i = count; i <num; i++) {
+    // 元素现在已经出现在视口中
+    if(img[i].getBoundingClientRect().top < document.documentElement.clientHeight) {
+      if(img[i].getAttribute("src") !== "default.jpg") continue;
+      img[i].src = img[i].getAttribute("data-src");
+      count ++;
+    }
+  }
+}
+```
+
+#### 方法三：ntersectionObserver
+
+这是浏览器内置的一个 API，实现了监听 window 的 scroll 事件、判断是否在视口中以及节流三大功能
+
+很方便地实现了图片懒加载，当然这个 IntersectionObserver 也可以用作其他资源的预加载，功能非常强大
+
+```
+let img = document.getElementsByTagName("img");
+
+const observer = new IntersectionObserver(changes => {
+  //changes 是被观察的元素集合
+  for(let i = 0, len = changes.length; i < len; i++) {
+    let change = changes[i];
+    // 通过这个属性判断是否在视口中
+    if(change.isIntersecting) {
+      const imgElement = change.target;
+      imgElement.src = imgElement.getAttribute("data-src");
+      observer.unobserve(imgElement);
+    }
+  }
+})
+Array.from(img).forEach(item => observer.observe(item));
+```
+
+### URI 和 URL
+
+URI：注重的是唯一标识符
+URL：注重的是位置
+
+如果用 URI 来表述我们自己，那么 URI 就是我们的身份证号码，URL 就是我们身份证上的家庭住址，通过身份证号（URI）肯定能找到我，但是你通过我的住址（URL）那就不一定能找到我了哦
