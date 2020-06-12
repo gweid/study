@@ -574,6 +574,16 @@ box-sizing: border-box;
 -   position: absolute 跟 transfrom 配合
 -   flex 布局
 
+#### 16-7、link 与 @import 的区别？
+
+-   link 是 HTML 方式， @import 是 CSS 方式；
+-   link 最大限度支持并行下载，@import 过多嵌套导致串行下载，出现 FOUC；
+-   link 可以通过 rel="alternate stylesheet"指定候选样式；
+-   浏览器对 link 支持早于@import，可以使用 @import 对老浏览器隐藏样式；
+-   @import 必须在样式规则之前，可以在 css 文件中引用其他文件；
+
+总的来说： link 优于@import
+
 ### 17、执行上下文
 
 当 JS 引擎解析到可执行代码片段（通常是函数调用阶段）的时候，就会先做一些执行前的准备工作，这个 “准备工作”，就叫做 "执行上下文(execution context 简称 EC)" 或者也可以叫做执行环境。
