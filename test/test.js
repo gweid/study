@@ -78,7 +78,6 @@
 // target 是事件触发的真实元素
 // currentTarget 是事件绑定的元素
 
-
 // --------------------------------------------- js 继承
 // 1、原型链继承    缺点：所有 Child 实例原型都指向同一个 Parent 实例, 父类引用类型变量修改会影响所有的 Child 实例
 // function SuperType() {
@@ -223,13 +222,11 @@ function bubbleSort(arr = [], flag = true) {
       if (flag) {
         // 小到大
         if (arr[j] >= arr[j + 1]) {
-          ;
-          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+          ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
         }
       } else {
         if (arr[j] <= arr[j + 1]) {
-          ;
-          [arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
+          ;[arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
         }
       }
     }
@@ -247,8 +244,8 @@ function bubbleSort1(arr) {
 
     for (var j = 0; j < arr.length - i - 1; j++) {
       if (arr[j] > arr[j + 1]) {
-        flag = false;
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+        flag = false
+        ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
       }
     }
 
@@ -273,8 +270,7 @@ function selectSort(arr) {
       }
     }
     if (i !== idx) {
-      ;
-      [arr[i], arr[idx]] = [arr[idx], arr[i]]
+      ;[arr[i], arr[idx]] = [arr[idx], arr[i]]
     }
   }
 
@@ -462,6 +458,7 @@ Function.prototype.myCall = function (context) {
 
   context.fn = this
 
+  // arguments 是一个类数组，并不是真正的数组，没有数组的方法，所以需要 [...arguments] 转换为数组
   // arguments 第一个参数是 context, 后面是其余参数; 主要是取出其余参数
   const args = [...arguments].slice(1)
 
@@ -732,7 +729,7 @@ event.emit('click', {
 // })
 // console.log(idx);
 
-// reduce：累加器
+// reduce：累加器，参数: 接收两个参数，一个为回调函数，另一个为初始值。回调函数中三个默认参数，依次为积累值、当前值、整个数组
 // array.reduce((accumulator, currentValue, currentIndex, array) => {
 //   // accumulator: 数组每一段的累加值
 //   // currentValue: 当前值
@@ -777,11 +774,7 @@ event.emit('click', {
 // --------------------------------------- 数组扁平
 // ES6 的 flat
 
-let flatArr = [1, 2, [4, 5],
-  [
-    [6, 7], 8
-  ]
-]
+let flatArr = [1, 2, [4, 5], [[6, 7], 8]]
 
 let flatArrRet = flatArr.flat(Infinity)
 console.log('ES6扁平化数组', flatArrRet)
