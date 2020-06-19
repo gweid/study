@@ -549,7 +549,7 @@ function myNew() {
   // 把第一个参数取出来,这里是 Dognew
   let Con = [].shift.call(arguments)
   // 把 this 指向这个对象
-  obj.prototype = Con.prototype
+  obj.__proto__ = Con.prototype
   // 为这个对象添加属性
   let ret = Con.apply(obj, arguments)
   // 返回这个对象
@@ -583,6 +583,16 @@ function myInstanceof(left, right) {
 }
 let arrProto = []
 console.log('手写instanceof', myInstanceof(arrProto, Array))
+
+// --------------------------------------- 手写 Object.create
+// function myCreate(proto) {
+//   function F()
+
+//   F.prototype = proto
+//   F.prototype.constructor = F
+
+//   return new F()
+// }
 
 // --------------------------------------- 手写 EventEmitter (发布订阅模式--简单版)
 /**
