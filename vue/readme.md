@@ -11,6 +11,20 @@ M: model，数据层，在 Vue 内部就相当于 dada，主要对数据的存�
 -   3.history 主要依赖于 HTML5 中的两个方法, pushState 和 replaceState 可以在不进行刷新的情况下，操作浏览器的历史纪录。唯一不同的是，前者是新增一个历史记录，后者是直接替换当前的历史记录
 -   4.当真正需要通过 URL 向后端发送 HTTP 请求的时候，比如常见的用户手动输入 URL 后回车，或者是刷新(重启)浏览器，这时候 history 模式需要后端的支持。因为 history 模式下，前端的 URL 必须和实际向后端发送请求的 URL 一致，例如有一个 URL 是带有路径 path 的 (例如 www.lindaidai.wang/blogs/id)，如果后端没有对这个路径做处理的话，就会返回 404 错误。所以需要后端增加一个覆盖所有情况的候选资源，一般会配合前端给出的一个 404 页面。
 
+#### VueRouter 导航方式
+
+-   声明式(实质上内部还是调用了 router.push() 或者 router.replace())
+
+```
+<router-link to="./home"/>
+```
+
+-   编程式
+
+```
+this.$router.push('./home')
+```
+
 #### Vue 的优点和缺点
 
 -   1.组件化
