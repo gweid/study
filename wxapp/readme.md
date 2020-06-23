@@ -1,5 +1,7 @@
 # 小程序相关
 
+[知识点合集](https://juejin.im/post/5da444ab6fb9a04e054d93d8)
+
 ### 小程序里边的双向绑定和 vue 的双向绑定有什么区别
 
 -   1，首先利用 bindinput 来触发改变 input 输入框中的值
