@@ -1076,3 +1076,33 @@ const map = new Map([
 -   优化图片文件，减小其尺寸，特别是缩略图；
 -   使用多域名负载网页内的多个文件、图片；
 -   服务器开启 gzip 压缩
+
+### Web Workers
+
+-   Web Worker 是 HTML5 标准的一部分，这一规范定义了一套 API，它允许一段 JavaScript 程序运行在主线程之外的另外一个线程中。Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。
+-   但是，无法直接在 worker 线程中操纵 DOM 元素
+-   主线程和 Worker 线程相互之间使用 postMessage() 方法来发送信息，并且通过 onmessage 这个事件处理器来接收信息
+
+```
+<script>
+  if (window.Worker) {
+    let worker = new Worker("dw-ping-pong.js");
+    worker.onmessage = (e) =>
+      console.log(`Main: Received message - ${e.data}`);
+    worker.postMessage("PING");
+  } else {
+    console.log("呜呜呜，不支持 Web Worker");
+  }
+</script>
+
+// dw-ping-pong.js
+onmessage = (e) => {
+  console.log(`Worker: Received message - ${e.data}`);
+  postMessage("PONG");
+}
+```
+
+### service workers
+
+Service workers 本质上充当 Web 应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理。它们旨在（除其他之外）使得能够创建有效的离线体验，拦截网络请求并基于网络是否可用以及更新的资源是否驻留在服务器上来采取适当的动作。例如：http 缓存
+
