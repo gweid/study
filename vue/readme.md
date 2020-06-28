@@ -27,6 +27,17 @@
 this.$router.push('./home')
 ```
 
+#### 路由的懒加载
+
+路由懒加载的含义：把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件
+
+实现：结合 Vue 的异步组件和 Webpack 的代码分割功能
+
+```
+const Foo = () => import('./Foo.vue')
+const router = new VueRouter({ routes: [ { path: '/foo', component: Foo } ]})
+```
+
 #### Vue 的优点和缺点
 
 -   1.组件化
