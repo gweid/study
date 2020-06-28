@@ -2,7 +2,9 @@
 
 #### MVVM
 
-M: model，数据层，在 Vue 内部就相当于 dada，主要对数据的存储； V：view，视图层，在 Vue 中相当于 Template 里面的 html；VM：control，控制层，在 Vue 里面相当于 Methods 这一类驱动数据改变视图
+-   MVVM：数据驱动视图，与传统的 jquery 的区别是不需要关心怎么去操作 document 去改变页面的显示，而是内部封装了对 document 的操作，仅仅需要对业务逻辑进行处理，数据改变会响应式地同步更新页面。
+
+-   M: model，数据层，在 Vue 内部就相当于 dada，主要对数据的存储； V：view，视图层，在 Vue 中相当于 Template 里面的 html；VM：control，控制层，在 Vue 里面相当于 Methods 这一类驱动数据改变视图
 
 #### VueRouter 中 hash 模式和 history 模式的区别
 
@@ -16,7 +18,7 @@ M: model，数据层，在 Vue 内部就相当于 dada，主要对数据的存�
 -   声明式(实质上内部还是调用了 router.push() 或者 router.replace())
 
 ```
-<router-link to="./home"/>
+<router-link to="./home" />
 ```
 
 -   编程式
