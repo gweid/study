@@ -9,8 +9,8 @@
 #### VueRouter 中 hash 模式和 history 模式的区别
 
 -   1.最明显的区别是 hash 在 url 中会有 #, history 没有
--   2.URL 中 hash 值只是客户端的一种状态，也就是说当向服务器端发出请求时，hash 部分不会被发送。hash 主要是依赖于 onhashchange 事件监听 location.hash 的改变
--   3.history 主要依赖于 HTML5 中的两个方法, pushState 和 replaceState 可以在不进行刷新的情况下，操作浏览器的历史纪录。唯一不同的是，前者是新增一个历史记录，后者是直接替换当前的历史记录
+-   2.URL 中 hash 值只是客户端的一种状态，也就是说当向服务器端发出请求时，hash 部分不会被发送。hash 主要是依赖于 onhashchange 事件监听 location.hash 的改变，然后根据 hash 变化来实现更新页面部分内容的操作
+-   3.history 主要依赖于 HTML5 中的两个方法, pushState 和 replaceState 可以改变 url，但是不会发送请求。唯一不同的是，前者是新增一个历史记录，后者是直接替换当前的历史记录
 -   4.当真正需要通过 URL 向后端发送 HTTP 请求的时候，比如常见的用户手动输入 URL 后回车，或者是刷新(重启)浏览器，这时候 history 模式需要后端的支持。因为 history 模式下，前端的 URL 必须和实际向后端发送请求的 URL 一致，例如有一个 URL 是带有路径 path 的 (例如 www.lindaidai.wang/blogs/id)，如果后端没有对这个路径做处理的话，就会返回 404 错误。所以需要后端增加一个覆盖所有情况的候选资源，一般会配合前端给出的一个 404 页面。
 
 #### VueRouter 导航方式
