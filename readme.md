@@ -527,6 +527,13 @@ babel-plugin-import 原理：在 babel 转码的时候，把对整个库的引�
 
 -   href：即超文本引用。当浏览器遇到 href 时，会并行地下载资源，不会阻塞页面解释，例如我们使用 \<link\> 引入 CSS，浏览器会并行地下载 CSS 而不阻塞页面解析. 因此我们在引入 CSS 时建议使用 \<link\> 而不是 @import
 -   src：即资源。当浏览器遇到 src 时，会暂停页面解析，直到该资源下载或执行完毕，这也是 script 标签之所以放底部的原因
+-   src 用于替换当前元素；href 用于在当前文档和引用资源之间确立联系；
+
+#### 15-3、行内元素和块级元素
+
+-   行内元素： a, b, span, img, input, select, strong;
+-   块级元素： div, ul, li, dl, dt, dd, h1-6, p
+-   区别：块级元素独占一行，可以设置宽高、padding、margin；行内元素不会独占一行，无法设置宽高，padding 和 margin 只有左右生效，上下不生效
 
 ### 16、CSS 相关
 
@@ -576,12 +583,12 @@ box-sizing: border-box;
 #### 16-7、link 与 @import 的区别？
 
 -   link 是 HTML 方式， @import 是 CSS 方式；
--   link 最大限度支持并行下载，@import 过多嵌套导致串行下载，出现 FOUC；
--   link 可以通过 rel="alternate stylesheet"指定候选样式；
--   浏览器对 link 支持早于@import，可以使用 @import 对老浏览器隐藏样式；
--   @import 必须在样式规则之前，可以在 css 文件中引用其他文件；
+-   页面被加载时，link 会同时被加载，而 @import 引用的 css 会等到页面被加载完再加载；
+-   link 可以通过 rel="alternate stylesheet" 指定候选样式；
+-   @import 只在 IE5 以上才能识别，而 link 是 XHTML 标签，无兼容问题；
+-   link 方式的样式的权重高于 @import 的权重；
 
-总的来说： link 优于@import
+总的来说： link 优于 @import
 
 #### 16-8、什么是 FOUC(Flash of Unstyled Content)？ 如何来避免 FOUC？
 
@@ -589,7 +596,7 @@ box-sizing: border-box;
 
 产生原因： 当样式表晚于结构性 html 加载时，加载到此样式表时，页面将会停止之前的渲染。等待此样式表被下载和解析后，再重新渲染页面，期间导致短暂的花屏现象。
 
-解决办法： 只要在<head>之间加入一个<link>或者<script>``</script>元素即可。
+解决办法： 只要在 <head> 之间加入一个 <link> 或者 <script>``</script> 元素即可。
 
 ### 17、执行上下文
 
@@ -605,22 +612,22 @@ box-sizing: border-box;
 -   cookie 数据始终在同源的 http 请求中携带（即使不需要），即 cookie 在浏览器和服务器间来回传递。cookie 数据还有路径（path）的概念，可以限制 cookie 只属于某个路径下
 -   sessionStorage 和 localStorage 不会自动把数据发送给服务器，仅在本地保存
 
-    2.存储数据大小
+2.存储数据大小
 
 -   存储大小限制也不同，cookie 数据不能超过 4K，同时因为每次 http 请求都会携带 cookie、所以 cookie 只适合保存很小的数据，如会话标识
 -   sessionStorage 和 localStorage 虽然也有存储大小的限制，但比 cookie 大得多，可以达到 5M 或更大
 
-    3.数据存储有效期
+3.数据存储有效期
 
 -   sessionStorage：仅在当前浏览器窗口关闭之前有效
 -   localStorage：始终有效，窗口或浏览器关闭也一直保存，本地存储，因此用作持久数据
 -   cookie：只在设置的 cookie 过期时间之前有效，即使窗口关闭或浏览器关闭
 
-    4.作用域不同
+4.作用域不同
 
 -   sessionStorage 不在不同的浏览器窗口中共享，即使是同一个页面；
--   localstorage 在所有同源窗口中都是共享的；也就是说只要浏览器不关闭，数据仍然存在
--   cookie: 也是在所有同源窗口中都是共享的；也就是说只要浏览器不关闭，数据仍然存在
+-   localstorage 在所有同源窗口中都是共享的；也就是说只要浏览器不关闭，数据仍然存在；
+-   cookie: 也是在所有同源窗口中都是共享的；
 
 ### 19、session 和 cookie
 
@@ -735,20 +742,20 @@ performance.getEntries()
 Error 事件捕获
 ```
 
-### jquery 源码优点
+### 25、jquery 源码优点
 
 -   jquery 源码封装在一个匿名函数的自执行环境中，有助于防止变量的全局污染，然后通过传入 window 对象参数，可以使 - window 对象作为局部变量使用，好处是当 jquery 中访问 window 对象的时候，就不用将作用域链退回到顶层作用域了，从而可以更快的访问 window 对象。同样，传入 undefined 参数，可以缩短查找 undefined 时的作用域链
 -   将一些原型属性和方法封装在了 jquery.prototype 中，为了缩短名称，又赋值给了 jquery.fn，这是很形象的写法
 -   有一些数组或对象的方法经常能使用到，jQuery 将其保存为局部变量以提高访问速度
 -   jquery 实现的链式调用可以节约代码，所返回的都是同一个对象，可以提高代码效率
 
-### 谈一谈箭头函数与普通函数的区别
+### 26、谈一谈箭头函数与普通函数的区别
 
 -   函数体内的 this 对象，就是定义时所在的对象，而不是使用时所在的对象
 -   不可以当作构造函数，也就是说，不可以使用 new 命令，否则会抛出一个错误
 -   不可以使用 arguments 对象，该对象在函数体内不存在。如果要用，可以用 Rest 参数代替
 
-### 如何渲染几万条数据并不卡住界面
+### 27、如何渲染几万条数据并不卡住界面
 
 如何在不卡住页面的情况下渲染数据，也就是说不能一次性将几万条都渲染出来，而应该一次渲染部分 DOM，那么就可以通过 requestAnimationFrame 来每 16 ms 刷新一次
 
@@ -796,17 +803,17 @@ Error 事件捕获
 </html>
 ```
 
-### Javascript 中 callee 和 caller 的作用
+### 28、Javascript 中 callee 和 caller 的作用
 
 -   caller 是返回一个对函数的引用，该函数调用了当前函数；
 -   callee 是返回正在被执行的 function 函数，也就是所指定的 function 对象的正文
 
-### Babel 原理
+### 29、Babel 原理
 
 本质就是编译器，当代码转为字符串生成 AST，对 AST 进行转变最后再生成新的代码
 分为三步：词法分析生成 Token，语法分析生成 AST，遍历 AST，根据插件变换相应的节点，最后把 AST 转换为代码
 
-### async...await 原理
+### 30、async...await 原理
 
 async...await: 其实是 Generator 的语法糖
 
@@ -846,22 +853,22 @@ const asyncReadFile = async function () {
 }
 ```
 
-### iframe 的优缺点
+### 31、iframe 的优缺点
 
-#### 优点
+#### 31-1、优点
 
 -   iframe 可以实现无刷新文件上传；
 -   iframe 能够原封不动的把嵌入的网页展现出来；
 -   如果遇到加载缓慢的第三方内容如图标和广告，这些问题可以由 iframe 来解决
 
-#### 缺点
+#### 31-2、缺点
 
 -   iframe 会阻塞主页面的 Onload 事件;
 -   无法被一些搜索引擎索引到;
 -   页面会增加服务器的 http 请求;
 -   会产生很多页面，不容易管理。
 
-### Html5 应用程序缓存和 HTML 浏览器缓存有什么区别
+### 32、Html5 应用程序缓存和 HTML 浏览器缓存有什么区别
 
 新的 HTML5 规范的应用缓存最关键的就是支持离线应用，允许浏览器在链接客户端时预取一些或全部网站资产，如 HTML 文件，图像，CSS 以及 JS 等，预取文件加速了站点的性能。换句话说，应用程序缓存可以预取完全未被访问的页面，从而在常规的浏览器缓存中不可用。与传统的浏览器缓存比较，该特性并不强制要求用户访问网站。
 
@@ -883,15 +890,15 @@ foo(myCallback);
 
 在离线情况下： 浏览器直接使用离线缓存的资源；
 
-### 实现图片懒加载
+### 33、实现图片懒加载
 
-#### 首先有
+#### 33-1、首先有
 
 ```
 <img src="default.jpg" data-src="http://www.xxx.com/target.jpg" />
 ```
 
-#### 方法一、clientHeight、scrollTop 和 offsetTop
+#### 33-2、方法一、clientHeight、scrollTop 和 offsetTop
 
 通过监听 scroll 事件判断图片是否到达视口，并且加上节流函数防止频繁触发
 
@@ -918,7 +925,7 @@ function lazyload() {
 }
 ```
 
-#### 方法二：getBoundingClientRect
+#### 33-3、方法二：getBoundingClientRect
 
 通过 DOM 元素的 getBoundingClientRect API。
 
@@ -937,7 +944,7 @@ function lazyload() {
 }
 ```
 
-#### 方法三：ntersectionObserver
+#### 33-4、方法三：ntersectionObserver
 
 这是浏览器内置的一个 API，实现了监听 window 的 scroll 事件、判断是否在视口中以及节流三大功能
 
@@ -961,7 +968,7 @@ const observer = new IntersectionObserver(changes => {
 Array.from(img).forEach(item => observer.observe(item));
 ```
 
-### URI 和 URL
+### 35、URI 和 URL
 
 URI 组成：
 
@@ -979,7 +986,7 @@ URL：注重的是位置
 
 如果用 URI 来表述我们自己，那么 URI 就是我们的身份证号码，URL 就是我们身份证上的家庭住址，通过身份证号（URI）肯定能找到我，但是你通过我的住址（URL）那就不一定能找到我了哦
 
-### forEach 的 return 问题
+### 36、forEach 的 return 问题
 
 在 forEach 中用 return 不会返回，函数会继续执行
 
@@ -988,7 +995,7 @@ URL：注重的是位置
 -   使用 try...catch 监视代码块，在需要中断的地方抛出异常。
 -   官方推荐方法（替换方法）：用 every 和 some 替代 forEach 函数。every 在碰到 return false 的时候，中止循环。some 在碰到 return true 的时候，中止循环
 
-### 函数的 arguments
+### 37、函数的 arguments
 
 arguments 是一个类数组，只是跟数组像，是一个另外一种对象类型，只不过属性从 0 开始排，依次为 0，1，2...最后还有 callee 和 length 属性；但是不能操作数组的方法
 
@@ -999,11 +1006,11 @@ arguments 转换为数组的方法
 -   [...arguments]
 -   直接 for 循环取值拼成数组
 
-### 高阶函数
+### 38、高阶函数
 
 一个函数就可以接收另一个函数作为参数或者返回值为一个函数，这种函数就称之为高阶函数
 
-### this 指向
+### 39、this 指向
 
 -   全局上下文 ---> 指向 window，例如直接调用函数 fn()
 -   对象.方法 ---> 指向当前对象，例如 obj.a()
@@ -1011,11 +1018,11 @@ arguments 转换为数组的方法
 -   箭头函数 ---> 与同级兄弟的 this 一致
 -   DOM 事件 ---> 指向当前绑定事件的元素，ie 用 attachEvent，指向 window
 
-### 为什么 0.1 + 0.2 !== 0.3
+### 40、为什么 0.1 + 0.2 !== 0.3
 
 计算机中使用 IEEE754 标准实现的浮点型存储都会有这个问题：用二进制来存储小数，而大部分小数转成二进制之后都是无限循环的值，因此存在取舍问题，也就是精度丢失。从而使得 0.1 + 0.2 !== 0.3
 
-### Map 和 WeakMap
+### 41、Map 和 WeakMap
 
 -   WeakMap 的键值必须是对象，Map 的键值可以是任意
 
@@ -1049,7 +1056,7 @@ const map = new Map([
 
 -   WeakMap 键名引用的对象都是弱引用，也就是说，一旦不再需要，WeakMap 里面的键名对象和所对应的键值对会自动消失，不用手动删除引用
 
-### JS 的错误类型
+### 42、JS 的错误类型
 
 -   SyntaxError： 语法错误，一般指解析代码时发生的语法错误；
 -   ReferenceError：引用错误，一般指引用一个不存在的变量时发生的错误。
@@ -1057,17 +1064,17 @@ const map = new Map([
 -   EvalError eval()： 函数执行错误，一般指当 eval()函数没有被正确执行时，会抛出 evalError 错误；
 -   RangeError: 范围错误，一般指当一个值超出有效范围时发生的错误。
 
-### hash（哈希）表是什么
+### 43、hash（哈希）表是什么
 
 哈希表（亦称散列表），是根据关键码值直接进行访问的数据结构。也就是说，它通过把关键码映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数也称散列函数，存放记录的数组叫做散列表。
 
-### 节点有几种类型（三种）
+### 44、节点有几种类型（三种）
 
 -   元素节点： nodeType === 1;
 -   属性节点： nodeType === 2；
 -   文本节点： nodeType === 3
 
-### 几种减低页面加载时间的方法
+### 45、几种减低页面加载时间的方法
 
 -   压缩 CSS、JS 文件；
 -   合并 CSS、JS 文件，减少 http 请求；
@@ -1077,7 +1084,7 @@ const map = new Map([
 -   使用多域名负载网页内的多个文件、图片；
 -   服务器开启 gzip 压缩
 
-### Web Workers
+### 46、Web Workers
 
 -   Web Worker 是 HTML5 标准的一部分，这一规范定义了一套 API，它允许一段 JavaScript 程序运行在主线程之外的另外一个线程中。Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。
 -   但是，无法直接在 worker 线程中操纵 DOM 元素
@@ -1102,11 +1109,11 @@ onmessage = (e) => {
 }
 ```
 
-### service workers
+### 47、service workers
 
 Service workers 本质上充当 Web 应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理。它们旨在（除其他之外）使得能够创建有效的离线体验，拦截网络请求并基于网络是否可用以及更新的资源是否驻留在服务器上来采取适当的动作。例如：http 缓存
 
-### if (a == 1 && a == 2 && a == 3 ) 和 if (a === 1 && a === 2 && a === 3 )
+### 48、if (a == 1 && a == 2 && a == 3 ) 和 if (a === 1 && a === 2 && a === 3 )
 
 1. if (a == 1 && a == 2 && a == 3 )
 
@@ -1128,6 +1135,6 @@ Object.defineProperty(window, 'a', {
 });
 ```
 
-### 线程和进程
+### 49、线程和进程
 
 两者区别：进程是一个工厂，它有独立的资源，线程是工厂中的工人，多个工人协作完成任务，工人之间共享工厂内的资源，比如工厂内的食堂或餐厅。此外，工厂（进程）与工厂（进程）之间是相互独立的。一条线程指的是进程中一个单一顺序的控制流，一个进程中可以并发多个线程，每条线程并行执行不同的任务。
