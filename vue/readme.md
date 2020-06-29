@@ -341,6 +341,7 @@ this.userId = this.$route.query.userId;
 -   优化 SourceMap
 -   构建结果输出分析
 -   Vue 项目的编译优化
+-   去除无用 console.log
 
 **基础 web 技术优化：**
 

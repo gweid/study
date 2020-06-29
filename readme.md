@@ -1106,3 +1106,24 @@ onmessage = (e) => {
 
 Service workers 本质上充当 Web 应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理。它们旨在（除其他之外）使得能够创建有效的离线体验，拦截网络请求并基于网络是否可用以及更新的资源是否驻留在服务器上来采取适当的动作。例如：http 缓存
 
+### if (a == 1 && a == 2 && a == 3 ) 和 if (a === 1 && a === 2 && a === 3 )
+
+1. if (a == 1 && a == 2 && a == 3 )
+
+```
+const a = { value : 0 };
+a.valueOf = function() {
+    return this.value += 1;
+};
+```
+
+2. if (a === 1 && a === 2 && a === 3 )
+
+```
+var value = 0; //window.value
+Object.defineProperty(window, 'a', {
+    get: function() {
+        return this.value += 1;
+    }
+});
+```
