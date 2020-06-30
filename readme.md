@@ -528,6 +528,14 @@ babel-plugin-import 原理：在 babel 转码的时候，把对整个库的引�
 -   href：即超文本引用。当浏览器遇到 href 时，会并行地下载资源，不会阻塞页面解释，例如我们使用 \<link\> 引入 CSS，浏览器会并行地下载 CSS 而不阻塞页面解析. 因此我们在引入 CSS 时建议使用 \<link\> 而不是 @import
 -   src：即资源。当浏览器遇到 src 时，会暂停页面解析，直到该资源下载或执行完毕，这也是 script 标签之所以放底部的原因
 
+### 15-3、块级元素、行内元素、空元素
+
+-   行内元素： a, b, span, img, input, select, strong, button；
+-   块级元素： div, ul, li, dl, dt, dd, h1-6, p 等；
+-   空元素： <br>, <hr>, <img>, <link>, <meta>；
+
+块级元素和行内元素区别：块级元素独占一行、可以设置宽高、margin、padding 等；行内元素不占一行、不可以设置宽高、padding 和 margin 只能设置左右而上下无效
+
 #### 15-4、浏览器如何对 HTML5 的离线储存资源进行管理和加载
 
 -   有线情况下：
@@ -1122,9 +1130,9 @@ onmessage = (e) => {
 
 Service workers 本质上充当 Web 应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理。它们旨在（除其他之外）使得能够创建有效的离线体验，拦截网络请求并基于网络是否可用以及更新的资源是否驻留在服务器上来采取适当的动作。例如：http 缓存
 
-### 48、if (a == 1 && a == 2 && a == 3 ) 和 if (a === 1 && a === 2 && a === 3 )
+### 48、if (a == 1 && a == 2 && a == 3) 和 if (a === 1 && a === 2 && a === 3)
 
-1. if (a == 1 && a == 2 && a == 3 )
+1. if (a == 1 && a == 2 && a == 3)
 
 ```
 const a = { value : 0 };
@@ -1133,7 +1141,7 @@ a.valueOf = function() {
 };
 ```
 
-2. if (a === 1 && a === 2 && a === 3 )
+2. if (a === 1 && a === 2 && a === 3)
 
 ```
 var value = 0; //window.value
@@ -1158,3 +1166,24 @@ Object.defineProperty(window, 'a', {
 
 -   渲染引擎： 负责取得页面的内容（html，xml， 图像等）、整理讯息（加入 css 等）、以及计算网页的显示方式，然后对输出至显示器或者打印机。浏览器的内核的不同对于网页的语法解释会有不同，所以渲染的效果也不同。所有网页浏览器、电子邮件客户以及其他所需要编辑、显示网络的应用程序都需要内核。
 -   JS 引擎： 解析和执行 Javascript 来实现网页的动态效果。
+
+### 52、style 标签写在 body 后与 body 前有什么区别
+
+一般情况下，页面加载时自上而下的。将 style 标签至于 body 之前，为的是先加载样式。
+
+若是写在 body 标签之后，由于浏览器以逐行方式对 html 文档进行解析，当解析到写在写在文档尾部的样式表时，会导致浏览器停止之前的渲染，等待加载且解析样式表完成之后会重新渲染，在 windows 的 IE 下可能会出现 FOUC 现象（页面闪烁）。
+
+### 53、border:none;与 border:0;有什么区别
+
+-   {border：0;}: 把 border 设置为 0 像素，虽然在页面上看不到，但是浏览器依然对 border-width/border-color 进行了渲染，即已经占用内存值；
+-   {border：none；}被理解为 border-style:none。boder:0;比 border:none 多渲染了一个 border-width:0,所以 border:none 的性能要比 border:0 高；
+
+### 54、js 的事件中心
+
+-   分为三个阶段：1.捕获阶段 2.目标阶段 3.冒泡阶段
+-   通过 addEventListener 注册事件，该函数有一个 useCapture 参数，该参数接收一个布尔值，默认值为 false ，代表注册事件为冒泡事件。若想注册事件为捕获事件，则将 useCapture 设置为 true
+-   target：是事件触发的真实元素；currentTarget：是事件绑定的元素
+-   先捕获，再冒泡
+-   通过 e.stopPropagation 中断事件的向下或向上传递
+-   使用 e.preventDefault 取消默认行为
+-   通过冒泡进行事件代理（事件委托）

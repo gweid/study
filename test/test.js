@@ -32,7 +32,7 @@
 // let data = {}
 // const xhr = new XMLHttpRequest()
 // xhr.open('POST', 'api/user', true)
-// XHR.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); // post 请求需要带请求头
+// xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); // post 请求需要带请求头
 // xhr.send(data)
 // xhr.onreadystatechange = function () {
 //     if (xhr.readyState === 4 && xhr.status === 200) {
