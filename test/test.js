@@ -468,8 +468,8 @@ let obj = {
 }
 let cloneRet = deepClone(obj)
 cloneRet.b.name = '333'
-console.log(cloneRet.b)
-console.log(obj.b)
+console.log("深拷贝：", cloneRet.b)
+console.log("原数据：", obj.b)
 
 // ----------------------------------------- 手写 call、bind、apply、new
 // call  1、更改this指向    2、函数立刻执行
@@ -502,7 +502,7 @@ function fntest(name, age) {
   }
 }
 
-console.log(fntest.myCall(testObj, '哈哈', 22))
+console.log("手写call：", fntest.myCall(testObj, 'myCall', 20))
 
 // apply  apply 跟 call 一样，只是传递的参数不一样
 Function.prototype.myApply = function (context, args) {
@@ -525,7 +525,7 @@ Function.prototype.myApply = function (context, args) {
 }
 
 let testObj1 = {
-  value: 'aaaa',
+  value: 'bbbb',
 }
 
 function fntest1(name, age) {
@@ -536,7 +536,7 @@ function fntest1(name, age) {
   }
 }
 
-console.log(fntest1.myApply(testObj1, ['哈哈', 22]))
+console.log("手写apply：", fntest1.myApply(testObj1, ['myApply', 22]))
 
 // bind  返回一个函数  1、指定this；2、返回一个函数；3、传递参数并柯里化
 Function.prototype.myBind = function (context) {
@@ -550,7 +550,7 @@ Function.prototype.myBind = function (context) {
   const args = [...arguments].slice(1)
 
   return function () {
-    // 主要就是 bind 可以接收参数, 返回的函数也可以接收参数, 所以 args.concat([...arguments])
+    // 主要就是 bind 可以接收参数, 返回的函数也可以接收参数, 并且从第一位开始就是参数，所以 args.concat([...arguments])
     return _this.apply(context, args.concat([...arguments]))
   }
 }
@@ -562,13 +562,13 @@ Function.prototype.myBind = function (context) {
 // 3、为这个对象添加属性
 // 4、返回这个对象
 function myNew() {
-  // 创建一个对象
+  // 创建一个对象 o
   let obj = {}
   // 把第一个参数取出来,这里是 Dognew
   let Con = [].shift.call(arguments)
-  // 把 this 指向这个对象
+  // 令空对象的 proto 指向构造函数 M 的 prototype
   obj.__proto__ = Con.prototype
-  // 为这个对象添加属性
+  // 令构造函数 M 中的 this 指针指向 o，使得 o 具有 M 的属性或方法(上面已经通过 [].shift.call(arguments) 将第一项取出，所以后面的都是参数)
   let ret = Con.apply(obj, arguments)
   // 返回这个对象
   return typeof ret === 'object' ? ret : obj
@@ -599,18 +599,18 @@ function myInstanceof(left, right) {
     leftProto = leftProto.__proto__
   }
 }
-let arrProto = []
-console.log('手写instanceof', myInstanceof(arrProto, Array))
+console.log('手写instanceof', myInstanceof([1, 2, 3], Array))
 
 // --------------------------------------- 手写 Object.create
-// function myCreate(proto) {
-//   function F()
+// Object.create() 会将参数对象作为一个新创建的空对象的原型, 并返回这个空对象
+function myCreate(proto) {
+  function F() {}
+  F.prototype = proto
+  return new F()
+}
 
-//   F.prototype = proto
-//   F.prototype.constructor = F
+console.log("手写Object.create：", myCreate(null));
 
-//   return new F()
-// }
 
 // --------------------------------------- 手写 EventEmitter (发布订阅模式--简单版)
 /**
@@ -618,7 +618,7 @@ console.log('手写instanceof', myInstanceof(arrProto, Array))
  *    发布-订阅模式其实是一种对象间一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都将得到状态改变的通知
  *
  * 2、怎么实现一对多
- *    既然一对多 肯定有一个事件调度中心用来调度事件 订阅者可以注册事件（on）到事件中心 发布者可以发布事件（emit）到调度中心 订阅者也可以 取消订阅（off）或者只订阅一次（once）
+ *    既然一对多 肯定有一个事件调度中心用来调度事件 订阅者可以注册事件（on）到调度中心 发布者可以发布事件（emit）到调度中心 订阅者也可以 取消订阅（off）或者只订阅一次（once）
  */
 class EventEmitter {
   constructor() {
@@ -648,16 +648,30 @@ class EventEmitter {
   }
 
   // 删除订阅
-  off(type) {
+  off(type, callback) {
     if (!this.events[type]) return
-    delete this.events[type]
+    this.events[type] = this.events[type].filter(item => {
+      return item !== callback;
+    })
+  }
+
+  // 只执行一次订阅
+  once(type, callback) {
+    function fn() {
+      callback()
+      this.off(type, fn)
+    }
+
+    this.on(type, fn)
   }
 }
 
 let event = new EventEmitter()
-event.on('click', (data) => {
-  console.log(data)
-})
+
+function eventCb(data) {
+  console.log("手写发布订阅：", data);
+}
+event.on('click', eventCb)
 event.emit('click', {
   name: 'jack',
 })
@@ -665,7 +679,7 @@ event.emit('click', {
   age: 18,
 })
 
-event.off('click')
+event.off('click', eventCb)
 event.emit('click', {
   like: 'car',
 })
