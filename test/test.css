@@ -114,3 +114,14 @@
         transform: rotate(360deg);
     }
 } */
+
+
+/* 创建三角形 */
+/* 采用的是均分原理,把矩形分为4等份,这4等份其实都是边框 */
+/* 核心就是给块级元素设置宽高为0,设置边框的宽度,不需要显示的边框使用透明色; */
+/* .content {
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;  // 
+    border-bottom: 50px solid pink;
+} */
