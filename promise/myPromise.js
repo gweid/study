@@ -198,7 +198,6 @@ class MyPromise {
   }
 }
 
-
 // -------------------------------------使用 MyPromise
 // setTimeout(() => {
 //   console.log('宏任务')
@@ -220,19 +219,19 @@ let mp = new MyPromise((resolve, reject) => {
 })
 
 mp.then(
-    (data) => {
-      console.log(data)
-      return MyPromise.resolve({
-        value: '成功'
-      })
-    },
-    (err) => {
-      console.log(err)
-      return MyPromise.reject({
-        reason: '失败'
-      })
-    }
-  )
+  (data) => {
+    console.log(data)
+    return MyPromise.resolve({
+      value: '成功',
+    })
+  },
+  (err) => {
+    console.log(err)
+    return MyPromise.reject({
+      reason: '失败',
+    })
+  }
+)
   .then((data) => {
     console.log(data)
   })
