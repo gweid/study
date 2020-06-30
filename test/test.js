@@ -258,7 +258,7 @@ function bubbleSort1(arr) {
   return arr
 }
 
-console.log('优化冒泡排序', bubbleSort([1, 5, 4, 9, 2, 11, 8, 7]))
+console.log('优化冒泡排序', bubbleSort1([1, 5, 4, 9, 2, 11, 8, 7]))
 
 // 选择排序  找到数据结构中的最小值并将其放置在第一位, 接着找到第二个最小值并将其放到第二位, 依次类推.
 function selectSort(arr) {
@@ -272,7 +272,6 @@ function selectSort(arr) {
       }
     }
     if (i !== idx) {
-      ;
       [arr[i], arr[idx]] = [arr[idx], arr[i]]
     }
   }
@@ -306,7 +305,7 @@ function quickSort(arr) {
 }
 console.log('快速排序', quickSort([1, 5, 4, 9, 2, 11, 8, 7]))
 
-// 斐波那契数列
+// 斐波那契数列  1, 1, 2, 3, 5, 8, 13,...
 function fib(n) {
   let obj = {}
 
@@ -375,7 +374,7 @@ function debounce(fn, delay) {
 
 let debounceButton = document.querySelector('.debounce')
 let clickFn = function () {
-  console.log('1111111')
+  console.log('防抖')
 }
 debounceButton.addEventListener('click', debounce(clickFn, 1500))
 
@@ -397,7 +396,7 @@ function throttle(fn, delay) {
 
 let throttleButton = document.querySelector('.throttle')
 let clickFn1 = function () {
-  console.log('2222222')
+  console.log('节流')
 }
 throttleButton.addEventListener('click', throttle(clickFn1, 1500))
 
@@ -416,9 +415,25 @@ function paramUrl(url) {
 
   return obj
 }
-console.log(paramUrl(url))
+
+console.log("url参数：", paramUrl(url))
 
 // ---------------------------------------- 深拷贝
+// function deepClone(source) {
+//   if (typeof source !== 'object') return source
+
+//   let res = source instanceof Array ? [] : {}
+
+//   for (let key in source) {
+//     let value = source[key]
+//     if (source.hasOwnProperty(key)) {
+//       res[key] = typeof value === 'object' ? deepClone(value) : value
+//     }
+//   }
+
+//   return res
+// }
+
 function checkType(val) {
   return Object.prototype.toString.call(val).slice(8, -1)
 }
@@ -435,8 +450,8 @@ function deepClone(source) {
 
   for (let key in source) {
     let value = source[key]
-    if (checkType(key) === 'Object' || checkType(source) === 'Array') {
-      deepClone(value)
+    if (checkType(value) === 'Object' || checkType(source) === 'Array') {
+      ret[key] = deepClone(value)
     } else {
       ret[key] = value
     }
@@ -447,11 +462,14 @@ function deepClone(source) {
 
 let obj = {
   a: '222',
+  b: {
+    name: 'jaja'
+  }
 }
 let cloneRet = deepClone(obj)
-cloneRet.a = '333'
-console.log(cloneRet.a)
-console.log(obj.a)
+cloneRet.b.name = '333'
+console.log(cloneRet.b)
+console.log(obj.b)
 
 // ----------------------------------------- 手写 call、bind、apply、new
 // call  1、更改this指向    2、函数立刻执行
