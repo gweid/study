@@ -193,15 +193,15 @@ jsonp({
 -   服务器收到跨域请求，根据自身配置返回请求头；如果没配置过跨域，那么返回不包含 Access-Control-Allow-\*\*
 -   浏览器根据有没有 Access-Control-Allow-\*\* 做判断，如果没有，则报警告
 
-    3.服务器代理：同源策略主要存在于浏览器中，当不利用浏览器发起请求，而是直接在两台服务器中，那么就不会存在跨域的问题
+3.服务器代理：同源策略主要存在于浏览器中，当不利用浏览器发起请求，而是直接在两台服务器中，那么就不会存在跨域的问题
 
-        常见的 webpack 的 devServer
+常见的 webpack 的 devServer
 
-    4.websocket：这是一种双向通讯协议，客户端和服务端都可以主动向对方发送东西
+4.websocket：这是一种双向通讯协议，客户端和服务端都可以主动向对方发送东西
 
-    5.postMessage: HTML5 中的 API，可以实现跨文档通讯，一个窗口发送消息，另一个窗口接受消息
+5.postMessage: HTML5 中的 API，可以实现跨文档通讯，一个窗口发送消息，另一个窗口接受消息
 
-    6.ngnix：利用 ngnix 跨域的关键就是在配置文件中设置 server 项，然后设置其中的 location 属性，proxy_pass：需要代理的服务器地址，add_header：给响应报文中添加首部字段，例如 Access-Control-Allow-Origin 设置为 \*，即允许所有的请求源请求。
+6.nginx：利用 nginx 跨域的关键就是在配置文件中设置 server 项，然后设置其中的 location 属性，proxy_pass：需要代理的服务器地址，add_header：给响应报文中添加首部字段，例如 Access-Control-Allow-Origin 设置为 \*，即允许所有的请求源请求。
 
 ```
 events {
@@ -254,7 +254,7 @@ http {
 ### 4、webpack 的 hash
 
 -   hash 是跟整个项目的构建相关，只要项目里有文件更改，整个项目构建的 hash 值都会更改，并且全部文件都共用相同的 hash 值。(粒度整个项目)
--   chunkhash 是根据不同的入口进行依赖文件解析，构建对应的 chunk(模块)，生成对应的 hash 值。只有被修改的 chunk(模块)在重新构建之后才会生成新的 hash 值，不会影响其它的 chunk。(粒度 entry 的每个入口文件)
+-   chunkhash 是根据不同的入口进行依赖文件解析，构建对应的 chunk(模块)，生成对应的 hash 值。只有被修改的 chunk(模块) 在重新构建之后才会生成新的 hash 值，不会影响其它的 chunk。(粒度 entry 的每个入口文件)
 -   contenthash 是跟每个生成的文件有关，每个文件都有一个唯一的 hash 值。当要构建的文件内容发生改变时，就会生成新的 hash 值，且该文件的改变并不会影响和它同一个模块下的其它文件。(粒度每个文件的内容)
 
 ### 5、重绘回流
@@ -436,7 +436,7 @@ UDP 没有拥塞控制，一直会以恒定的速度发送数据。即使网络�
 
 ### 10、前端安全
 
-#### 10-1、XSS 攻击
+#### 10-1、XSS 攻击 [掘金文](https://juejin.im/post/5df5bcea6fb9a016091def69#heading-64)
 
 **XSS**
 
@@ -476,11 +476,17 @@ http://sanyuan.com?q=<script>alert("你完蛋了")</script>
 -   开启 CSP：即开启白名单，可阻止白名单以外的资源加载和运行；1.限制其他域下的资源加载。2.禁止向其它域提交数据。3.提供上报机制，能帮助我们及时发现 XSS 攻击。
 -   URL：使用 Javascript 的 encodeURIComponent() 方法对用户的输入进行编码
 
-#### 10-2、CSRF
+#### 10-2、CSRF 攻击 [掘金文](https://juejin.im/post/5df5bcea6fb9a016091def69#heading-80)
 
 **CSRF**
 
 CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受信任用户向服务器发送非预期请求的攻击方式，通常情况下，它是攻击者借助受害者的 Cookie 骗取服务器的信任，但是它并不能拿到 Cookie，也看不到 Cookie 的内容，它能做的就是给服务器发送请求，然后执行请求中所描述的命令，以此来改变服务器中的数据，也就是并不能窃取服务器中的数据
+
+**CSRF 攻击方式**
+
+-   自动 GET 请求
+-   自动 POST 请求
+-   诱导点击发送 GET 请求。
 
 **CSRF 攻击原理**
 
@@ -494,7 +500,14 @@ CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受
 
 -   验证 Token：浏览器请求服务器时，服务器返回一个 token，每个请求都需要同时带上 token 和 cookie 才会被认为是合法请求
 -   验证 Referer：通过验证请求头的 Referer 来验证来源站点，Referer 包含了具体的 URL 路径，但请求头很容易伪造
--   设置 SameSite：设置 cookie 的 SameSite，可以让 cookie 不随跨域请求发出，禁止第三方请求携带 Cookie，但浏览器兼容不一
+-   设置 SameSite：设置 cookie 的 SameSite，可以让 cookie 不随跨域请求发出，禁止第三方请求携带 Cookie，但浏览器兼容不一。
+    SameSite 可以设置为三个值，Strict、Lax 和 None。
+
+        a. 在Strict模式下，浏览器完全禁止第三方请求携带Cookie。比如请求sanyuan.com网站只能在sanyuan.com域名当中请求才能携带 Cookie，在其他网站请求都不能。
+
+        b. 在Lax模式，就宽松一点了，但是只能在 get 方法提交表单况或者a 标签发送 get 请求的情况下可以携带 Cookie，其他情况均不能。
+
+        c. 在None模式下，也就是默认模式，请求会自动携带上 Cookie。
 
 ### 11、requestAnimationFrame
 
