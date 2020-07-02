@@ -620,7 +620,7 @@ babel-plugin-import 原理：在 babel 转码的时候，把对整个库的引�
 #### 15-2、href 和 src 有什么区别
 
 -   href：即超文本引用。当浏览器遇到 href 时，会并行地下载资源，不会阻塞页面解释，例如我们使用 \<link\> 引入 CSS，浏览器会并行地下载 CSS 而不阻塞页面解析. 因此我们在引入 CSS 时建议使用 \<link\> 而不是 @import
--   src：即资源。当浏览器遇到 src 时，会暂停页面解析，直到该资源下载或执行完毕，这也是 script 标签之所以放底部的原因
+-   src：即资源，替换当前元素。当浏览器遇到 src 时，会暂停页面解析，直到该资源下载或执行完毕，这也是 script 标签之所以放底部的原因
 
 ### 15-3、块级元素、行内元素、空元素
 
@@ -702,12 +702,12 @@ box-sizing: border-box;
 
 解决办法： 只要在 <head> 之间加入一个 <link> 或者 <script>``</script> 元素即可。
 
-#### 16-9、link、visited、active、hover
+#### 16-9、link、visited、hover、active
 
 -   a:link 选择器设置 bai 指 du 向普通的、未被访问页面的链 zhi 接的样式
 -   a:visited 选择器用于设置指向已被访问的页面的链接
+-   a:hover 选择器用于选择鼠标指针浮动在上面的元素
 -   a:active 选择器用于活动链接
--   a:hover 选择器用于选择鼠标指针浮动在上面的元素。
 
 ### 17、执行上下文
 
