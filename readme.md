@@ -780,9 +780,9 @@ defer 跟 async 都是异步加载，区别在于脚本加载完之后何时执�
 -   预解析 DNS
 
 ```
-//强制打开 <a> 标签的 dns 解析
+// 1、首先告诉浏览器使用DNS预解析
 <meta http-equiv="x-dns-prefetch-controller" content="on">
-//DNS预解析
+// 2、强制对 DNS 预解析
 <link rel="dns-prefetch" href="//host_name_to_prefetch.com">
 ```
 
