@@ -723,18 +723,18 @@ box-sizing: border-box;
 -   cookie 数据始终在同源的 http 请求中携带（即使不需要），即 cookie 在浏览器和服务器间来回传递。cookie 数据还有路径（path）的概念，可以限制 cookie 只属于某个路径下
 -   sessionStorage 和 localStorage 不会自动把数据发送给服务器，仅在本地保存
 
-    2.存储数据大小
+2.存储数据大小
 
 -   存储大小限制也不同，cookie 数据不能超过 4K，同时因为每次 http 请求都会携带 cookie、所以 cookie 只适合保存很小的数据，如会话标识
 -   sessionStorage 和 localStorage 虽然也有存储大小的限制，但比 cookie 大得多，可以达到 5M 或更大
 
-    3.数据存储有效期
+3.数据存储有效期
 
 -   sessionStorage：仅在当前浏览器窗口关闭之前有效
 -   localStorage：始终有效，窗口或浏览器关闭也一直保存，本地存储，因此用作持久数据
 -   cookie：只在设置的 cookie 过期时间之前有效，即使窗口关闭或浏览器关闭
 
-    4.作用域不同
+4.作用域不同
 
 -   sessionStorage 不在不同的浏览器窗口中共享，即使是同一个页面；
 -   localstorage 在所有同源窗口中都是共享的；也就是说只要浏览器不关闭，数据仍然存在；
@@ -754,7 +754,7 @@ box-sizing: border-box;
 -   cookie 数据存放在客户的浏览器上，session 数据放在服务器上
 -   cookie 不是很安全，别人可以分析存放在本地的 cookie 并进行 cookie 欺骗，考虑到安全应当使用 session。用户验证这种场合一般会用 session
 -   session 保存在服务器，客户端不知道其中的信息；反之，cookie 保存在客户端，服务器能够知道其中的信息
--   session 会在一定时间内保存在服务器上，当访问增多，会比较占用你服务器的性能，考虑到减轻服务器性能方面，应当使用 cookie
+-   session 会在一定时间内保存在服务器上，当访问增多，会比较占用你服务器的性能，考虑到减轻服务器性能方面，应当使用 cookie，而 cookie 有大小限制
 -   session 中保存的是对象，cookie 中保存的是字符串
 -   session 不能区分路径，同一个用户在访问一个网站期间，所有的 session 在任何一个地方都可以访问到，而 cookie 中如果设置了路径参数，那么同一个网站中不同路径下的 cookie 互相是访问不到的
 
