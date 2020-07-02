@@ -585,7 +585,9 @@ CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受
 
 ### 11、requestAnimationFrame
 
-requestAnimationFrame 是浏览器用于定时循环操作的一个接口，类似于 setTimeout，主要用途是按帧对网页进行重绘。对于 JS 动画，用 requestAnimationFrame 会比 setInterval 效果更好
+requestAnimationFrame 在 MDN 的定义为，下次页面重绘前所执行的操作。是浏览器用于定时循环操作的一个接口，类似于 setTimeout，主要用途是按帧对网页进行重绘。对于 JS 动画，用 requestAnimationFrame 会比 setInterval 效果更好
+
+requestAnimationFrame 姑且算是一个宏任务，但是他的执行时机是比微任务晚，比宏任务早
 
 ### 12、不使用框架如何实现组件按需加载以及原理
 
