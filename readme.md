@@ -835,23 +835,124 @@ Expires 是 http1.0 的产物，Cache-Control 是 http1.1 的产物，两者同�
 
 一般分为两类：1.即时运行错误（代码错误） 2.资源加载错误
 
-#### 24-1、即时运行错误的捕获方式
+#### 24-1、前端需要处理的异常
+
+-   js 语法异常
+-   ajax 请求异常
+-   静态资源加载异常
+-   Promise 异常
+-   跨域 Script error
+-   崩溃和卡顿
+
+#### 24-2、try...catch（监控同步错误）
+
+捕捉代码运行时的异常
+
+#### 24-3、window.onerror（监控异步步错误）
+
+当 JS 运行时错误发生时，window 会触发一个 ErrorEvent 接口的 error 事件，并执行 window.onerror()
+
+注意：
+
+-   onerror 最好写在所有 JS 脚本的前面，否则有可能捕获不到错误
+-   onerror 无法捕获语法错误
 
 ```
-try...catch
+window.onerror = function(message, source, lineno, colno, error) {
+  // message：错误信息（字符串）。
+  // source：发生错误的脚本URL（字符串）
+  // lineno：发生错误的行号（数字）
+  // colno：发生错误的列号（数字）
+  // error：Error对象（对象）
 
-window.onerror
+  console.log('捕获到异常：',{message, source, lineno, colno, error});
+}
 ```
 
-#### 24-2、资源加载错误捕获
+#### 24-4、window.addEventListener
+
+当一项资源（如图片或脚本）加载失败，加载资源的元素会触发一个 Event 接口的 error 事件，并执行该元素上的 onerror() 处理函数。这些 error 事件不会向上冒泡到 window ，不过能被单一的 window.addEventListener 捕获
+
+注意：
+
+-   不同浏览器下返回的 error 对象可能不同，需要注意兼容处理
+-   需要注意避免 addEventListener 重复监听
 
 ```
-object.onerror
+<scritp>
+  window.addEventListener('error', (error) => {
+    console.log('捕获到异常：', error);
+  }, true)
+</script>
 
-performance.getEntries()
-
-Error 事件捕获
+<img src="./jartto.png">
 ```
+
+#### 24-5、Promise Catch
+
+使用 Promise 可以利用它本身的 catch 捕捉异常；没有写 catch 的 Promise 中抛出的错误无法被 onerror 或 try-catch 捕获到
+
+为了防止有漏掉的 Promise 异常，建议在全局增加一个对 unhandledrejection 的监
+
+```
+window.addEventListener("unhandledrejection", function(e){
+  // e.preventDefault()
+  console.log('捕获到异常：', e);
+  returntrue;
+});
+Promise.reject('promise error');
+```
+
+#### 24-6、VUE errorHandler
+
+```
+Vue.config.errorHandler = (err, vm, info) => {
+  console.error('通过vue errorHandler捕获的错误');
+  console.error(err);
+  console.error(vm);
+  console.error(info);
+}
+```
+
+#### 24-7、Script error
+
+出现 Script error 这样的错误，基本上可以确定是出现了跨域问题
+
+```
+const script = document.createElement('script');
+script.crossOrigin = 'anonymous';
+script.src = url;
+document.body.appendChild(script);
+```
+
+注意：服务器端需要设置：Access-Control-Allow-Origin
+
+#### 24-8、崩溃和卡顿
+
+-   用 window 对象的 load 和 beforeunload 事件实现了网页崩溃的监控
+
+```
+window.addEventListener('load', function () {
+  sessionStorage.setItem('good_exit', 'pending');
+  setInterval(function () {
+      sessionStorage.setItem('time_before_crash', newDate().toString());
+  }, 1000);
+});
+
+window.addEventListener('beforeunload', function () {
+  sessionStorage.setItem('good_exit', 'true');
+});
+
+if(sessionStorage.getItem('good_exit') &&
+  sessionStorage.getItem('good_exit') !== 'true') {
+  /*
+      insert crash logging code here
+  */
+  alert('Hey, welcome back from your crash, looks like you crashed on: ' + sessionStorage.getItem('time_before_crash'));
+}
+```
+
+-   可以使用 Service Worker 来实现网页崩溃的监控。Service Worker 有自己独立的工作线程，与网页区分开，网页崩溃了，Service Worker 一般情况下不会崩溃；Service Worker 生命周期一般要比网页还要长，可以用来监控网页的状态；网页可以通过 navigator.serviceWorker.controller.postMessage API 向掌管自己的 SW 发送消息。
 
 ### 25、jquery 源码优点
 
