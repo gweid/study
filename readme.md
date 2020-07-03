@@ -1281,3 +1281,9 @@ Object.defineProperty(window, 'a', {
 -   通过 e.stopPropagation 中断事件的向下或向上传递
 -   使用 e.preventDefault 取消默认行为
 -   通过冒泡进行事件代理（事件委托）
+
+### 55、移动端一像素边框
+
+-   采用 transfrom + 伪类
+-   采用图片或者 background-image
+-   采用 viewport 的 scale 的值
