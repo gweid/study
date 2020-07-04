@@ -1427,3 +1427,9 @@ Object.defineProperty(window, 'a', {
 4. 如果一个操作数是字符串，另一个操作数是数值，在比较相等性之前先将字符串转换为数字，"[object Object]"结果是 Nan，所以 Nan == 0
 
 所以经过上面四步，得出 Nan == 0，Nan 不与任何数字相等，包括 Nan 本身，所以为 false
+
+### 58、js 获取原型的方法
+
+- p.proto
+- p.constructor.prototype
+- Object.getPrototypeOf(p)
