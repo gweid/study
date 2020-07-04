@@ -311,8 +311,8 @@ window.addEventListener('resize', setNowFontSize);
 
 ### 8、http、tcp 相关
 
-[http掘金文](https://juejin.im/post/5e76bd516fb9a07cce750746)
-[tcp掘金文](https://juejin.im/post/5e527c58e51d4526c654bf41#heading-4)
+[http 掘金文](https://juejin.im/post/5e76bd516fb9a07cce750746)
+[tcp 掘金文](https://juejin.im/post/5e527c58e51d4526c654bf41#heading-4)
 
 http：超文本传输协议，无连接、无状态，规定了每段数据以什么形式表达才是能够被另外一台计算机理解
 
@@ -450,9 +450,9 @@ UDP 的数据传输是基于数据报的，这是因为仅仅只是继承了 IP 
 
 为了防止已失效的连接请求报文段突然又传送到了服务端，因而产生连接资源的浪费
 
-解析1：失效的连接请求：主机 A 发出的连接请求没有收到主机 B 的确认，于是经过一段时间后，主机 A 又重新向主机 B 发送连接请求，且建立成功，顺序完成数据传输。考虑这样一种特殊情况，主机 A 第一次发送的连接请求并没有丢失，而是因为网络节点导致延迟达到主机 B，主机 B 以为是主机 A 又发起的新连接，于是主机 B 同意连接，并向主机 A 发回确认，但是此时主机 A 根本不会理会，主机 B 就一直在等待主机 A 发送数据，导致主机 B 的资源浪费。
+解析 1：失效的连接请求：主机 A 发出的连接请求没有收到主机 B 的确认，于是经过一段时间后，主机 A 又重新向主机 B 发送连接请求，且建立成功，顺序完成数据传输。考虑这样一种特殊情况，主机 A 第一次发送的连接请求并没有丢失，而是因为网络节点导致延迟达到主机 B，主机 B 以为是主机 A 又发起的新连接，于是主机 B 同意连接，并向主机 A 发回确认，但是此时主机 A 根本不会理会，主机 B 就一直在等待主机 A 发送数据，导致主机 B 的资源浪费。
 
-解析2：如果是两次，你现在发了 SYN 报文想握手，但是这个包滞留在了当前的网络中迟迟没有到达，TCP 以为这是丢了包，于是重传，两次握手建立好了连接。
+解析 2：如果是两次，你现在发了 SYN 报文想握手，但是这个包滞留在了当前的网络中迟迟没有到达，TCP 以为这是丢了包，于是重传，两次握手建立好了连接。
 看似没有问题，但是连接关闭后，如果这个滞留在网路中的包到达了服务端呢？这时候由于是两次握手，服务端只要接收到然后发送相应的数据包，就默认建立连接，但是现在客户端已经断开了。
 
 二次握手不可以，会造成上面说的失效的连接请求；四次握手可以，但没有必要。
@@ -497,20 +497,22 @@ XSS(Cross Site Script) 跨站脚本攻击。指的是攻击者向网页注入恶
 
     4.在页面中生成浮窗广告
 
-**主要是分为三种**：
+**主要是分为三种：**
 
 -   存储型：即攻击被存储在服务端，常见的场景是留言评论区提交一段脚本代码，如果前后端没有做好转义的工作，那评论内容存到了数据库，在页面渲染过程中直接执行, 相当于执行一段未知逻辑的 JS 代码，是非常恐怖的
 -   反射型：恶意脚本作为网络请求的一部分。服务端接收到 URL 将恶意代码当做参数取出并拼接在 HTML 里返回，浏览器解析此 HTML 后即执行恶意代码
 
 ```
-// 比如：
+// 比如输入：
 
 http://sanyuan.com?q=<script>alert("你完蛋了")</script>
 ```
 
--   DOM 型：攻击者构造出特殊的 URL，其中包含恶意代码，诱导用户点击该 URL，如果 URL 被解析，那么攻击脚本就会被运行。和前两者的差别主要在于 DOM 型攻击不经过服务端
+-   文档型：文档型的 XSS 攻击并不会经过服务端，而是作为中间人的角色，在数据传输过程劫持到网络数据包，然后修改里面的 html 文档。这样的劫持方式包括 WIFI 路由器劫持或者本地恶意软件等
 
-**如何防御 XSS 攻击**：
+**如何防御 XSS 攻击：**
+
+一个信念：不要相信用户输入；两个利用：1、利用 httpOnly 2、利用 CSP
 
 -   输入检查：永远不要相信任何用户的输入，对输入内容中的 script 和 \<iframe\> 等标签进行转义或者过滤
 -   设置 httpOnly：很多 XSS 攻击目标都是窃取用户 cookie 伪造身份认证，设置此属性可防止 JS 获取 cookie
@@ -519,17 +521,48 @@ http://sanyuan.com?q=<script>alert("你完蛋了")</script>
 
 #### 10-2、CSRF 攻击 [掘金文](https://juejin.im/post/5df5bcea6fb9a016091def69#heading-80)
 
-**CSRF**
+**CSRF：**
 
 CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受信任用户向服务器发送非预期请求的攻击方式，通常情况下，它是攻击者借助受害者的 Cookie 骗取服务器的信任，但是它并不能拿到 Cookie，也看不到 Cookie 的内容，它能做的就是给服务器发送请求，然后执行请求中所描述的命令，以此来改变服务器中的数据，也就是并不能窃取服务器中的数据
 
-**CSRF 攻击方式**
+比如：黑客诱导用户点击链接，打开黑客的网站，然后黑客利用用户目前的登录状态发起跨站请求
+
+**CSRF 攻击方式：**
 
 -   自动 GET 请求
+
+```
+// 假设用户在 aabbcc 网页登录
+
+// 而在黑客网页里面可能有一段这样的代码:
+<img src="https://aabbcc.com/info?user=hhh&count=100">
+
+// 这个请求会自动带上关于 xxx.com 的 cookie 信息
+```
+
 -   自动 POST 请求
+
+```
+// 黑客可能自己填了一个表单，写了一段自动提交的脚本
+
+<form id='hacker-form' action="https://xxx.com/info" method="POST">
+  <input type="hidden" name="user" value="hhh" />
+  <input type="hidden" name="count" value="100" />
+</form>
+<script>document.getElementById('hacker-form').submit();</script>
+
+// 同样也会携带相应的用户 cookie 信息，让服务器误以为是一个正常的用户在操作，让各种恶意的操作变为可能。
+```
+
 -   诱导点击发送 GET 请求。
 
-**CSRF 攻击原理**
+```
+在黑客的网站上，可能会放上一个链接，驱使你来点击，点击后，自动发送 get 请求，接下来和自动发 GET 请求部分同理
+
+<a href="https://aabbcc/info?user=hhh&count=100" taget="_blank">这里有你想要的哦</a>
+```
+
+**CSRF 攻击原理：**
 
 -   用户 C 打开浏览器，访问受信任网站 A，输入用户名和密码请求登录网站 A；
 -   在用户信息通过验证后，网站 A 产生 Cookie 信息并返回给浏览器，此时用户登录网站 A 成功，可以正常发送请求到网站 A；
@@ -537,22 +570,24 @@ CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受
 -   网站 B 接收到用户请求后，返回一些攻击性代码，并发出一个请求要求访问第三方站点 A；
 -   浏览器在接收到这些攻击性代码后，根据网站 B 的请求，在用户不知情的情况下携带 Cookie 信息，向网站 A 发出请求。网站 A 并不知道该请求其实是由 B 发起的，所以会根据用户 C 的 Cookie 信息以 C 的权限处理该请求，导致来自网站 B 的恶意代码被执行。
 
-**防御 CSRF 攻击**
+**防御 CSRF 攻击：**
 
 -   验证 Token：浏览器请求服务器时，服务器返回一个 token，每个请求都需要同时带上 token 和 cookie 才会被认为是合法请求
 -   验证 Referer：通过验证请求头的 Referer 来验证来源站点，Referer 包含了具体的 URL 路径，但请求头很容易伪造
 -   设置 SameSite：设置 cookie 的 SameSite，可以让 cookie 不随跨域请求发出，禁止第三方请求携带 Cookie，但浏览器兼容不一。
     SameSite 可以设置为三个值，Strict、Lax 和 None。
 
-        a. 在Strict模式下，浏览器完全禁止第三方请求携带Cookie。比如请求sanyuan.com网站只能在sanyuan.com域名当中请求才能携带 Cookie，在其他网站请求都不能。
+        a. 在 Strict 模式下，浏览器完全禁止第三方请求携带 Cookie。比如请求 sanyuan.com 网站只能在 sanyuan.com 域名当中请求才能携带 Cookie，在其他网站请求都不能。
 
-        b. 在Lax模式，就宽松一点了，但是只能在 get 方法提交表单况或者a 标签发送 get 请求的情况下可以携带 Cookie，其他情况均不能。
+        b. 在 Lax 模式，就宽松一点了，但是只能在 get 方法提交表单况或者 a 标签发送 get 请求的情况下可以携带 Cookie，其他情况均不能。
 
-        c. 在None模式下，也就是默认模式，请求会自动携带上 Cookie。
+        c. 在 None 模式下，也就是默认模式，请求会自动携带上 Cookie。
 
 ### 11、requestAnimationFrame
 
-requestAnimationFrame 是浏览器用于定时循环操作的一个接口，类似于 setTimeout，主要用途是按帧对网页进行重绘。对于 JS 动画，用 requestAnimationFrame 会比 setInterval 效果更好
+requestAnimationFrame 在 MDN 的定义为，下次页面重绘前所执行的操作。是浏览器用于定时循环操作的一个接口，类似于 setTimeout，主要用途是按帧对网页进行重绘。对于 JS 动画，用 requestAnimationFrame 会比 setInterval 效果更好
+
+requestAnimationFrame 姑且算是一个宏任务，但是他的执行时机是比微任务晚，比宏任务早
 
 ### 12、不使用框架如何实现组件按需加载以及原理
 
@@ -585,7 +620,7 @@ babel-plugin-import 原理：在 babel 转码的时候，把对整个库的引�
 #### 15-2、href 和 src 有什么区别
 
 -   href：即超文本引用。当浏览器遇到 href 时，会并行地下载资源，不会阻塞页面解释，例如我们使用 \<link\> 引入 CSS，浏览器会并行地下载 CSS 而不阻塞页面解析. 因此我们在引入 CSS 时建议使用 \<link\> 而不是 @import
--   src：即资源。当浏览器遇到 src 时，会暂停页面解析，直到该资源下载或执行完毕，这也是 script 标签之所以放底部的原因
+-   src：即资源，替换当前元素。当浏览器遇到 src 时，会暂停页面解析，直到该资源下载或执行完毕，这也是 script 标签之所以放底部的原因
 
 ### 15-3、块级元素、行内元素、空元素
 
@@ -667,12 +702,12 @@ box-sizing: border-box;
 
 解决办法： 只要在 <head> 之间加入一个 <link> 或者 <script>``</script> 元素即可。
 
-#### 16-9、link、visited、active、hover
+#### 16-9、link、visited、hover、active
 
 -   a:link 选择器设置 bai 指 du 向普通的、未被访问页面的链 zhi 接的样式
 -   a:visited 选择器用于设置指向已被访问的页面的链接
+-   a:hover 选择器用于选择鼠标指针浮动在上面的元素
 -   a:active 选择器用于活动链接
--   a:hover 选择器用于选择鼠标指针浮动在上面的元素。
 
 ### 17、执行上下文
 
@@ -688,18 +723,18 @@ box-sizing: border-box;
 -   cookie 数据始终在同源的 http 请求中携带（即使不需要），即 cookie 在浏览器和服务器间来回传递。cookie 数据还有路径（path）的概念，可以限制 cookie 只属于某个路径下
 -   sessionStorage 和 localStorage 不会自动把数据发送给服务器，仅在本地保存
 
-    2.存储数据大小
+2.存储数据大小
 
 -   存储大小限制也不同，cookie 数据不能超过 4K，同时因为每次 http 请求都会携带 cookie、所以 cookie 只适合保存很小的数据，如会话标识
 -   sessionStorage 和 localStorage 虽然也有存储大小的限制，但比 cookie 大得多，可以达到 5M 或更大
 
-    3.数据存储有效期
+3.数据存储有效期
 
 -   sessionStorage：仅在当前浏览器窗口关闭之前有效
 -   localStorage：始终有效，窗口或浏览器关闭也一直保存，本地存储，因此用作持久数据
 -   cookie：只在设置的 cookie 过期时间之前有效，即使窗口关闭或浏览器关闭
 
-    4.作用域不同
+4.作用域不同
 
 -   sessionStorage 不在不同的浏览器窗口中共享，即使是同一个页面；
 -   localstorage 在所有同源窗口中都是共享的；也就是说只要浏览器不关闭，数据仍然存在；
@@ -719,7 +754,7 @@ box-sizing: border-box;
 -   cookie 数据存放在客户的浏览器上，session 数据放在服务器上
 -   cookie 不是很安全，别人可以分析存放在本地的 cookie 并进行 cookie 欺骗，考虑到安全应当使用 session。用户验证这种场合一般会用 session
 -   session 保存在服务器，客户端不知道其中的信息；反之，cookie 保存在客户端，服务器能够知道其中的信息
--   session 会在一定时间内保存在服务器上，当访问增多，会比较占用你服务器的性能，考虑到减轻服务器性能方面，应当使用 cookie
+-   session 会在一定时间内保存在服务器上，当访问增多，会比较占用你服务器的性能，考虑到减轻服务器性能方面，应当使用 cookie，而 cookie 有大小限制
 -   session 中保存的是对象，cookie 中保存的是字符串
 -   session 不能区分路径，同一个用户在访问一个网站期间，所有的 session 在任何一个地方都可以访问到，而 cookie 中如果设置了路径参数，那么同一个网站中不同路径下的 cookie 互相是访问不到的
 
@@ -734,7 +769,7 @@ box-sizing: border-box;
 -   defer 属性（页面 load 后执行）：脚本会被延迟到整个页面都解析完毕之后再执行。若是设置了 defer 属性，就等于告诉浏览器立即下载，但是会延迟执行。注意 defer 属性只适用于外部脚本文件。
 -   async 属性（页面 load 前执行）：为了不让页面等待脚本下载和执行，异步加载页面和其他内容。async 同样也只适用于外部文件（不会影响页面加载，但是不能控制加载的顺序）
 
-defer 跟 async 都是异步加载，区别在于脚本加载完之后何时执行，defer 是按照加载顺序执行脚本的，async 则是谁先加载完就先执行。所以 async 使用需要注意脚本的相互依赖问题
+defer 跟 async 都是异步加载，区别在于脚本加载完之后何时执行，defer 页面 load 后执行，并且按照加载顺序执行脚本的；async 页面 load 前执行，并且谁先加载完就先执行。所以 async 使用需要注意脚本的相互依赖问题
 
 ### 22、提升页面性能
 
@@ -745,9 +780,9 @@ defer 跟 async 都是异步加载，区别在于脚本加载完之后何时执�
 -   预解析 DNS
 
 ```
-//强制打开 <a> 标签的 dns 解析
+// 1、首先告诉浏览器使用 DNS 预解析
 <meta http-equiv="x-dns-prefetch-controller" content="on">
-//DNS预解析
+// 2、强制对 DNS 预解析
 <link rel="dns-prefetch" href="//host_name_to_prefetch.com">
 ```
 
@@ -800,23 +835,124 @@ Expires 是 http1.0 的产物，Cache-Control 是 http1.1 的产物，两者同�
 
 一般分为两类：1.即时运行错误（代码错误） 2.资源加载错误
 
-#### 24-1、即时运行错误的捕获方式
+#### 24-1、前端需要处理的异常
+
+-   js 语法异常
+-   ajax 请求异常
+-   静态资源加载异常
+-   Promise 异常
+-   跨域 Script error
+-   崩溃和卡顿
+
+#### 24-2、try...catch（监控同步错误）
+
+捕捉代码运行时的异常
+
+#### 24-3、window.onerror（监控异步步错误）
+
+当 JS 运行时错误发生时，window 会触发一个 ErrorEvent 接口的 error 事件，并执行 window.onerror()
+
+注意：
+
+-   onerror 最好写在所有 JS 脚本的前面，否则有可能捕获不到错误
+-   onerror 无法捕获语法错误
 
 ```
-try...catch
+window.onerror = function(message, source, lineno, colno, error) {
+  // message：错误信息（字符串）。
+  // source：发生错误的脚本URL（字符串）
+  // lineno：发生错误的行号（数字）
+  // colno：发生错误的列号（数字）
+  // error：Error对象（对象）
 
-window.onerror
+  console.log('捕获到异常：',{message, source, lineno, colno, error});
+}
 ```
 
-#### 24-2、资源加载错误捕获
+#### 24-4、window.addEventListener
+
+当一项资源（如图片或脚本）加载失败，加载资源的元素会触发一个 Event 接口的 error 事件，并执行该元素上的 onerror() 处理函数。这些 error 事件不会向上冒泡到 window ，不过能被单一的 window.addEventListener 捕获
+
+注意：
+
+-   不同浏览器下返回的 error 对象可能不同，需要注意兼容处理
+-   需要注意避免 addEventListener 重复监听
 
 ```
-object.onerror
+<scritp>
+  window.addEventListener('error', (error) => {
+    console.log('捕获到异常：', error);
+  }, true)
+</script>
 
-performance.getEntries()
-
-Error 事件捕获
+<img src="./jartto.png">
 ```
+
+#### 24-5、Promise Catch
+
+使用 Promise 可以利用它本身的 catch 捕捉异常；没有写 catch 的 Promise 中抛出的错误无法被 onerror 或 try-catch 捕获到
+
+为了防止有漏掉的 Promise 异常，建议在全局增加一个对 unhandledrejection 的监
+
+```
+window.addEventListener("unhandledrejection", function(e){
+  // e.preventDefault()
+  console.log('捕获到异常：', e);
+  returntrue;
+});
+Promise.reject('promise error');
+```
+
+#### 24-6、VUE errorHandler
+
+```
+Vue.config.errorHandler = (err, vm, info) => {
+  console.error('通过vue errorHandler捕获的错误');
+  console.error(err);
+  console.error(vm);
+  console.error(info);
+}
+```
+
+#### 24-7、Script error
+
+出现 Script error 这样的错误，基本上可以确定是出现了跨域问题
+
+```
+const script = document.createElement('script');
+script.crossOrigin = 'anonymous';
+script.src = url;
+document.body.appendChild(script);
+```
+
+注意：服务器端需要设置：Access-Control-Allow-Origin
+
+#### 24-8、崩溃和卡顿
+
+-   用 window 对象的 load 和 beforeunload 事件实现了网页崩溃的监控
+
+```
+window.addEventListener('load', function () {
+  sessionStorage.setItem('good_exit', 'pending');
+  setInterval(function () {
+      sessionStorage.setItem('time_before_crash', newDate().toString());
+  }, 1000);
+});
+
+window.addEventListener('beforeunload', function () {
+  sessionStorage.setItem('good_exit', 'true');
+});
+
+if(sessionStorage.getItem('good_exit') &&
+  sessionStorage.getItem('good_exit') !== 'true') {
+  /*
+      insert crash logging code here
+  */
+  alert('Hey, welcome back from your crash, looks like you crashed on: ' + sessionStorage.getItem('time_before_crash'));
+}
+```
+
+-   可以使用 Service Worker 来实现网页崩溃的监控。Service Worker 有自己独立的工作线程，与网页区分开，网页崩溃了，Service Worker 一般情况下不会崩溃；Service Worker 生命周期一般要比网页还要长，可以用来监控网页的状态；网页可以通过 navigator.serviceWorker.controller.postMessage API 向掌管自己的 SW 发送消息。
 
 ### 25、jquery 源码优点
 
@@ -1246,3 +1382,9 @@ Object.defineProperty(window, 'a', {
 -   通过 e.stopPropagation 中断事件的向下或向上传递
 -   使用 e.preventDefault 取消默认行为
 -   通过冒泡进行事件代理（事件委托）
+
+### 55、移动端一像素边框
+
+-   采用 transfrom + 伪类
+-   采用图片或者 background-image
+-   采用 viewport 的 scale 的值
