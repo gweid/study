@@ -240,10 +240,31 @@ http {
 - CommonJS 的 this 指向当前模块，ES6 的 this 指向 undefined
 - CommonJs 导入的模块路径可以是一个表达式，因为它使用的是 require() 方法；而 ES6 Modules 只能是字符串
 
-#### 3-2、AMD 和 CMD 都是异步加载模块，区别是：对依赖模块的执行时机处理不同
+#### 3-2、AMD 和 CMD 异步加载模块
 
-- AMD 推崇依赖前置，在定义模块的时候就要声明其依赖的模块
-- CMD 推崇就近依赖，只有在用到某个模块的时候再去 require
+1. 第一个方面是在模块定义时对依赖的处理不同。AMD 推崇依赖前置，在定义模块的时候就要声明其依赖的模块。而 CMD 推崇就近依赖，只有在用到某个模块的时候再去 require。
+2. 第二个方面是对依赖模块的执行时机处理不同。首先 AMD 和 CMD 对于模块的加载方式都是异步加载，不过它们的区别在于模块的执行时机，AMD 在依赖模块加载完成后就直接执行依赖模块，依赖模块的执行顺序和我们书写的顺序不一定一致。而 CMD 在依赖模块加载完成后并不执行，只是下载而已，等到所有的依赖模块都加载好后，进入回调函数逻辑，遇 require 语句的时候才执行对应的模块，这样模块的执行顺序就和我们书写的顺序保持一致了。
+
+```
+// CMD
+define(function(require, exports, module) {
+  var a = require("./a");
+  a.doSomething();
+  // 此处略去 100 行
+  var b = require("./b"); // 依赖可以就近书写
+  b.doSomething();
+  // ...
+});
+
+// AMD 默认推荐
+define(["./a", "./b"], function(a, b) {
+  // 依赖必须一开始就写好
+  a.doSomething();
+  // 此处略去 100 行
+  b.doSomething();
+  // ...
+});
+```
 
 ### 4、webpack 的 hash
 
