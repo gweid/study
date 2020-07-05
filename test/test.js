@@ -222,13 +222,11 @@ function bubbleSort(arr = [], flag = true) {
       if (flag) {
         // 小到大
         if (arr[j] >= arr[j + 1]) {
-          ;
-          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+          ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
         }
       } else {
         if (arr[j] <= arr[j + 1]) {
-          ;
-          [arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
+          ;[arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
         }
       }
     }
@@ -246,8 +244,8 @@ function bubbleSort1(arr) {
 
     for (var j = 0; j < arr.length - i - 1; j++) {
       if (arr[j] > arr[j + 1]) {
-        flag = false;
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+        flag = false
+        ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
       }
     }
 
@@ -272,7 +270,7 @@ function selectSort(arr) {
       }
     }
     if (i !== idx) {
-      [arr[i], arr[idx]] = [arr[idx], arr[i]]
+      ;[arr[i], arr[idx]] = [arr[idx], arr[i]]
     }
   }
 
@@ -416,7 +414,7 @@ function paramUrl(url) {
   return obj
 }
 
-console.log("url参数：", paramUrl(url))
+console.log('url参数：', paramUrl(url))
 
 // ---------------------------------------- 深拷贝
 // function deepClone(source) {
@@ -463,13 +461,13 @@ function deepClone(source) {
 let obj = {
   a: '222',
   b: {
-    name: 'jaja'
-  }
+    name: 'jaja',
+  },
 }
 let cloneRet = deepClone(obj)
 cloneRet.b.name = '333'
-console.log("深拷贝：", cloneRet.b)
-console.log("原数据：", obj.b)
+console.log('深拷贝：', cloneRet.b)
+console.log('原数据：', obj.b)
 
 // ----------------------------------------- 手写 call、bind、apply、new
 // call  1、更改this指向    2、函数立刻执行
@@ -502,7 +500,7 @@ function fntest(name, age) {
   }
 }
 
-console.log("手写call：", fntest.myCall(testObj, 'myCall', 20))
+console.log('手写call：', fntest.myCall(testObj, 'myCall', 20))
 
 // apply  apply 跟 call 一样，只是传递的参数不一样
 Function.prototype.myApply = function (context, args) {
@@ -536,7 +534,7 @@ function fntest1(name, age) {
   }
 }
 
-console.log("手写apply：", fntest1.myApply(testObj1, ['myApply', 22]))
+console.log('手写apply：', fntest1.myApply(testObj1, ['myApply', 22]))
 
 // bind  返回一个函数  1、指定this；2、返回一个函数；3、传递参数并柯里化
 Function.prototype.myBind = function (context) {
@@ -609,8 +607,73 @@ function myCreate(proto) {
   return new F()
 }
 
-console.log("手写Object.create：", myCreate(null));
+console.log('手写Object.create：', myCreate(null))
 
+// --------------------------------------- 手写 Array.prototype.map
+
+function myMap(arr, mapCallback) {
+  // 首先，检查传递的参数是否正确。
+  if (!Array.isArray(arr) || !arr.length || typeof mapCallback !== 'function') {
+    return []
+  } else {
+    let result = []
+    // 每次调用此函数时，我们都会创建一个 result 数组
+    // 因为我们不想改变原始数组。
+    for (let i = 0, len = arr.length; i < len; i++) {
+      result.push(mapCallback(arr[i], i, arr))
+      // 将 mapCallback 返回的结果 push 到 result 数组中
+    }
+    return result
+  }
+}
+
+// --------------------------------------- 手写 Array.prototype.filter
+
+function myFilter(arr, filterCallback) {
+  // 首先，检查传递的参数是否正确。
+  if (
+    !Array.isArray(arr) ||
+    !arr.length ||
+    typeof filterCallback !== 'function'
+  ) {
+    return []
+  } else {
+    let result = []
+    // 每次调用此函数时，我们都会创建一个 result 数组
+    // 因为我们不想改变原始数组。
+    for (let i = 0, len = arr.length; i < len; i++) {
+      // 检查 filterCallback 的返回值是否是真值
+      if (filterCallback(arr[i], i, arr)) {
+        // 如果条件为真，则将数组元素 push 到 result 中
+        result.push(arr[i])
+      }
+    }
+    return result // return the result array
+  }
+}
+
+// --------------------------------------- 手写 Array.prototype.reduce
+
+function myReduce(arr, reduceCallback, initialValue) {
+  // 首先，检查传递的参数是否正确。
+  if (
+    !Array.isArray(arr) ||
+    !arr.length ||
+    typeof reduceCallback !== 'function'
+  ) {
+    return []
+  } else {
+    // 如果没有将initialValue传递给该函数，我们将使用第一个数组项作为initialValue
+    let hasInitialValue = initialValue !== undefined
+    let value = hasInitialValue ? initialValue : arr[0]
+
+    // 如果有传递 initialValue，则索引从 1 开始，否则从 0 开始
+    for (let i = hasInitialValue ? 0 : 1, len = arr.length; i < len; i++) {
+      value = reduceCallback(value, arr[i], i, arr)
+    }
+    return value
+  }
+}
 
 // --------------------------------------- 手写 EventEmitter (发布订阅模式--简单版)
 /**
@@ -650,8 +713,8 @@ class EventEmitter {
   // 删除订阅
   off(type, callback) {
     if (!this.events[type]) return
-    this.events[type] = this.events[type].filter(item => {
-      return item !== callback;
+    this.events[type] = this.events[type].filter((item) => {
+      return item !== callback
     })
   }
 
@@ -669,7 +732,7 @@ class EventEmitter {
 let event = new EventEmitter()
 
 function eventCb(data) {
-  console.log("手写发布订阅：", data);
+  console.log('手写发布订阅：', data)
 }
 event.on('click', eventCb)
 event.emit('click', {
@@ -819,11 +882,7 @@ event.emit('click', {
 // --------------------------------------- 数组扁平
 // ES6 的 flat
 
-let flatArr = [1, 2, [4, 5],
-  [
-    [6, 7], 8
-  ]
-]
+let flatArr = [1, 2, [4, 5], [[6, 7], 8]]
 
 let flatArrRet = flatArr.flat(Infinity)
 console.log('ES6扁平化数组', flatArrRet)
