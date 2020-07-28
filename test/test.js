@@ -631,11 +631,7 @@ function myMap(arr, mapCallback) {
 
 function myFilter(arr, filterCallback) {
   // 首先，检查传递的参数是否正确。
-  if (
-    !Array.isArray(arr) ||
-    !arr.length ||
-    typeof filterCallback !== 'function'
-  ) {
+  if (!Array.isArray(arr) || !arr.length || typeof filterCallback !== 'function') {
     return []
   } else {
     let result = []
@@ -656,11 +652,7 @@ function myFilter(arr, filterCallback) {
 
 function myReduce(arr, reduceCallback, initialValue) {
   // 首先，检查传递的参数是否正确。
-  if (
-    !Array.isArray(arr) ||
-    !arr.length ||
-    typeof reduceCallback !== 'function'
-  ) {
+  if (!Array.isArray(arr) || !arr.length || typeof reduceCallback !== 'function') {
     return []
   } else {
     // 如果没有将initialValue传递给该函数，我们将使用第一个数组项作为initialValue
