@@ -620,8 +620,8 @@ function myMap(arr, mapCallback) {
     // 每次调用此函数时，我们都会创建一个 result 数组
     // 因为我们不想改变原始数组。
     for (let i = 0, len = arr.length; i < len; i++) {
-      result.push(mapCallback(arr[i], i, arr))
       // 将 mapCallback 返回的结果 push 到 result 数组中
+      result.push(mapCallback(arr[i], i, arr))
     }
     return result
   }
@@ -655,7 +655,7 @@ function myReduce(arr, reduceCallback, initialValue) {
   if (!Array.isArray(arr) || !arr.length || typeof reduceCallback !== 'function') {
     return []
   } else {
-    // 如果没有将initialValue传递给该函数，我们将使用第一个数组项作为initialValue
+    // 如果没有将 initialValue 传递给该函数，我们将使用第一个数组项作为 initialValue
     let hasInitialValue = initialValue !== undefined
     let value = hasInitialValue ? initialValue : arr[0]
 
