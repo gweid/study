@@ -14,9 +14,9 @@
 
 [JS Bridge](https://juejin.cn/post/6916316666208976904#heading-19)
 
-JS Bridge，桥接，主要用来连接 js 和 Native，实现两者之间的通信。一般就两种情况，js 调用 native 和 native 调用 js。
+在 Hybrid 模式下，H5 会经常需要使用 Native 的功能，比如打开二维码扫描、调用原生页面、获取用户信息等，同时Native也需要向 Web 端发送推送、更新状态等，而 JavaScript 是运行在单独的 **JS Context **中（Webview 容器、JSCore 等），与原生有运行环境的隔离，所以需要有一种机制实现 Native 端和 Web 端的**双向通信**，这就是 JSBridge：以 JavaScript 引擎或 Webview 容器作为媒介，通过协定协议进行通信，实现 Native 端和 Web 端双向通信的一种机制。
 
-
+通过 JSBridge，Web 端可以调用 Native 端的 Java 接口，同样Native 端也可以通过 JSBridge 调用 Web 端的 JavaScript 接口，实现彼此的双向调用
 
 ### 2-1、WebView
 
@@ -27,6 +27,8 @@ JS Bridge，桥接，主要用来连接 js 和 Native，实现两者之间的通
 - ios 的 webview
 
   ios 的 webview 分为两种，一种是 UIWebView，ios2 就有，但是性能较差，特性支持差。另外一种是 WKWebView，ios8 之后出现，占用内存更少，大概是 UIWebView 的 1/3，支持更好的 HTML5 特性，性能更加强大；但也有一些缺点，比如不支持缓存，需要自己注入 Cookie，发送 POST 请求的时候带不了参数，拦截 POST 请求的时候无法解析参数等等
+
+WebView 控件除了能加载指定的url外，还可以对 URL 请求、JavaScript 的对话框、加载进度、页面交互进行强大的处理，之后会提到拦截请求、执行 JS 脚本都依赖于此
 
 
 
@@ -100,7 +102,11 @@ axios.get('http://xxxx?func=aaa&callback=bbb')
 
 - 在 ios
 
-  
+  使用 shouldStartLoadWithRequest 进行拦截
+
+
+
+拦截 url 这种方式从早期就存在，兼容性很好，但是由于是基于URL的方式，长度受到限制而且不太直观，数据格式有限制，而且建立请求有时间耗时
 
 
 
@@ -110,7 +116,7 @@ axios.get('http://xxxx?func=aaa&callback=bbb')
 
 #### 2-2-3、注入上下文：
 
-主要通过 webview 向 js 的上下文注入对象和方法，可以让 JS 直接调用原生
+主要通过 webview 向 js 的上下文注入对象和方法，可以让 JS 直接调用原生。也就是 Native 获取 JavaScript环境上下文，并直接在上面挂载对象或者方法，使 js 可以直接调用
 
 **在 ios 的 UIWebView**
 
