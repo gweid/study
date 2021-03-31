@@ -58,9 +58,9 @@
 -   缓存的优点
 
           1.减少了冗余的数据传递，节省宽带流量
-    
+        
           2.减少了服务器的负担，大大提高了网站性能
-    
+        
           3.加快了客户端加载网页的速度 这也正是 HTTP 缓存属于客户端缓存的原因。
 
     3.响应体
@@ -68,13 +68,13 @@
 -   响应行：（HTTP/1.1 200 OK）由 HTTP 协议版本、状态码和状态描述组成
 
         1xx：指示信息–表示请求已接收，继续处理。
-    
+        
         2xx：成功–表示请求已被成功接收、理解、接受。 200：成功  204：请求成功处理，没有实体的主体返回
-    
+        
         3xx：重定向–要完成请求必须进行更进一步的操作。 301：永久重定向  302：临时重定向  304：未修改，使用缓存
-    
+        
         4xx：客户端错误–请求有语法错误或请求无法实现。 400：错误请求，比如传参错误  401：未授权，例如没有 token  403：服务器拒绝请求  404：服务器找不到请求页面
-    
+        
         5xx：服务器端错误–服务器未能实现合法的请求。  500：服务器遇到错误，无法完成请求  503：服务不可用  504：网关错误
 
 -   响应报头
@@ -94,7 +94,7 @@
 -   解析 CSS 生成 CSSOM：通过解析 CSS 文件、style 标签、行内 style 等，生成 CSSOM
 
         规范 css，即将 color: blue 转化成 color: rgb() 形式
-    
+        
         计算元素样式，例如 CSS 样式会继承父级的样式，如 font-size、color 之类的
 
 ![解析 CSS 生成 CSSOM](/imgs/img2.png)
@@ -619,9 +619,9 @@ CSRF 攻击 (Cross-site request forgery) 跨站请求伪造。是一种劫持受
     SameSite 可以设置为三个值，Strict、Lax 和 None。
 
         a. 在 Strict 模式下，浏览器完全禁止第三方请求携带 Cookie。比如请求 sanyuan.com 网站只能在 sanyuan.com 域名当中请求才能携带 Cookie，在其他网站请求都不能。
-    
+        
         b. 在 Lax 模式，就宽松一点了，但是只能在 get 方法提交表单况或者 a 标签发送 get 请求的情况下可以携带 Cookie，其他情况均不能。
-    
+        
         c. 在 None 模式下，也就是默认模式，请求会自动携带上 Cookie。
 
 ### 11、requestAnimationFrame
@@ -1601,7 +1601,7 @@ myFunc();
 
 首先，表达式 b = 0 求值，在本例中 b 没有声明。因此，JS 引擎在这个函数外创建了一个全局变量 b，之后表达式 b = 0 的返回值为 0，并赋给新的局部变量 a。
 
-### 函数柯里化
+### 63、函数柯里化
 
 柯里化是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术
 
@@ -1619,3 +1619,245 @@ add(1, 2) // 3
 var addCurry = curry(add);
 addCurry(1)(2) // 3
 ```
+
+### 64、Set、Map、WeakSet 和 WeakMap 的区别
+
+set 是一种叫做**集合**的数据结构，map 是一种叫做**字典**的数据结构，主要的使用场景是**数组存储**和**数据重组**
+
+#### 64-1、Set
+
+set 类似数组，但是 set 的成员是**唯一且无序的**。
+
+set 对象**允许存储任何类型的唯一值**；
+
+向 set 加入值的时候，不会发生类型的转换，比如 1 和 '1' 是两个不同的值。set 内部判断两个值是否相同，使用的是“Same-value-zero equality” 算法，类似于 js 的 `===`，区别在于 set 认为 NaN 等于自身，`===` 认为 NaN 不等于自身
+
+```js
+const resSet = new Set()
+
+[1, 2, 3, 4, 3, 2, 1].forEach(i => resSet.add(i))
+for (let i of s) {
+    console.log(i) // 1 2 3 4
+}
+```
+
+![](/imgs/img11.png)
+
+set 的属性：
+
+- constructor：构造函数
+
+- size：元素数量
+
+  ```js
+  const s = new Set([1,2,1,2])
+  
+  console.log(s.size) // 2，元素数量为2，会去重
+  ```
+
+set 的一些方法：
+
+- keys()：返回一个包含集合中所有**键**的迭代器
+
+- values()：返回一个包含集合中所有**值**的迭代器
+
+- entries()：返回一个包含集合中所有**键值对**的迭代器
+
+- forEach(callbackFn,  thisArg)：遍历集合
+
+  ```js
+  const s = new Set([7,8,9])
+  
+  console.log(s.keys()) // SetIterator {7, 8, 9}
+  console.log(s.values()) // SetIterator {7, 8, 9}
+  console.log(s.entries()) // SetIterator {7 => 7, 8 => 8, 9 => 9}
+  
+  for(let i of s.keys()) {
+      console.log(i) // [7,8,9]
+  }
+  
+  for(let i of s.entries()) {
+      console.log(i) // [[7,7], [8,8], [9,9]]
+  }
+  
+  s.forEach((value, key) => {})
+  ```
+
+- add(value)：往集合里新增
+
+- delete(value)：删除集合里的值
+
+- has(value)：判断集合中是否存在某值
+
+- clear()：清空集合
+
+  ```js
+  const s = new Set()
+  
+  s.add(7).add(8)
+  s.has(7) // true
+  s.delete(7)
+  s.has(7) // false
+  ```
+
+set 转换为数组
+
+- Array.from(set)
+
+- [...set]
+
+  ```js
+  const s = new Set([7,8,9])
+  
+  const arr = Array.from(s)
+  console.log(arr) // [7,8,9]
+  
+  console.log([...s]) // [7,8,9]
+  ```
+
+#### 64-2、WeakSet
+
+WeakSet 是将一个弱引用存储在集合中
+
+WeakSet 与 set 的区别：
+
+- WeakSet 只能存储对象引用，不能存储值，set 两个都可以
+- WeakSet 对象中储存的对象值都是被弱引用的，即垃圾回收机制不考虑 WeakSet 对该对象的应用，如果没有其他的变量或属性引用这个对象值，则这个对象将会被垃圾回收掉（不考虑该对象还存在于 WeakSet 中），所以，WeakSet 对象里有多少个成员元素，取决于垃圾回收机制有没有运行，运行前后成员个数可能不一致，遍历结束之后，有的成员可能取不到了（被垃圾回收了），WeakSet 对象是无法被遍历的（ES6 规定 WeakSet 不可遍历），也没有办法拿到它包含的所有元素
+
+WeakSet 的一些方法：
+
+- add(value)：往 WeakSet 中添加一些元素
+
+- has(value)：判断 WeakSet 是否包含某个元素
+
+- delete(value)：删除 WeakSet 中的 value 元素
+
+  ```js
+  const ws = new WeakSet([[1,2], [3,4]])
+  ```
+
+  ![](/imgs/img12.png)
+
+#### 64-3、Map
+
+Map 类似对象，也是键值对的集合，但是“键”的范围不限制于字符串，各种类型的值（包含对象）都可以当作键；Map 也可以接受一个数组作为参数，数组的成员是一个个表示键值对的数组。注意Map里面也不可以放重复的项。
+
+Map 与 Set 的区别：
+
+- 共同点：都是存储**不重复**的值
+- 不同点：Set 集合是以 [value, value] 的形式存储元素，Map 字典是以 [key, value] 的形式存储元素
+
+```js
+const m = new Map()
+m.set('a', '值是a')
+```
+
+![](/imgs/img13.png)
+
+Map 的属性：
+
+- constructor：构造函数
+
+- size：返回字典中所包含元素的个数
+
+  ```js
+  const m = new Map()
+  m.set('a', '值是a')
+  
+  console.log(m.size) // 1
+  ```
+
+Map 的一些方法：
+
+- set(key, value)：向字典中添加新元素
+
+- get(key)：通过键查找特定元素，并返回值
+
+- has(key)：判断字典中是否存在 key
+
+- delete(key)：通过键 key 从字典中删除对应数据
+
+- clear()：清空字典的所有元素
+
+- keys()：将字典中包含的所有键名以迭代器形式返回
+
+- values()：将字典中包含的所有数值以迭代器形式返回
+
+- entries()：返回所有成员的迭代器
+
+- forEach()：遍历字典的所有成员
+
+  ```js
+  const m = new Map([
+      ['1', 'name'],
+      ['2', 'age']
+  ])
+  
+  console.log(m.keys()) // MapIterator {"1", "2"}
+  console.log(m.values()) // MapIterator {"name", "age"}
+  console.log(m.entries()) //MapIterator {"1" => "name", "2" => "age"}
+  
+  ```
+
+Map 也可以接受一个数组作为参数，数组的成员是一个个表示键值对的数组
+
+```js
+const m = new Map([
+    ['1', 'name'],
+    ['2', 'age']
+])
+
+console.log(m.get('1')) // name
+```
+
+**注意，只有对同一个对象的引用，Map 结构才将其视为同一个键**
+
+```js
+// 例子1：
+const m = new Map()
+
+m.set(['a'], '值a')
+m.get(['a']) // undefined
+
+// 例子2：
+const mm = new Map()
+
+const b = ['b']
+m.set(b, '值b')
+m.get(b) // 值b
+
+总结：很明显，b 始终指向同一个对象，所以能够获取到值
+```
+
+#### 64-4、WeakMap
+
+WeakMap 是一组键值对的字典，**键是弱引用对象，值可以是任意**
+
+WeakMap 中，每个键对自己所引用对象的引用都是弱引用，在没有其他引用和该键引用同一对象，这个对象将会被垃圾回收（相应的 key 则变成无效的），所以，WeakMap 的 key 是不可枚举的
+
+#### 64-5、总结
+
+- Set
+
+- - 成员唯一、无序且不重复
+  - [value,  value]，键值与键名是一致的（或者说只有键值，没有键名）
+  - 可以遍历，方法有：add、delete、has
+
+- WeakSet
+
+- - 成员都是对象
+  - 成员都是弱引用，可以被垃圾回收机制回收，可以用来保存DOM节点，不容易造成内存泄漏
+  - 不能遍历，方法有add、delete、has
+
+- Map
+
+- - 本质上是键值对的集合，类似集合
+  - 可以遍历，方法很多可以跟各种数据格式转换
+
+- WeakMap
+
+- - 只接受对象作为键名（null除外），不接受其他类型的值作为键名
+  - 键名是弱引用，键值可以是任意的，键名所指向的对象可以被垃圾回收，此时键名是无效的
+  - 不能遍历，方法有get、set、has、delete
+
+ 
