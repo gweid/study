@@ -3,11 +3,12 @@
 常见的 6 种排序算法
 
 - 冒泡排序
-- 计数排序
 - 快速排序
-- 归并排序
-- 插入排序
 - 选择排序
+- 插入排序
+- 计数排序
+- 归并排序
+
 
 这 6 种排序的时间复杂度：
 
@@ -17,7 +18,9 @@
 
 ### 冒泡排序
 
-冒泡排序主要的思想就是临近两个两比较，时间复杂度是 O(n^2)
+冒泡排序主要的思想：就是临近两两相比较。
+
+时间复杂度是 O(n^2)
 
 #### 实现思路
 
@@ -59,3 +62,42 @@ function bubbleSort(arr) {
 
 console.log('冒泡排序', bubbleSort([1, 8, 4, 9, 6, 7, 2]))
 ```
+
+
+
+### 快速排序
+
+时间复杂度：O(nlogn)
+
+#### 实现思路
+
+1. 在数据集之中，选择一个元素作为"基准"（pivot）
+2. 所有小于"基准"的元素，都移到"基准"的左边；所有大于"基准"的元素，都移到"基准"的右边
+3. 对"基准"左边和右边的两个子集，不断重复第一步和第二步，直到所有子集只剩下一个元素为止
+
+#### 代码演示
+
+```js
+function quickSort(arr) {
+  if (arr.length <= 1) return arr
+
+  const pivotIdx = Math.floor(arr.length / 2)
+  const pivoit = arr.splice(pivotIdx, 1)[0]
+
+  const left = []
+  const right = []
+
+  for(let i = 0, len = arr.length; i < len; i++) {
+    if (arr[i] < pivoit) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
+    }
+  }
+
+  return quickSort(left).concat([pivot], quickSort(right))
+}
+
+console.log('快速排序', bubbleSort([1, 8, 4, 9, 6, 7, 2]))
+```
+
