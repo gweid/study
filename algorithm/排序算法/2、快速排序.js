@@ -15,7 +15,7 @@ function quickSort(arr) {
     }
   }
 
-  return quickSort(left).concat([pivot], quickSort(right))
+  return quickSort(left).concat([pivoit], quickSort(right))
 }
 
-console.log('快速排序', bubbleSort([1, 8, 4, 9, 6, 7, 2]))
+console.log('快速排序', quickSort([1, 8, 4, 9, 6, 7, 2]))
