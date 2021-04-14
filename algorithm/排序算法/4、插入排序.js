@@ -5,6 +5,7 @@ function insertSort(arr) {
     let j = i
     let temp = arr[i] // 保存当前位置的值
     while(j >= 0 && arr[j - 1] > temp) {
+      
       // 如果前面的比自己大，那么前面的移到自己的位置
       arr[j] = arr[j - 1]
       j--

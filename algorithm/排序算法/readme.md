@@ -204,6 +204,70 @@ console.log('插入排序', insertSort([1, 8, 4, 9, 6, 7, 2]))
 
 
 
-### 计数排序
+### 归并排序
 
-主要思路：就是把数组元素作为数组的下标，然后用一个临时数组统计该元素出现的次数
+归并排序性能不错，其复杂度为O(nlog(n))。
+
+
+
+将两个有序数列合并成一个有序数列，我们称之为“归并”
+
+主要思路：先递归的分解数列，再合并数列（分治思想的典型应用）
+
+时间复杂度： O(nlog(n))
+
+#### 实现思路
+
+默认从小到大
+
+1. 将一个数组拆成A、B两个小组，两个小组继续拆，直到每个小组只有一个元素为止。
+2. 按照拆分过程逐步合并小组，由于各小组初始只有一个元素，可以看做小组内部是有序的，合并小组可以被看做是合并两个有序数组的过程。
+3. 对左右两个小数列重复第二步，直至各区间只有1个数
+
+#### 动画图解
+
+![](./imgs/img3.png)
+
+#### 代码演示
+
+```js
+function mergeFun(left, right) {
+  let result = []
+  while(left.length && right.length) {
+    if (left[0] < right[0]) {
+      result.push(left.shift())
+    } else {
+      result.push(right.shift())
+    }
+  }
+
+  while(left.length) {
+    result.push(left.shift())
+  }
+
+  while(right.length) {
+    result.push(right.shift())
+  }
+
+  return result
+}
+
+function mergeSort(arr) {
+  // 长度小于等于 1，直接返回
+  if (arr.length <= 1) return arr
+
+  // 选取数组长度中值，分割数组
+  const mid = Math.floor(arr.length / 2)
+  const leftArr = arr.slice(0, mid)
+  const rightArr = arr.slice(mid)
+
+  // 继续递归分割左右
+  const mergeLeftArr = mergeSort(leftArr)
+  const mergeRightArr = mergeSort(rightArr)
+
+  return mergeFun(mergeLeftArr, mergeRightArr)
+}
+
+console.log('归并排序', mergeSort([1, 8, 4, 9, 6, 7, 2]))
+```
+
