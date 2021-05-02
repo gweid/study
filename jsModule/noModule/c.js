@@ -1,0 +1,1 @@
+console.log('c模块：', moduleA.userName)
