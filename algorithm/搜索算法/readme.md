@@ -48,3 +48,32 @@ function binarySearch(arr, value) {
 
 console.log('二分搜索结果：', binarySearch([1, 5, 8, 13, 27], 8))
 ```
+
+使用分而治之实现二分搜索
+
+```js
+function binarySearchRecursive(arr, value, minIdx, maxIdx) {
+  if (minIdx <= maxIdx) {
+    const midIdx = Math.floor((minIdx + maxIdx) / 2)
+    const ele = arr[midIdx]
+    if (ele < value) {
+      binarySearchRecursive(arr, value, midIdx + 1, maxIdx)
+    } else if (ele > value) {
+      binarySearchRecursive(arr, value, minIdx, midIdx - 1)
+    } else {
+      return midIdx
+    }
+
+    return -1
+  }
+}
+
+function binarySearchDivide(arr, value) {
+  const minIdx = 0
+  const maxIdx = arr.length - 1
+
+  return binarySearchRecursive(arr, value, minIdx, maxIdx)
+}
+
+console.log('分而治之二分搜索：', binarySearch([1, 5, 8, 13, 27], 8))
+```
