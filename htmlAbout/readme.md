@@ -6,6 +6,7 @@
 - [HTML 面试知识点总结](https://github.com/CavsZhouyou/Front-End-Interview-Notebook/blob/master/Html/Html.md)
 
 
+[面试指南](http://interview.poetries.top/docs/base.html)
 
 #### 1、XHTML与 HTML 的区别
 
@@ -751,3 +752,8 @@ Load 事件是当所有资源加载完成后触发的
  （3）尽量把 js 脚本放在页面底部或者使用 defer 或 async 属性，避免脚本的加载和执行阻塞页面的渲染。
 
  （4）通过对 JavaScript 和 CSS 的文件进行压缩，来减小文件的体积。
+  - height: viewport 高度
+  - initial-scale：初始缩放比例
+  - maximum-scale：允许用户缩放的最大比例，0.0-10.0 正数
+  - minimum-scale：允许用户缩放的最小比例，0.0-10.0 正数，必须小于或等于 maximum-scale
+  - user-scalable：是否允许用户手动缩放(yes or no)
