@@ -6,7 +6,6 @@
 - [HTML 面试知识点总结](https://github.com/CavsZhouyou/Front-End-Interview-Notebook/blob/master/Html/Html.md)
 
 
-[面试指南](http://interview.poetries.top/docs/base.html)
 
 #### 1、XHTML与 HTML 的区别
 
