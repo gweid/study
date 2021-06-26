@@ -513,5 +513,145 @@ javaScript 引擎使用 `上下文栈` 来管理执行上下文
 
 
 
+### 4、继承
+
+
+
+#### 4-1、借用 call 构造继承
+
+```js
+function Parent() {
+  this.name = 'jack'
+}
+Parent.prototype.getName = function() {
+  return this.name
+}
+
+function Child() {
+  Parent.call(this)
+  this.age = 18
+}
+
+const res = new Child()
+console.log(res.name) // jack
+console.log('call 构造继承', res.getName()) // 报错，res.getName is not a function
+```
+
+缺点：无法继承父类的方法
+
+
+
+#### 4-2、原型链继承
+
+```js
+function Parent() {
+  this.name = 'jack'
+}
+Parent.prototype.getName = function() {
+  return this.name
+}
+
+function Child() {
+  this.age = 18
+}
+Child.prototype = new Parent()
+Child.prototype.getage = function() {
+  return this.age
+}
+
+const res = new Child()
+console.log(res.getName()) // jack
+```
+
+缺点：所有 Child 实例原型都指向同一个 Parent 实例, 父类引用类型变量修改会影响所有的 Child 实例
+
+
+
+#### 4-3、组合继承
+
+```js
+function Parent() {
+  this.name = 'jack'
+}
+Parent.prototype.getName = function() {
+  return this.name
+}
+
+function Child() {
+  Parent.call(this)
+  this.age = 18
+}
+Child.prototype = new Parent()
+Child.prototype.constructor = Child
+Child.prototype.getAge = function() {
+  return this.name
+}
+
+const res = new Child()
+console.log('组合继承', res.getName()) // jack
+```
+
+组合继承就是结合了 call 与原型链，缺点：每次创建子类实例都执行了两次构造函数  SuperType.call() 和 new Parent())，虽然这并不影响对父类的继承，但子类创建实例时，原型中会存在两份相同的属性和方法，这并不优雅
+
+
+
+#### 4-4、寄生组合继承
+
+```js
+function Parent() {
+  this.name = 'jack'
+}
+Parent.prototype.getName = function() {
+  return this.name
+}
+
+function Child() {
+  Parent.call(this)
+  this.age = 18
+}
+Child.prototype = Object.create(Parent.prototype) // 将`指向父类实例`改为`指向父类原型`
+Child.prototype.constructor = Child
+Child.prototype.getAge = function() {
+  return this.age
+}
+
+const res = new Child()
+console.log('寄生组合继承', res.getName()) // jack
+```
+
+目前最完美的继承方法
+
+
+
+#### 4-5、class 继承
+
+```js
+class Parent {
+  constructor(name) {
+    this.name = name
+  }
+
+  getName() {
+    return this.name
+  }
+}
+
+class Child extends Parent {
+  constructor(name, age) {
+    super(name)
+    this.age = age
+  }
+
+  getAge() {
+    return this.age
+  }
+}
+
+const res = new Child('jack', 20)
+console.log('class 继承', res.getName()) // jack
+```
+
+class 继承实际上就是寄生继承，只是包装了一层语法糖而已
+
 
 

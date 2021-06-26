@@ -84,6 +84,114 @@ for(var i = 0; i < 5; i++) {
   }, 0, i)
 }
 
+// 继承
+console.log('-------------------继承-------------------');
+
+// 借助 call 构造继承
+// function Parent() {
+//   this.name = 'jack'
+// }
+// Parent.prototype.getName = function() {
+//   return this.name
+// }
+
+// function Child() {
+//   Parent.call(this)
+//   this.age = 18
+// }
+
+// const res = new Child()
+// console.log(res.name) // jack
+// console.log('call 构造继承', res.getName()) // 报错，res.getName is not a function
+
+// 原型链继承
+// function Parent() {
+//   this.name = 'jack'
+// }
+// Parent.prototype.getName = function() {
+//   return this.name
+// }
+
+// function Child() {
+//   this.age = 18
+// }
+// Child.prototype = new Parent()
+// Child.prototype.getage = function() {
+//   return this.age
+// }
+
+// const res = new Child()
+// console.log('原型继承', res.getName()) // jack
+
+// 组合继承
+// function Parent() {
+//   this.name = 'jack'
+// }
+// Parent.prototype.getName = function() {
+//   return this.name
+// }
+
+// function Child() {
+//   Parent.call(this)
+//   this.age = 18
+// }
+// Child.prototype = new Parent()
+// Child.prototype.constructor = Child
+// Child.prototype.getAge = function() {
+//   return this.name
+// }
+
+// const res = new Child()
+// console.log('组合继承', res.getName()) // jack
+
+// 寄生组合继承
+// function Parent() {
+//   this.name = 'jack'
+// }
+// Parent.prototype.getName = function() {
+//   return this.name
+// }
+
+// function Child() {
+//   Parent.call(this)
+//   this.age = 18
+// }
+// Child.prototype = Object.create(Parent.prototype) // 将`指向父类实例`改为`指向父类原型`
+// Child.prototype.constructor = Child
+// Child.prototype.getAge = function() {
+//   return this.age
+// }
+
+// const res = new Child()
+// console.log('寄生组合继承', res.getName()) // jack
+
+// class 继承
+class Parent {
+  constructor(name) {
+    this.name = name
+  }
+
+  getName() {
+    return this.name
+  }
+}
+
+class Child extends Parent {
+  constructor(name, age) {
+    super(name)
+    this.age = age
+  }
+
+  getAge() {
+    return this.age
+  }
+}
+
+const res = new Child('jack', 20)
+console.log('class 继承', res.getName()) // jack
+
+
+
 
 
 // =============================== 常见手写题 ===============================
