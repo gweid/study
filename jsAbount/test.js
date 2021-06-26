@@ -21,9 +21,11 @@ console.log('-----------------undefined 与 null---------------------')
 console.log(undefined == null) // true
 console.log(undefined === null) // false
 
+
 // typeof NaN
 console.log('-----------------typeof NaN----------------------')
 console.log(typeof NaN) // 'number'
+
 
 // isNaN 与 Number.isNaN
 console.log('-----------------isNaN 与 Number.isNaN--------------')
@@ -37,6 +39,7 @@ console.log(Number.isNaN('10')) // false
 console.log(Number.isNaN({})) // false
 console.log(Number.isNaN(NaN)) // true
 
+
 // Object.is 与 ===
 console.log('---------------------Object.is 与 === ------------------')
 console.log(Object.is(0, -0)) // false
@@ -44,11 +47,42 @@ console.log(Object.is(0, +0)) // true
 console.log(Object.is(+0, -0)) // false
 console.log(Object.is(NaN, NaN)) // true
 
+
 // 类型转换
 console.log('--------------------类型转换----------------------')
 console.log('11' == '11')
 console.log(null == undefined)
 
+
+// 闭包
+console.log('--------------------闭包---------------------')
+// 这会输出一堆 5
+for(var i = 0; i < 5; i++) {
+  setTimeout(() => {
+    console.log(i)
+  })
+}
+
+// 改进方法 1
+for(let i = 0; i < 5; i++) {
+  setTimeout(() => {
+    console.log(i)
+  })
+}
+// 改进方法 2
+for(var i = 0; i < 5; i++) {
+  (function(j) {
+    setTimeout(() => {
+      console.log(j)
+    })
+  })(i)
+}
+// 改进方法 3
+for(var i = 0; i < 5; i++) {
+  setTimeout((j) => {
+    console.log(j)
+  }, 0, i)
+}
 
 
 
