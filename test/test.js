@@ -53,7 +53,7 @@
 
 // ul.onclick = function (e) {
 //     e = e || window.event
-//     let target = e.target || e.srcElemen
+//     let target = e.target || e.srcElement
 
 //     if (target.nodeName.toLocaleLowerCase() == 'li') {
 //         switch (target.id) {
@@ -209,9 +209,9 @@
 
 // ---------------------------------------- new 做了什么
 // 1、创建一个对象
-// 2、把 this 指向这个对象
-// 3、赋值
-// 4、返回 this
+// 2、将对象的 __proto__ 属性指向构造函数的 prototype 属性
+// 3、将构造函数中的 this 指向该对象，并为这个对象添加属性和方法
+// 4、返回这个对象
 
 // ---------------------------------------- 排序算法
 // 冒泡排序  前后两个两两对比
@@ -514,7 +514,7 @@ Function.prototype.myApply = function (context, args) {
   if (!args) {
     ret = context.fn()
   } else {
-    ret = context.fn(...args)
+    ret = context.fn(args)
   }
 
   delete context.fn
@@ -555,10 +555,10 @@ Function.prototype.myBind = function (context) {
 
 // 手写 new
 // 首先 new 做了什么
-// 1、创建一个对象
-// 2、把 this 指向这个对象
-// 3、为这个对象添加属性
-// 4、返回这个对象
+//  1、创建一个对象
+//  2、将对象的 __proto__ 属性指向构造函数的 prototype 属性
+//  3、将构造函数中的 this 指向该对象，并为这个对象添加属性和方法
+//  4、返回这个对象
 function myNew() {
   // 创建一个对象 o
   let obj = {}
@@ -712,8 +712,8 @@ class EventEmitter {
 
   // 只执行一次订阅
   once(type, callback) {
-    function fn() {
-      callback()
+    function fn(params) {
+      callback(params)
       this.off(type, fn)
     }
 
