@@ -12,6 +12,8 @@ setTimeout(() => {
 }, 2000)
 ```
 
+
+
 #### 2、支持链式调用, 解决回调地狱
 
 ```
@@ -21,6 +23,8 @@ promise
   .then((val) => {})
   .then((val) => {})
 ```
+
+
 
 #### 3、链式调用
 
@@ -43,7 +47,29 @@ new Promise((resolve, reject) => {
   })
 ```
 
-#### 4、中断 Promise
+
+
+#### 4、为什么需要在 then 中的 pending 状态的成功失败回调存进数组
+
+```js
+const p = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve(2)
+  })
+})
+
+p.then(value => {
+  
+}, err => {
+  
+})
+```
+
+主要是上面这种情况，可能是异步调用 resolve 传递结果，就需要在执行 then 的时候，将处理韩苏保存，当上面调用 resolve 的时候，再把处理函数拿出来执行
+
+
+
+#### 5、中断 Promise
 
 - 返回一个状态为 pending 的 promise
 
@@ -66,7 +92,10 @@ new Promise((resolve, reject) => {
   })
 ```
 
-#### 宏任务和微任务
+
+
+#### 6、宏任务和微任务
+
 ```
 /*
 1. 宏列队: 用来保存待执行的宏任务(回调), 比如: 定时器回调/DOM事件回调/ajax回调
@@ -80,7 +109,10 @@ new Promise((resolve, reject) => {
  */
 ```
 
-#### async 与 await
+
+
+#### 7、async 与 await
+
 ```
 // async 的返回值是一个 promise 对象
 async function fn() {

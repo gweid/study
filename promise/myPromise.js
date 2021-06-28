@@ -220,23 +220,23 @@ let mp = new MyPromise((resolve, reject) => {
 
 mp.then(
   (data) => {
-    console.log(data)
+    console.log('成功执行1', data)
     return MyPromise.resolve({
       value: '成功',
     })
   },
   (err) => {
-    console.log(err)
+    console.log('失败执行1', err)
     return MyPromise.reject({
-      reason: '失败',
+      value: '失败',
     })
   }
 )
   .then((data) => {
-    console.log(data)
+    console.log('成功执行2', data)
   })
   .catch((err) => {
-    console.log(err)
+    console.log('失败执行2', err)
   })
 
 console.log('end')
