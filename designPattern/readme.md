@@ -1,57 +1,174 @@
 # 设计模式
 
-## 设计模式概念
+可参考资料：
 
-设计模式是一套被反复使用的、多数人知晓的、经过分类编目的、代码设计经验的总结。使用设计模式是为了重用代码、让代码更容易被他人理解、保证代码可靠性。 毫无疑问，设计模式于己于他人于系统都是多赢的，设计模式使代码编制真正工程化，设计模式是软件工程的基石，如同大厦的一块块砖石一样
+[1.5w字整理23种前端设计模式](https://juejin.cn/post/6868054744557060110)
+
+
+
+
+
+设计模式就是在软件设计、开发过程中，针对普遍存在（反复出现）的各种问题、特定问题、场景的更优解决方案。
+
+设计模式可以分为以下 3 种类型：
+
+1、创建型模式：用来描述 “如何创建对象”（如何创建），它的主要特点是 “将对象的创建和使用分离”。包括单例、原型、工厂方法、抽象工厂和建造者 5 种模式。
+
+2、结构型模式：用来描述如何将类或对象按照某种布局组成更大的结构（如何组合布局更大结构）。包括代理、适配器、桥接、装饰、外观、享元和组合 7 种模式。
+
+3、行为型模式：用来识别对象之间的常用交流模式以及如何分配职责（如何分配职责）。包括模板方法、策略、命令、职责链、状态、观察者、中介者、迭代器、访问者、备忘录和解释器 11 种模式。
+
+
+
+ <img src="./imgs/img1.png"  />
+
+
 
 ## 设计原则
 
-1. 单一职责原则
 
+
+[掌握设计原则，你就是光（25个问题，你会几个）](https://juejin.cn/post/6948235657978314783)
+
+
+
+1. 单一职责原则
    - 一个程序只做好一件事
    - 如果功能过于复杂就拆分开，每个部分保持独立
-
 2. 开放/封闭原则
 
    - 对扩展开放，对修改封闭
    - 增加需求时，扩展新代码，而非修改已有代码
-
 3. 里氏替换原则
 
    - 子类能覆盖父类
    - 父类能出现的地方子类就能出现
-
 4. 接口隔离原则
 
    - 保持接口的单一独立
    - 类似单一职责原则，这里更关注接口
-
 5. 依赖倒转原则
 
    - 面向接口编程，依赖于抽象而不依赖于具
    - 使用方只关注接口而不关注具体类的实现
 
-## 常见的设计模式
 
-### 1、外观模式
 
-外观模式是最常见的设计模式之一，它为子系统中的一组接口提供一个统一的高层接口，使子系统更容易使用。简而言之外观设计模式就是把多个子系统中复杂逻辑进行抽象，从而提供一个更统一、更简洁、更易用的 API。很多我们常用的框架和库基本都遵循了外观设计模式，比如 JQuery 就把复杂的原生 DOM 操作进行了抽象和封装，并消除了浏览器之间的兼容问题，从而提供了一个更高级更易用的版本。
+## 创建型
 
-例如：浏览器事件绑定
+
+
+### 1、工厂模式
+
+从字面意思上来理解工厂模式：对于消费者来说，并不关心你的生产流程，关心的是最终的产品。
+
+所以为了让代码逻辑更加清晰，可读性更好，我们要善于将功能独立的代码块进行封装一个职责单一的类或者模块，这种基于抽象的思维就是工厂模式的来源。
+
+工厂模式又分为简单工厂模式，工厂方法模式和抽象工厂模式。
+
+
+
+#### 2-1、简单工厂
+
+需要创建一个用户，没创建一个，就要写一次。
+
+```js
+const liMing = {
+  name: "张三",
+  age: 20,
+  sex: "男",
+};
+```
+
+那么可以创建一个类，来录入多个
 
 ```
-let addMyEvent = function (el, ev, fn) {
-    if (el.addEventListener) {
-        el.addEventListener(ev, fn, false)
-    } else if (el.attachEvent) {
-        el.attachEvent('on' + ev, fn)
-    } else {
-        el['on' + ev] = fn
-    }
+class User {
+  constructor(name, role) {
+    this.name = name;
+    this.role = role;
+  }
 }
+
+const zhangsan = new User('张三', ['首页', '通讯录', '发现页'])
 ```
 
-### 2、代理模式
+
+
+#### 2-2、工厂方法
+
+当一个简单工厂变得过于复杂时，我们可以考虑用工厂方法来代替它。工厂方法的核心是**将实际创建对象的工作推迟到子类中**
+
+```js
+class User {
+  constructor(name = '', viewPage = []) {
+    this.name = name;
+    this.viewPage = viewPage;
+  }
+}
+
+class UserFactory extends User {
+  constructor(name, viewPage) {
+    super(name, viewPage)
+  }
+  create(role) {
+    switch (role) {
+      case 'superAdmin': 
+        return new UserFactory( '超级管理员', ['首页', '通讯录', '权限管理'] );
+        break;
+      case 'admin':
+        return new UserFactory( '管理员', ['首页', '通讯录'] );
+        break;
+      default:
+        throw new Error('params error');
+    }
+  }
+}
+let userFactory = new UserFactory();
+let superAdmin = userFactory.create('superAdmin');
+let admin = userFactory.create('admin');
+let user = userFactory.create('user');
+```
+
+
+
+### 2、单例模式
+
+单例设计模式（Singleton Design Pattern）理解起来非常简单。一个类只允许创建一个对象（或者实例），那这个类就是一个单例类，这种设计模式就叫作单例设计模式，简称单例模式。
+
+```js
+class GetSeetingConfig {
+  static instance = null
+
+  constructor() {
+    console.log('new')
+  }
+
+  static getInstance () {
+    if (!this.instance) {
+      this.instance = new GetSeetingConfig()
+    }
+    return this.instance
+  }
+}
+
+const seeting1 = GetSeetingConfig.getInstance()
+const seeting2 = GetSeetingConfig.getInstance()
+//两次只打印一次 new
+seeting1 === seeting2 // true
+```
+
+
+
+实际场景：例如 Vuex 的 store
+
+
+
+## 结构型
+
+
+
+### 1、代理模式
 
 是为一个对象提供一个代用品或占位符，以便控制对它的访问
 
@@ -59,12 +176,14 @@ let addMyEvent = function (el, ev, fn) {
 
 ```
 let Flower = function() {}
+
 let xiaoming = {
   sendFlower: function(target) {
     let flower = new Flower()
     target.receiveFlower(flower)
   }
 }
+
 let B = {
   receiveFlower: function(flower) {
     A.listenGoodMood(function() {
@@ -72,6 +191,7 @@ let B = {
     })
   }
 }
+
 let A = {
   receiveFlower: function(flower) {
     console.log('收到花'+ flower)
@@ -85,37 +205,126 @@ let A = {
 xiaoming.sendFlower(B)
 ```
 
-### 3、工厂模式
 
-工厂模式定义一个用于创建对象的接口，这个接口由子类决定实例化哪一个类。该模式使一个类的实例化延迟到了子类。而子类可以重写接口方法以便创建的时候指定自己的对象类型。
 
-```
-class Product {
-    constructor(name) {
-        this.name = name
-    }
-    init() {
-        console.log('init')
-    }
-    fun() {
-        console.log('fun')
-    }
-}
+通过代理方式实现图片懒加载：
 
-class Factory {
-    create(name) {
-        return new Product(name)
+```js
+class MyImg {
+	static imgNode = document.createElement("img")
+	constructor(selector) {
+    	selector.appendChild(this.imgNode);
+    }
+    
+    setSrc(src) {
+    	this.imgNode = src
     }
 }
 
-// use
-let factory = new Factory()
-let p = factory.create('p1')
-p.init()
-p.fun()
+
+class ProxyMyImg {
+	static src = 'xxx本地预览图地址loading.gif'
+
+	constructor(selector) {
+		this.img = new Image
+
+    // 通过代理的方式先设置一张本地默认图
+    this.myImg = new MyImg(selector)
+    this.myImg.setSrc(this.src)
+  }
+    
+  setSrc(src) {
+    // 设置 this.img.src 代表发起图片资源请求
+    this.img.src = src
+    // 等到图片资源加载完成
+    this.img.onload = () => {
+      // 再将图片设置上去
+    	this.myImg.setSrc(src)
+    }
+  }
+}
+
+const img = new ProxyMyImg(document.body)
+img.setSrc('xxx')
 ```
 
-### 4、策略模式
+
+
+### 2、适配器模式
+
+适配器模式的作用是解决两个软件实体间的接口不兼容的问题。使用适配器模式之后，原本由于接口不兼容而不能工作的两个软件实体可以一起工作。
+
+现实中的例子：
+
+- 港式插头转换器
+- 电源适配器
+- USB转接口
+
+例如接口数据适配：
+
+```js
+const data1 = {name: 'alan'};
+const data2 = {username: 'tom'};
+
+function sayName(param) {
+    console.log(param.name);
+}
+
+function adapter(param) {
+    return { name: param.username }
+}
+
+
+sayName(data1);
+sayName(adapter(data2));
+```
+
+
+
+### 3、装饰器模式
+
+装饰器模式就是不改变原有的代码逻辑，达到增强代码功能的作用。就像打游戏，可以通过锻造增强装备。
+
+```js
+class Shape {
+  constructor(name) {
+    this.name = name
+  }
+
+  draw() {
+    console.log(`draw ${this.name}`)
+  }
+}
+
+class ColorDecorator {
+  constructor(shape) {
+    this.shape = shape
+  }
+
+  draw() {
+    this.setColor()
+    this.shape.draw()
+  }
+
+  setColor() {
+    console.log(`color the ${this.shape.name}`)
+  }
+}
+
+let circle = new Shape('circle')
+circle.draw()
+
+let decorator = new ColorDecorator(circle)
+decorator.draw()
+```
+
+
+
+## 行为型
+
+
+
+### 1、策略模式
 
 策略模式简单描述就是：对象有某个行为，但是在不同的场景中，该行为有不同的实现算法。把它们一个个封装起来，并且使它们可以互相替换
 
@@ -133,9 +342,11 @@ function doSoming(type) {
 }
 ```
 
-### 5、观察者模式
 
-观察者模式又称发布-订阅模式（Publish/Subscribe Pattern），是我们经常接触到的设计模式，日常生活中的应用也比比皆是，比如你订阅了某个博主的频道，当有内容更新时会收到推送；又比如 Vue 的响应式。观察者模式的思想用一句话描述就是：被观察对象（subject）维护一组观察者（observer），当被观察对象状态改变时，通过调用观察者的某个方法将这些变化通知到观察者。
+
+### 2、观察者模式【发布-订阅模式】
+
+观察者模式又称发布-订阅模式（Publish/Subscribe Pattern），也是经常接触到的设计模式，日常生活中的应用也比比皆是，比如你订阅了某个博主的频道，当有内容更新时会收到推送；又比如 Vue 的响应式。观察者模式的思想用一句话描述就是：被观察对象（subject）维护一组观察者（observer），当被观察对象状态改变时，通过调用观察者的某个方法将这些变化通知到观察者。
 
 ```
 class EventBus {
