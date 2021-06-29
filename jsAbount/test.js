@@ -327,6 +327,19 @@
 // console.log(wm)
 
 
+// map 转对象
+// console.log('-----------------------map 转对象-----------------------')
+// const m = new Map()
+// m.set('1', 'aa')
+// m.set('2', 'bb')
+
+// const obj = {}
+// // forEach 是 map 提供的迭代方法
+// m.forEach((value, key) => {
+//   obj[key] = value
+// })
+// console.log(obj)
+
 
 // ajax
 // console.log('-----------------------原生 ajax--------------------------')

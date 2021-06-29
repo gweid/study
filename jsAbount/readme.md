@@ -1123,6 +1123,23 @@ m.get(b) // 值b
 
 
 
+Map 转换成 Object 对象
+
+```js
+const m = new Map()
+m.set('1', 'aa')
+m.set('2', 'bb')
+
+const obj = {}
+// forEach 是 map 提供的迭代方法
+m.forEach((value, key) => {
+  obj[key] = value
+})
+console.log(obj)
+```
+
+
+
 #### 8-4、WeakMap
 
 WeakMap 是一组键值对的字典，**键是弱引用对象，值可以是任意**
@@ -1160,7 +1177,7 @@ console.log(wm)
 #### 8-5、总结
 
 - Set
-  - 成员唯一、无序且不重复
+  - 成员唯一、无序且不重复，可以存储任意类型
   - [value,  value]，键值与键名是一致的（或者说只有键值，没有键名）
   - 可以遍历，方法有：add、delete、has
 - WeakSet
@@ -1168,7 +1185,7 @@ console.log(wm)
   - 成员都是弱引用，可以被垃圾回收机制回收，可以用来保存 DOM 节点，不容易造成内存泄漏
   - 不能遍历，方法有 add、delete、has
 - Map
-  - 本质上是键值对的集合
+  - 本质上是键值对的集合，键可以是任意类型
   - 成员也是唯一的
   - 可以遍历，方法很多可以跟各种数据格式转换
 
