@@ -121,3 +121,16 @@ async function fn() {
 
 console.log(fn())
 ```
+
+
+
+#### 8、常用的 Promise 方法
+
+- Promise.all：接受一个可迭代的参数，例如数组，全部成功，结果会按照顺序返回，如果有一个失败，那么返回失败
+- Promise.race：接受一个可迭代的参数，例如数组，返回第一个执行完的结果，无论是成功还是失败
+- Promise.any：接受一个可迭代的参数，例如数组，只要有一个成功，那么返回成功，都失败，返回失败
+- Promise.allSettled：接受一个可迭代的参数，例如数组，返回所有的执行结果
+  - 结果是：
+  ```js
+  [{ status: "rejected", reason: 1 }, { status: "fulfilled", value: 2 }]
+  ```

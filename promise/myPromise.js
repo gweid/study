@@ -75,6 +75,16 @@ class MyPromise {
 
           // 判断是否返回 promise
           if (x instanceof MyPromise) {
+            /**
+             * 如果是 promise，那么需要通过 then 拿到结果
+             * 因为后面一轮的 then 接受的 value 就是结果
+             * p.then(value => {
+             *   return new Promise(() => { return { data: '' }})
+             * }).then(value > {
+             *   console.log(value)
+             * })
+             */
+
             // x.then(
             //   (value) => resolve(value),
             //   (reason) => reject(reason)
@@ -88,6 +98,15 @@ class MyPromise {
         }
       }
 
+      // 为什么需要将 pending 状态的回调函数存进数组
+      // new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve('111')
+      //   })
+      // })
+      // .then(value => {})
+      // 主要是处理异步的情况，如果上面是异步调用，那么就需要存起来，等到触发 resolve 的时候，再拿出来执行
+      // 类似发布订阅模式
       if (this.status === PENDING) {
         this.onResolvedCallbacks.push(() => {
           // let x = onResolved(this.value)
