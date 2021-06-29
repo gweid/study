@@ -2166,7 +2166,7 @@ ulElm.onclick = function(e) {
 target 和 currentTarget
 
 - target：触发事件的元素，上面的例子就是每个 li
-- currentTarget：是事件绑定的元素，上面的例子就是
+- currentTarget：是事件绑定的元素，上面的例子就是 ul
 
 事件委托的好处：
 
