@@ -473,7 +473,7 @@ url属性
 
 效果如下：
 
-<img src="/imgs/img3.png" style="zoom:50%;" />
+<img src="./imgs/img3.png" style="zoom:50%;" />
 
 会发现上边的边距明显不对，子元素并没有相对父元素有 50px 的距离，这种情况就是 margin 塌陷问题
 
@@ -513,7 +513,7 @@ url属性
 
 块格式化上下文，它是一个独立的渲染区域，只有块级盒子参与，它规定了内部的块级盒子如何布局，并且与这个区域外部毫不相干。
 
-<img src="/imgs/img1.png" style="zoom:50%;" />
+<img src="./imgs/img1.png" style="zoom:50%;" />
 
 **BFC 渲染规则**
 
@@ -557,7 +557,7 @@ IFC，行内格式上下文
 
 IFC 的形成条件非常简单，块级元素中仅包含内联级别元素，需要注意的是当IFC中有块级元素插入时，会产生两个匿名块将父元素分割开来，产生两个 IFC
 
-<img src="/imgs/img2.png" style="zoom:50%;" />
+<img src="./imgs/img2.png" style="zoom:50%;" />
 
 
 
