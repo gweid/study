@@ -946,3 +946,10 @@ letter-spacing : 字母、中文
 
 删除线：text-decoration :  line-through
 
+
+
+#### 43、CSS 会阻塞 DOM 树的解析和渲染吗
+
+- DOM解析和CSS解析是两个并行的进程，所以 CSS 加载不会阻塞 DOM 的解析。
+- 由于 Render Tree 是依赖于 DOM Tree 和 CSSOM Tree 的，所以必须等待到 CSSOM Tree 构建完成，也就是 CS S资源加载完成(或者 CSS 资源加载失败)后，才能开始渲染。因此，CSS 加载是会阻塞 Dom 的渲染的。
+- 由于 js 可能会操作之前的 Dom 节点和 css 样式，因此浏览器会维持 html中 css 和 js 的顺序。因此，样式表会在后面的js执行前先加载执行完毕。所以 css 会阻塞后面js的执行。
