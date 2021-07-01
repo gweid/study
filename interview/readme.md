@@ -1,4 +1,4 @@
-# 面试相关文章
+# 面试相关
 
 [2021年前端面试必读文章【超三百篇文章/赠复习导图】](https://juejin.cn/post/6844904116339261447)
 
@@ -103,7 +103,7 @@
         
         计算元素样式，例如 CSS 样式会继承父级的样式，如 font-size、color 之类的
 
-![解析 CSS 生成 CSSOM](../imgs/img2.png)
+<img src="../imgs/img2.png" alt="解析 CSS 生成 CSSOM" style="zoom: 67%;" />
 
 -   加载或执行 JavaScript
 
@@ -203,7 +203,7 @@ jsonp 的优缺点：
 -   服务器收到跨域请求，根据自身配置返回请求头；如果没配置过跨域，那么返回不包含 Access-Control-Allow-\*\*
 -   浏览器根据有没有 Access-Control-Allow-\*\* 做判断，如果没有，则报警告
 
-    3.服务器代理：同源策略主要存在于浏览器中，当不利用浏览器发起请求，而是直接在两台服务器中，那么就不会存在跨域的问题
+    3.服务器代理：同源策略主要存在于浏览器中，不利用浏览器发起请求，而是直接在两台服务器中，那么就不会存在跨域的问题
 
 3.常见的 webpack 的 devServer
 
@@ -307,7 +307,9 @@ define(["./a", "./b"], function(a, b) {
 #### 5-3、避免重绘回流
 
 -   不要频繁使用 style，而是使用 class 进行一次性修改
+-   避免使用table布局
 -   将动画效果放到脱离文档流的 position 属性为 absolute 或 fixed 的元素上
+-   避免频繁操作DOM，创建一个documentFragment，在它上面应用所有DOM操作，最后再把它添加到文档中。
 -   也可以先为元素设置 display: none，操作结束后再把它显示出来。因为在 display 属性为 none 的元素上进行的 DOM 操作不会引发回流和重绘
 -   对于 resize、scroll 等进行防抖/节流处理
 -   使用 css3 动画替代 js 操作 DOM，css3 动画会 GPU 加速

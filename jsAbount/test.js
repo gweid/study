@@ -685,6 +685,34 @@
 // }
 
 
+// 实现 JSONP
+function jsonp(url, params, callback) {
+  params = {
+    ...params,
+    callback
+  }
+
+  const str = params.keys().map(item => {
+    return `${item}=${params[item]}`
+  }).join('&')
+
+  const requireStr = `${url}?${str}`
+
+  const script = document.createElement('script')
+  script.setAttribute('src', requireStr)
+  document.body.appendChild(script)
+}
+
+jsonp({
+  url: 'http://www.xxxxx.com',
+  params: {
+    name: 'jack'
+  },
+  callback(res) {
+    console.log(res);
+  }
+})
+
 
 
 
