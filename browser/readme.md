@@ -244,7 +244,7 @@ Expires 是 http1.0 的产物，Cache-Control 是 http1.1 的产物，两者同�
 
 **Last-Modified 与 ETag 对比：**
 
-在精准度上，ETag 优于 Last-Modified。优于 ETag 是按照内容给资源上标识，因此能准确感知资源的变化。而 Last-Modified 就不一样了，它在一些特殊的情况并不能准确感知资源变化，主要有两种情况:
+在精准度上，ETag 优于 Last-Modified。优于 ETag 是按照内容给资源上标识，因此能准确感知资源的变化。而 Last-Modified 就不一样了，它在一些特殊的情况并不能准确感知资源变化，主要有两种情况：
 
 - 编辑了资源文件，但是文件内容并没有更改，这样也会造成缓存失效。
 
