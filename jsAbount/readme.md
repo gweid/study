@@ -1485,6 +1485,16 @@ console.log(flatFun(arr))
 
 
 
+**ES Module 与 CommonJs 的区别：**
+
+-   CommonJS 输出的是一个值的拷贝，ES Module 输出的是值的引用
+-   CommonJS 是在运行的时候加载，ES Module 是在编译的时候
+-   CommonJS 的 require 语法是同步的，所以 CommonJS 规范只适合于服务端，ES Module 是异步加载的
+-   CommonJS 的 this 指向当前模块，ES Module 的 this 指向 undefined
+-   CommonJs 导入的模块路径可以是一个表达式，因为它使用的是 require() 方法；而 ES6 Modules 只能是字符串
+
+
+
 ### 12、垃圾回收
 
 可参考：
