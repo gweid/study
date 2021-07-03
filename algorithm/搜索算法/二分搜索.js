@@ -24,6 +24,7 @@ function binarySearch(arr, value) {
 console.log('二分搜索结果：', binarySearch([1, 5, 8, 13, 27], 8))
 
 
+
 // 使用分而治之的方法实现二分搜索
 function binarySearchRecursive(arr, value, minIdx, maxIdx) {
   if (minIdx <= maxIdx) {
