@@ -1041,6 +1041,10 @@ if(sessionStorage.getItem('good_exit') &&
 
 ### 27、如何渲染几万条数据并不卡住界面
 
+
+
+**第一种：时间分片**
+
 如何在不卡住页面的情况下渲染数据，也就是说不能一次性将几万条都渲染出来，而应该一次渲染部分 DOM，那么就可以通过 requestAnimationFrame 来每 16 ms 刷新一次
 
 ```
@@ -1086,6 +1090,14 @@ if(sessionStorage.getItem('good_exit') &&
 </body>
 </html>
 ```
+
+
+
+**第二种：虚拟列表**
+
+[高性能渲染十万条数据(虚拟列表)](https://juejin.cn/post/6844903982742110216)
+
+
 
 ### 28、Javascript 中 callee 和 caller 的作用
 

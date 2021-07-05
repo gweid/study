@@ -2212,13 +2212,13 @@ target 和 currentTarget
 
 **fetch**
 
-fetch号称是AJAX的替代品，是在ES6出现的，使用了ES6中的promise对象。Fetch是基于promise设计的。Fetch的代码结构比起ajax简单多。**fetch不是ajax的进一步封装，而是原生js，没有使用XMLHttpRequest对象**
+fetch 号称是 AJAX 的替代品，是在 ES6 出现的，使用了 ES6 中的 promise 对象。Fetch是基于 promise 设计的。Fetch 的代码结构比起ajax 简单多。**fetch 不是 ajax 的进一步封装，而是原生 js，没有使用 XMLHttpRequest 对象**
 
 
 
 **axios**
 
-是一种基于Promise封装的HTTP客户端，特点是：
+是一种基于 Promise 封装的 HTTP 客户端，特点是：
 
 - 浏览器端发起 XMLHttpRequests 请求
 - node 端发起 http 请求
@@ -2334,6 +2334,33 @@ console.log(add(1)(2)(3))
 ```
 
 
+
+#### 16、if(a =\= 1 && a =\= 2 && a =\= 3) 成立、if(a =\=\= 1 && a =\=\= 2 && a =\=\= 3) 成立
+
+使 if(a =\= 1 && a =\= 2 && a =\= 3) 成立：
+
+```js
+const a = {
+  value: 0
+  valueOf: () => {
+    return this.value += 1
+  }
+}
+```
+
+
+
+使 if(a =\=\= 1 && a =\=\= 2 && a =\=\= 3) 成立：
+
+```js
+var value = 0 // window.value
+
+Object.defineProperty(window, 'a', {
+  get() {
+    return value += 1
+  }
+})
+```
 
 
 
