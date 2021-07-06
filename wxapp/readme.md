@@ -2,6 +2,12 @@
 
 [知识点合集](https://juejin.im/post/5da444ab6fb9a04e054d93d8)
 
+
+
+## 小程序基础
+
+
+
 ### 小程序里边的双向绑定和 vue 的双向绑定有什么区别
 
 -   1，首先利用 bindinput 来触发改变 input 输入框中的值
@@ -315,3 +321,43 @@ webview的页面，则通过
 小程序每次冷启动时，都会检查是否有更新版本，如果发现有新版本，将会异步下载新版本的代码包，并同时用客户端本地的包进行启动，即新版本的小程序需要等下一次冷启动才会应用上。
 
 如果需要马上应用最新版本，可以使用 wx.getUpdateManager API 进行处理。
+
+
+
+## 小程序一些坑
+
+
+
+#### 小程序中使用web-view打开pdf, IOS 可以正常打开，Android 打开为空白
+
+正常情况下：src 里放链接就能够正常实现
+
+```js
+<web-view src="{{link}}"></web-view>
+```
+
+但是 src 里面放 pdf 的链接涉及到了兼容性问题（苹果手机可以正常打开 pdf 格式文件，安卓打开为空白）
+
+解决：使用 wx.downloadFile 和 wx.openDocument
+
+```js
+wx.downloadFile({
+  url: 'https://.../XXX.pdf', //要预览的 PDF 的地址
+  success: function (res) {
+    if (res.statusCode === 200) { //成功
+      var Path = res.tempFilePath //返回的文件临时地址，用于后面打开本地预览所用
+      wx.openDocument({
+        fileType: 'pdf', // 文件类型
+        filePath: Path, //要打开的文件路径
+        success: function (res) {
+          console.log('打开 PDF 成功');
+        }
+      })
+    }
+  },
+  fail: function (err) {
+    console.log(err); //失败
+  }
+})
+```
+
