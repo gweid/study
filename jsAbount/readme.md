@@ -841,6 +841,28 @@ this 是执行上下文中的一个属性，它指向最后一次调用这个方
 
   可以看到，new Func() 的时候，输出的 this.a 是 undefined，并不是 ’b‘，这就证明了 this 指向这个新创建的对象
 
+  
+
+  ```js
+  class Person {
+    constructor(name) {
+      this.name = name
+    }
+    
+    getName() {
+      console.log(this.name)
+    }
+  }
+  
+  const p = new Person('jack')
+  p.getName() // jack
+  
+  const func = p.getName
+  func('jack') // 直接报错，因为此时没有绑定 this，this 为 undefined，undefined.name 会报错
+  ```
+
+  
+
 - **apply 、 call 和 bind 调用模式**：这三个方法都可以显示的指定调用函数的 this 指向
 
   ```js
