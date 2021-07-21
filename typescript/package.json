@@ -1,0 +1,17 @@
+{
+  "name": "typescript_test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:w": "tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^3.7.4"
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "description": ""
+}
