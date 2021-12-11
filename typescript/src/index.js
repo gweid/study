@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -359,7 +360,7 @@ var C = /** @class */ (function () {
     };
     __decorate([
         method()
-    ], C.prototype, "say");
+    ], C.prototype, "say", null);
     return C;
 }());
 var c1 = new C();
