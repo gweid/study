@@ -358,6 +358,18 @@ function doStuff(arg: Foo | Bar) {
     }
 }
 
+// typeof 类型守卫
+interface typeofBar {
+  name: string
+  age: number | string
+}
+
+function doTypeof (arg: typeofBar) {
+  if (typeof arg.age === 'string') {
+    console.log('age 是 string 类型')
+  }
+}
+
 //-------------------------------------- 高级类型
 // 交叉类型     交叉类型是将多个类型合并为一个类型。 这让我们可以把现有的多种类型叠加到一起成为一种类型，它包含了所需的所有类型的特性。
 // interface IAnyObj {
