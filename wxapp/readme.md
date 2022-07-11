@@ -324,7 +324,7 @@ webview的页面，则通过
 
 
 
-## 小程序一些坑
+## 小程序一些问题
 
 
 
@@ -360,4 +360,36 @@ wx.downloadFile({
   }
 })
 ```
+
+
+
+#### 小程序A内嵌H5点击跳转小程序B
+
+参考：https://developers.weixin.qq.com/community/develop/doc/0006a452298b081a330edba5658c00?highLine=%25E5%2586%2585%25E5%25B5%258CH5%25E8%25B7%25B3%25E8%25BD%25AC%25E5%2585%25B6%25E5%25AE%2583%25E5%2590%2591%25E7%25A8%258B%25E5%25BA%258F
+
+
+
+#### 小程序内嵌H5下载APP
+
+内嵌H5无法下载 APP，需要引导用户，打开外部浏览器下载
+
+参考：https://developers.weixin.qq.com/community/develop/doc/0006e0bd1d49089b6c1dd438056400?highLine=%25E5%2586%2585%25E5%25B5%258CH5%25E4%25B8%258B%25E8%25BD%25BDAPP
+
+同时，要注意诱导下载行为，参考：https://developers.weixin.qq.com/community/business/doc/0000203f3e0ac853053df659d5600d
+
+
+
+#### 小程序人脸问题
+
+如果小程序需要人脸，需要主体类符合规范，也就是需要资质
+
+资质：https://developers.weixin.qq.com/community/business/doc/000442d352c1202bd498ecb105c00d
+
+人脸问题：https://developers.weixin.qq.com/community/develop/doc/000ea42be4ce4022a9edbe2ac51809?highLine=%25E4%25BA%25BA%25E8%2584%25B8
+
+接入流程：https://developers.weixin.qq.com/community/develop/article/doc/000eeeb87d0948e3bbdd820905c013
+
+同时，无法使用第三方api进行人脸操作
+
+
 
