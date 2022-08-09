@@ -393,3 +393,6 @@ wx.downloadFile({
 
 
 
+#### APP内嵌H5跳转小程序
+
+参考：https://developers.weixin.qq.com/community/develop/doc/000c6c84ac4d90b04f2cd538e56400?jumpto=comment&commentid=0000a4205e899891432c0befb518
