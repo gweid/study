@@ -363,6 +363,12 @@ wx.downloadFile({
 
 
 
+#### 小程序 web-view 嵌套H5 问题指引
+
+https://developers.weixin.qq.com/community/search?page=1&block=1&type=1&query=web-view
+
+
+
 #### 小程序A内嵌H5点击跳转小程序B
 
 参考：https://developers.weixin.qq.com/community/develop/doc/0006a452298b081a330edba5658c00?highLine=%25E5%2586%2585%25E5%25B5%258CH5%25E8%25B7%25B3%25E8%25BD%25AC%25E5%2585%25B6%25E5%25AE%2583%25E5%2590%2591%25E7%25A8%258B%25E5%25BA%258F
@@ -396,3 +402,10 @@ wx.downloadFile({
 #### APP内嵌H5跳转小程序
 
 参考：https://developers.weixin.qq.com/community/develop/doc/000c6c84ac4d90b04f2cd538e56400?jumpto=comment&commentid=0000a4205e899891432c0befb518
+
+
+
+#### 查看 web-view 的 jssdk 支持什么 api
+
+ 可以直接通过查看 jssdk 源码
+

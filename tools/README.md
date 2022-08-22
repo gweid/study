@@ -36,6 +36,10 @@
 
 
 
+7、[fast-deep-equal](https://www.npmjs.com/package/fast-deep-equal)：最快的深度相等检查，支持 Date、RegExp 和 ES6 Map、Set 和类型数组
+
+
+
 
 
 ###物料开阿发
@@ -54,7 +58,7 @@
 
 
 
-、[esno](https://www.npmjs.com/package/esno)：使用` esbuild` 增强运行时，用于加载 `TypeScript` 和 `ESM`，是的可以直接在 `package.json` 中通过命令执行 `ts` 文件
+4、[esno](https://www.npmjs.com/package/esno)：使用` esbuild` 增强运行时，用于加载 `TypeScript` 和 `ESM`，是的可以直接在 `package.json` 中通过命令执行 `ts` 文件
 
 
 
@@ -90,11 +94,11 @@
 
 
 
-1、[ora](https://www.npmjs.com/package/ora)：一款优雅的终端加载器（加载动画）
+13、[ora](https://www.npmjs.com/package/ora)：一款优雅的终端加载器（加载动画）
 
 
 
-1、[mem-fs](https://www.npmjs.com/package/mem-fs)：是对文件进行读取，存入内存中；[mem-fs-editor](https://www.npmjs.com/package/mem-fs-editor)：是对内存中的文件信息，使用 `ejs` 语法进行编译。最后调用 `commit` 方法输出最终文件。其实这两个工具就是处理 `ejs` 模板语法的
+14、[mem-fs](https://www.npmjs.com/package/mem-fs)：是对文件进行读取，存入内存中；[mem-fs-editor](https://www.npmjs.com/package/mem-fs-editor)：是对内存中的文件信息，使用 `ejs` 语法进行编译。最后调用 `commit` 方法输出最终文件。其实这两个工具就是处理 `ejs` 模板语法的
 
 
 
@@ -106,7 +110,7 @@
 
 
 
-1、[glob](https://www.npmjs.com/package/glob)：支持在 `jsvascript` 中使用 `shell` 模式的文件（路径）匹配
+17、[glob](https://www.npmjs.com/package/glob)：支持在 `jsvascript` 中使用 `shell` 模式的文件（路径）匹配
 
 
 
@@ -136,6 +140,12 @@
 
 
 
+5、[file-type](https://www.npmjs.com/package/file-type)：通过检查文件二进制序列的 `magic number` 来判断文件类型，而不是文件后缀（更加准确），参考：https://juejin.cn/post/7131019859227312165
+
+
+
+
+
 ### 单元测试
 
 1、[Jest](https://jestjs.io/zh-Hans/)：`Jest` 是一款优雅、简洁的 `JavaScript` 测试框架
@@ -161,4 +171,12 @@
 
 
 ### 框架相关
+
+#### React
+
+1、[rc-table](https://www.npmjs.com/package/rc-table)：一款好用的 `react` 表单组件，`antd` 的 `table` 也是基于这个进行的二次封装，在移动端没有什么现成的 `table` 框架组件，可以使用这个进行简单封装
+
+
+
+2、
 
