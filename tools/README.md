@@ -46,7 +46,7 @@
 
 
 
-###物料开阿发
+###物料开发
 
 1、[rimraf](https://www.npmjs.com/package/rimraf)：方便在 `node` 中使用 `rm -rf`，特别是在 `window` 环境中，直接使用  `rm -rf` 会失效。
 
@@ -123,6 +123,12 @@
 
 
 19、[detect-port](https://www.npmjs.com/package/detect-port)：`Node` 中用来做端口检测
+
+
+
+20、[simpleGit：用来操作 git
+
+
 
 
 
