@@ -111,3 +111,29 @@
 4. 处理冲突 --> add --> commit --> push
 5. 重新提交 mr
 
+
+
+### 3、获取当前分支名
+
+1、通过 `git symbolic-ref`
+
+```bash
+const { execSync } = require('child_process');
+
+const branchName = execSync('git symbolic-ref --short -q HEAD', {
+  encoding: 'utf8'
+}).trim();
+```
+
+
+
+2、通过 `git rev-parse`
+
+```bash
+const { execSync } = require('child_process')
+
+const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/\s+/, '');
+```
+
+
+
