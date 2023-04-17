@@ -116,4 +116,62 @@ type FooReturn = ReturnType<typeof foo>; // { baz: number }
 
 
 
+**5、enum 类型的声明与调用**
+
+有如下：
+
+```typescript
+enum CODEFILETYPE {
+  NORMAL = 'normal',
+  VUE = 'vue'
+}
+
+const scanFiles = (type: CODEFILETYPE) => {
+  if (type === CODEFILETYPE.NORMAL) {
+  	
+  }
+}
+```
+
+调用 scanFiles 函数的时候，可以：
+
+```typescript
+scanFiles(CODEFILETYPE.NORMAL)
+scanFiles(CODEFILETYPE.VUE)
+```
+
+
+
+**6、继承类删除某个属性，后增加某个属性**
+
+有如下类型
+
+```typescript
+interface IPorp {
+  name: string
+  age: number
+  sex: string
+}
+```
+
+如果不想要 sex 属性，并想额外加一个属性，可以利用工具函数 Omit
+
+```typescript
+interface IPorp {
+  name: string
+  age: number
+  sex: string
+}
+
+// 删除 sex 属性，并添加 interest 属性
+type NProp = Omit<IPorp, 'sex'> & {
+  interest: string
+}
+
+const obj: NProp = {
+  name: '',
+  age: 19,
+  interest: ''
+}
+```
 
