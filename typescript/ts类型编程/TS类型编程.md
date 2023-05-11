@@ -1,8 +1,8 @@
-# 基础认知
+# TS 类型编程
 
 
 
-### 为什么 TypeScript 类型编程又叫类型体操
+##为什么 TypeScript 类型编程又叫类型体操
 
 - TypeScript 给 JavaScript 增加了一套类型系统，但并没有改变 JS 的语法，只是做了扩展，是 JavaScript 的超集。
 - 这套类型系统支持泛型，也就是类型参数，有了一些灵活性。而且又进一步支持了对类型参数的各种处理，也就是类型编程，灵活性进一步增强。
@@ -11,13 +11,13 @@
 
 
 
-### 类型运算
+##类型运算
 
 主要看看 ts 中几种类型运算
 
 
 
-#### 条件类型
+### 条件类型
 
 ts 中条件判断是 `extends ? :`，叫做条件类型。其实就是 ts 类型系统里的 if else。例子：
 
@@ -33,7 +33,7 @@ type res = isTrue<1>   // false
 
 
 
-#### 类型推导
+### 类型推导
 
 类型推导，infer，主要用来`提取类型的一部分`。
 
@@ -51,7 +51,7 @@ type res1 = IFirst<[1, 2]>
 
 
 
-#### 联合与交叉
+### 联合与交叉
 
 联合类型类似 js 里的或运算符 |，但是作用于类型，代表类型可以是几个类型之一
 
@@ -77,7 +77,7 @@ type IObj1 = 'aaa' & 'bbb' // never
 
 
 
-#### 映射类型
+### 映射类型
 
 对象、class 在 TypeScript 对应的类型是索引类型，`映射类型`可以对索引类型作修改。
 
@@ -104,7 +104,7 @@ type res2 = IMapVal<{name: 'jack', age: 20}>
 
 结果就是：
 
- <img src="../../imgs/img1.png" style="zoom:50%;" />
+ <img src="../imgs/img1.png" style="zoom:50%;" />
 
 
 
@@ -120,7 +120,7 @@ type res3 = IMapKey<{name: 'jack', age: 20}>
 
 结果是：
 
- <img src="../../imgs/img2.png" style="zoom:50%;" />
+ <img src="../imgs/img2.png" style="zoom:50%;" />
 
 > 解析一下这里的 & string：
 >
@@ -129,6 +129,8 @@ type res3 = IMapKey<{name: 'jack', age: 20}>
 > 如果不这样做，会不能将 xxx 类型赋值给 xxx 类型的错误
 
 
+
+## TS类型编程的套路
 
 
 
