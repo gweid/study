@@ -1,4 +1,10 @@
-// --------------------------------- 类型运算
+// -------------------------------------- 类型与类型运算
+// 对应小册：https://juejin.cn/book/7047524421182947366/section/7048281149034102823
+
+// 约束某个字符串类型是什么开头
+type IStr = `#${string}`
+// const strRes: IStr = 'kkk' // 报错
+const strRes: IStr = '#kkk'
 
 // 条件类型 extends
 type isTrue<T> = T extends 2 ? true : false

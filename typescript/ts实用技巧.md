@@ -175,3 +175,17 @@ const obj: NProp = {
 }
 ```
 
+
+
+**7、约束字符串是什么开头、什么结尾**
+
+```typescript
+// 约束某个字符串类型是什么开头
+type IStr = `#${string}`
+
+// const strRes: IStr = 'kkk' // 报错
+const strRes: IStr = '#kkk'
+```
+
+
+
