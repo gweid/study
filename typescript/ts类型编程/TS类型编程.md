@@ -454,9 +454,451 @@ type GetRefProps<Props> =
 
 
 
+### 套路二：重新构造做变换
+
+#### 简介
+
+类型编程主要的目的就是对类型做各种转换，那么如何对类型做修改呢？
+
+TypeScript 类型系统支持 3 种可以声明任意类型的变量： type、infer、类型参数。
 
 
 
+type 叫做类型别名，其实就是声明一个变量存储某个类型：
+
+```typescript
+type PTest = Promise<number>;
+```
+
+
+
+infer 用于类型的提取，然后存到一个变量里，相当于局部变量：
+
+```typescript
+type GetValueType<P> = P extends Promise<infer Value> ? Value : never;
+```
+
+
+
+类型参数用于接受具体的类型，在类型运算中也相当于局部变量：
+
+```typescript
+type IsTwo<T> = T extends 2 ? true : false;
+```
+
+
+
+但是，严格来说这三种也都不叫变量，因为它们不能被重新赋值。
+
+TypeScript 设计可以做类型编程的类型系统的目的就是为了产生各种复杂的类型，那不能修改怎么产生新类型呢？
+
+答案是**重新构造**。
+
+
+
+#### 数组类型的重新构造
+
+
+
+**例一：数组添加元素**
+
+```typescript
+// 末尾添加一个元素
+type PushTuple<T extends unknown[], P> = [...T, P]
+
+// 前面插入一个元素
+type UnshiftTuple<T extends unknown[], P> = [P, ...T]
+```
+
+结果：
+
+![](./imgs/img16.png)
+
+
+
+**例二：合并两个数组**
+
+例如，有两个元组：
+
+```typescript
+type tuple1 = [1, 2]
+type tuple2 = ['name', 'age']
+```
+
+想要合并成：
+
+```typescript
+type tuple = [[1, 'name'], [2, 'age']]
+```
+
+那么可以：
+
+```typescript
+type ZipTuple<
+  T extends [unknown, unknown],
+  P extends [unknown, unknown]
+> = T extends [infer TOne, infer TTwo]
+      ? P extends [infer POne, infer PTwo]
+        ? [[TOne, POne], [TTwo, PTwo]]
+        : []
+      : []
+```
+
+> 解析
+>
+> 两个类型参数 T、P 是两个元组，类型是 [unknown, unknown]，代表 2 个任意类型的元素构成的元组。
+>
+> 通过 infer 分别提取 T 和 P 的元素到 infer 声明的局部变量 TOne、TTwo、POne、PTwo 里。
+>
+> 用提取的元素构造成新的元组返回即可
+
+结果：
+
+![](./imgs/img17.png)
+
+
+
+但是这样只能合并两个元素的数组，下面实现一下任意个元素的：
+
+```typescript
+type ZipAllTuple<
+  T extends unknown[],
+  P extends unknown[]
+> = T extends [infer TOne, ...infer TOther]
+      ? P extends [infer POne, ...infer POther]
+        ? [[TOne, POne], ...ZipAllTuple<TOther, POther>]
+        : []
+      : []
+```
+
+> 解析：
+>
+> 类型参数 T、P 声明为 unknown[]，也就是元素个数任意，类型任意的数组。
+>
+> 每次提取 T 和 P 的第一个元素 TOne、POne，剩余的放到 TOther、POther 里。
+>
+> 用 TOne、POne 构造成新的元组的一个元素，剩余元素继续**递归**处理 TOther、POther。
+
+结果：
+
+![](./imgs/img18.png)
+
+
+
+#### 字符串类型的重新构造
+
+
+
+**例一：字符串首字母转为大写**
+
+```typescript
+type CapitalizeStr<Str extends string> =
+		Str extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : Str
+```
+
+> 解析：
+>
+> 声明了类型参数 Str 是要处理的字符串类型，通过 extends 约束为 string。
+>
+> 通过 infer 提取出首个字符到局部变量 First，提取后面的字符到局部变量 Rest。
+>
+> 然后使用 TypeScript 提供的内置高级类型 Uppercase 把首字母转为大写，加上 Rest，构造成新的字符串类型返回。
+
+结果：
+
+![](./imgs/img19.png)
+
+
+
+**例二：实现下划线转驼峰**
+
+```typescript
+type CamelCase<Str extends string> =
+  Str extends `${infer Left}_${infer Right}${infer Rest}`
+    ? `${Left}${Uppercase<Right>}${CamelCase<Rest>}`
+    : Str 
+```
+
+> 解析：
+>
+> 类型参数 Str 是待处理的字符串类型，约束为 string。
+>
+> 提取 _ 之前和之后的两个字符到 infer 声明的局部变量 Left 和 Right，剩下的字符放到 Rest 里。
+>
+> 然后把右边的字符 Right 大写，和 Left 构造成新的字符串，剩余的字符 Rest 要继续递归的处理。
+
+结果：
+
+![](./imgs/img20.png)
+
+
+
+**例三： 删除字符串某个子串**
+
+```typescript
+type DelSubStr<
+  Str extends string,
+  DelStr extends string
+> = Str extends `${infer Prefix}${DelStr}${infer Suffix}`
+		? `${Prefix}${Suffix}`
+		: Str
+```
+
+> 解析：
+>
+> 类型参数 Str 是待处理的字符串， DelStr 是要删除的字符串，都通过 extends 约束为 string 类型。
+>
+> 通过模式匹配提取 DelStr 之前和之后的字符串到 infer 声明的局部变量 Prefix、Suffix 中。
+>
+> 如果不匹配就直接返回 Str。
+>
+> 如果匹配，那就用 Prefix、Suffix 构造成新的字符串，然后返回
+
+结果：
+
+![](./imgs/img21.png)
+
+
+
+但是，上面的处理方式有个缺点，就是当字符串有多处重复的子串需要删除，就没法做到。需要在上面的基础上，加递归处理
+
+```typescript
+type DelSubStrAll<
+  Str extends string,
+  DelStr extends string
+> = Str extends `${infer Prefix}${DelStr}${infer Suffix}`
+    ? `${DelSubStrAll<`${Prefix}${Suffix}`, DelStr>}`
+    : Str
+```
+
+> 解析：
+>
+> 递归调用 DelSubStrAll 去处理
+
+结果：
+
+![](./imgs/img22.png)
+
+
+
+#### 函数类型的重新构造
+
+**例一：在已有的函数类型上添加一个参数**
+
+```typescript
+type AppendArgument<Func extends Function, Arg>
+  = Func extends (...args: infer Args) => infer ReturnType
+    ? (...args: [...Args, Arg]) => ReturnType
+    : never
+```
+
+> 解析：
+>
+> 类型参数 Func 是待处理的函数类型，通过 extends 约束为 Function，Arg 是要添加的参数类型。
+>
+> 通过模式匹配提取参数到 infer 声明的局部变量 Args 中，提取返回值到局部变量 ReturnType 中。
+>
+> 用 Args 数组添加 Arg 构造成新的参数类型，结合 ReturnType 构造成新的函数类型返回。
+
+结果：
+
+![](./imgs/img23.png)
+
+
+
+#### 索引类型的重新构造
+
+
+
+**例一： 索引类型修改值value**
+
+```typescript
+type MapValue<T extends object> = {
+  [K in keyof T]: [T[K], T[K]]
+}
+```
+
+> 解析：
+>
+> 类型参数 T 是待处理的索引类型，通过 extends 约束为 object。
+>
+> 用 keyof 取出 T 的索引，作为新的索引类型的索引，也就是 K in keyof T。
+>
+> 值的类型可以做变换，这里用索引类型的值 T[K] 构造成了三个元素的元组类型 [T[K], T[K]]
+
+结果：
+
+![](./imgs/img24.png)
+
+
+
+**例二： 索引类型修改 key**
+
+除了可以对 Value 做修改，也可以对 Key 做修改，使用 as，这叫做`重映射
+
+比如把索引类型的 Key 变为大写
+
+```typescript
+type UpperKey<T extends object> = {
+  [K in keyof T as Uppercase<K & string>]: T[K]
+}
+```
+
+> 解析：
+>
+> 类型参数 T 是待处理的索引类型，通过 extends 约束为 object。
+>
+> 新的索引类型的索引为 T 中的索引，也就是 K in keyof T，但要做一些变换，也就是 as 之后的。
+>
+> 通过 Uppercase 把索引 K 转为大写，因为索引可能为 string、number、symbol 类型，而这里只能接受 string 类型，所以要 & string，也就是取索引中 string 的部分。
+>
+> value 保持不变，也就是之前的索引 K 对应的值的类型 T[K]。
+
+结果：
+
+![](./imgs/img25.png)
+
+
+
+如果只是想将 Key 的首字母大写，可以做如下改造：
+
+```typescript
+type UpperKey<T extends object> = {
+  [
+    K in keyof T as K extends `${infer First}${infer Rest}`
+      ? `${Uppercase<First>}${Rest}`
+      : K
+  ]: T[K]
+}
+```
+
+结果：
+
+![](./imgs/img26.png)
+
+
+
+**例三： 模拟实现 Record**
+
+```typescript
+type MyRecord<K extends string | number | symbol, T> = {
+  [P in K]: T
+}
+```
+
+结果：
+
+![](./imgs/img27.png)
+
+
+
+**例四： 只读与可选的操作**
+
+1、添加只读修饰符
+
+```typescript
+type ToReadonly<T> = {
+  readonly [K in keyof T]: T[K]
+}
+```
+
+结果：
+
+![](./imgs/img28.png)
+
+
+
+2、添加可选修饰符
+
+```typescript
+type ToPartial<T> = {
+  [K in keyof T]?: T[K]
+}
+```
+
+结果：
+
+![](./imgs/img29.png)
+
+
+
+3、去除只读修饰符
+
+```typescript
+type DelReadonly<T> = {
+  -readonly [K in keyof T]: T[K]
+}
+```
+
+结果：
+
+![](./imgs/img30.png)
+
+
+
+4、去除可选修饰符
+
+```typescript
+type DelPartial<T> = {
+  [K in keyof T]-?: T[K]
+}
+```
+
+结果：
+
+![](./imgs/img31.png)
+
+
+
+**例五：根据值的类型做过滤**
+
+```typescript
+type FilterByValueType<T extends Record<string, any>, P> = {
+  [K in keyof T as T[K] extends P ? K : never]: T[K]
+}
+```
+
+> 解析：
+>
+> 类型参数 T 为要处理的索引类型，通过 extends 约束为索引为 string，值为任意类型的索引类型 Record<string, any>。
+>
+> 类型参数 P 为要过滤出的值的类型。
+>
+> 构造新的索引类型，索引为 T 的索引，也就是 Key in keyof T，但要做一些变换，也就是 as 之后的部分。
+>
+> 如果原来索引的值 T[K] 是 P 类型，索引依然为之前的索引 K，否则索引设置为 never，never 的索引会在生成新的索引类型时被去掉。
+>
+> 值保持不变，依然为原来索引的值，也就是 T[K]。
+>
+> 这样就达到了过滤索引类型的索引，产生新的索引类型的目的
+
+结果：
+
+![](./imgs/img32.png)
+
+
+
+**例六：根据 Key 值做过滤**
+
+```typescript
+type FilterByKey<T extends Record<string, any>, P> = {
+  [K in keyof T as K extends P ? never : K]: T[K]
+}
+```
+
+结果：
+
+![](./imgs/img33.png)
+
+
+
+#### 重新构造做变换总结
+
+TypeScript 支持 type、infer、类型参数来保存任意类型，相当于变量的作用。
+
+但其实也不能叫变量，因为它们是不可变的。**想要变化就需要重新构造新的类型，并且可以在构造新类型的过程中对原类型做一些过滤和变换。**
+
+数组、字符串、函数、索引类型等都可以用这种方式对原类型做变换产生新的类型。其中索引类型有专门的语法叫做映射类型，对索引做修改的 as 叫做重映射。
 
 
 
