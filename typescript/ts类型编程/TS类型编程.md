@@ -902,6 +902,368 @@ TypeScript 支持 type、infer、类型参数来保存任意类型，相当于�
 
 
 
+### 套路三：递归复用做循环
+
+提取或构造的数组元素个数不确定、字符串长度不确定、对象层数不确定的时候，就需要递归。
+
+这就是第三个类型体操套路：递归复用做循环。
+
+
+
+**递归是把问题分解为一系列相似的小问题，通过函数不断调用自身来解决这一个个小问题，直到满足结束条件，就完成了问题的求解。**
+
+TypeScript 的高级类型支持类型参数，可以做各种类型运算逻辑，返回新的类型，和函数调用是对应的，自然也支持递归。
+
+**TypeScript 类型系统不支持循环，但支持递归。当处理数量（个数、长度、层数）不固定的类型的时候，可以只处理一个类型，然后递归的调用自身处理下一个类型，直到结束条件也就是所有的类型都处理完了，就完成了不确定数量的类型编程，达到循环的效果。**
+
+
+
+#### Promise 的递归复用
+
+
+
+**例一：提取不确定层数的 Promise 中的 Value 类型**
+
+如下，有：
+
+```typescript
+type PSource = Promise<Promise<Promise<Record<string, any>>>>
+```
+
+要想提取最里面的 `Record<string, any>`，可以
+
+```typescript
+type DeepPromiseValueType<P extends Promise<unknown>> =
+  P extends Promise<infer ValueType>
+    ? ValueType extends Promise<unknown>
+      ? DeepPromiseValueType<ValueType>
+      : ValueType
+    : never
+```
+
+> 解析：
+>
+> 类型参数 P 是待处理的 Promise，通过 extends 约束为 Promise 类型，value 类型不确定，设为 unknown。
+>
+> 每次只处理一个类型的提取，也就是通过模式匹配提取出 value 的类型到 infer 声明的局部变量 ValueType 中。
+>
+> 然后判断如果 ValueType 依然是 Promise类型，就递归处理。
+>
+> 结束条件就是 ValueType 不为 Promise 类型，那就处理完了所有的层数，返回这时的 ValueType。
+
+结果：
+
+![](./imgs/img34.png)
+
+
+
+可以对上面进行简化：
+
+```typescript
+type DeepPromiseValueType2<P> =
+  P extends Promise<infer ValueType>
+    ? DeepPromiseValueType2<ValueType>
+    : P
+```
+
+不再约束类型参数必须是 Promise，这样就可以少一层判断。结果是一样的：
+
+![](./imgs/img35.png)
+
+
+
+#### 数组类型的递归复用
+
+
+
+**例一：反转数组**
+
+如下，有数组：
+
+```typescript
+type arr = [1, 2, 3, 4, 5]
+```
+
+需要反转过来，变成：
+
+```typescript
+type arr = [5, 4, 3, 2, 1]
+```
+
+实现：
+
+```typescript
+type ReverseArr<Arr extends unknown[]> =
+  Arr extends [infer First, ...infer Rest]
+    ? [...ReverseArr<Rest>, First]
+    : Arr
+```
+
+> 解析：
+>
+> 类型参数 Arr 为待处理的数组类型，元素类型不确定，也就是 unknown。
+>
+> 每次只处理一个元素的提取，放到 infer 声明的局部变量 First 里，剩下的放到 Rest 里。
+>
+> 用 First 作为最后一个元素构造新数组，其余元素递归的取。
+>
+> 结束条件就是取完所有的元素，也就是不再满足模式匹配的条件，这时候就返回
+
+结果：
+
+![](./imgs/img36.png)
+
+
+
+**例二：查找数组是否包含某个元素**
+
+比如查找 [1, 2, 3] 中是否存在 3，是就返回 true，否则返回 false
+
+```typescript
+type IncludeArr<Arr extends unknown[], FindItem> =
+  Arr extends [infer First, ...infer Rest]
+    ? First extends FindItem
+      ? true
+      : IncludeArr<Rest, FindItem>
+    : false 
+```
+
+> 解析：
+>
+> 类型参数 Arr 是待查找的数组类型，元素类型任意，也就是 unknown。FindItem 待查找的元素类型。
+>
+> 每次提取一个元素到 infer 声明的局部变量 First 中，剩余的放到局部变量 Rest。
+>
+> 判断 First 是否是要查找的元素，也就是和 FindItem 相等，是的话就返回 true，否则继续递归判断下一个元素。
+
+结果：
+
+![](./imgs/img37.png)
+
+
+
+当然，这里的相等判断可以再严谨点：
+
+```typescript
+type IsEqual<A, B> = (A extends B ? true : false) & (B extends A ? true : false)
+
+type IncludeArr<Arr extends unknown[], FindItem> =
+  Arr extends [infer First, ...infer Rest]
+    ? IsEqual<First, FindItem> extends true
+      ? true
+      : IncludeArr<Rest, FindItem>
+    : false 
+```
+
+相等判断依据：A 是 B 的子类型，并且 B 也是 A 的子类型
+
+
+
+**例三：数组不确定元素个数的删除**
+
+> 这个需要构造新数组，技巧需要记一下
+
+```typescript
+type IsEqual<A, B> = (A extends B ? true : false) & (B extends A ? true : false)
+
+type DelArr<Arr extends unknown[], DelItem, Result extends unknown[] = []> =
+  Arr extends [infer First, ...infer Rest]
+    ? IsEqual<First, DelItem> extends true
+      ? DelArr<Rest, DelItem, Result>
+      : DelArr<Rest, DelItem, [...Result, First]>
+    : Result
+```
+
+> 解析：
+>
+> 类型参数 Arr 是待处理的数组，元素类型任意，也就是 unknown[]。类型参数 DelItem 为待查找的元素类型。类型参数 Result 是构造出的新数组，默认值是 []。
+>
+> 通过模式匹配提取数组中的一个元素的类型，如果是 DelItem 类型的话就删除，也就是不放入构造的新数组，直接返回之前的 Result。
+>
+> 否则放入构造的新数组，也就是再构造一个新的数组 [...Result, First]。
+>
+> 直到模式匹配不再满足，也就是处理完了所有的元素，返回这时候的 Result
+
+结果：
+
+![](./imgs/img38.png)
+
+
+
+**例四：构造不确定长度的数组**
+
+```typescript
+type BuildArray<
+  Len extends number,
+  Ele = unknown,
+  Arr extends unknown[] = []
+> = Arr['length'] extends Len
+      ? Arr
+      : BuildArray<Len, Ele, [...Arr, Ele]>
+```
+
+> 解析：
+>
+> 类型参数 Length 为数组长度，约束为 number。类型参数 Ele 为元素类型，默认值为 unknown。类型参数 Arr 为构造出的数组，默认值是 []。
+>
+> 每次判断下 Arr 的长度是否到了 Length，是的话就返回 Arr，否则在 Arr 上加一个元素，然后递归构造。
+
+结果：
+
+![](./imgs/img39.png)
+
+
+
+#### 字符串类型的递归复用
+
+
+
+**例一：递归替换重复字符串**
+
+```typescript
+type ReplaceAll<Str extends string, From extends string, To extends string> =
+  Str extends `${infer Left}${From}${infer Right}`
+    ? `${Left}${To}${ReplaceAll<Right, From, To>}`
+    : Str
+```
+
+> 解析：
+>
+> 类型参数 Str 是待处理的字符串类型，From 是待替换的字符，To 是替换到的字符。
+>
+> 通过模式匹配提取 From 左右的字符串到 infer 声明的局部变量 Left 和 Right 里。
+>
+> 用 Left 和 To 构造新的字符串，剩余的 Right 部分继续递归的替换。
+>
+> 结束条件是不再满足模式匹配，也就是没有要替换的元素，这时就直接返回字符串 Str。
+
+结果：
+
+![](./imgs/img40.png)
+
+
+
+**例二：提取字符串的所有字符组成联合类型**
+
+如果想把字符串字面量类型的每个字符都提取出来组成联合类型，也就是把 'hello' 转为 'h' | 'e' | 'l' | 'o'。可以：
+
+```typescript
+type StringToUnion<Str extends string> =
+  Str extends `${infer First}${infer Rest}`
+    ? First | StringToUnion<Rest>
+    : never
+```
+
+> 解析：
+>
+> 类型参数 Str 为待处理的字符串类型，通过 extends 约束为 string。
+>
+> 通过模式匹配提取第一个字符到 infer 声明的局部变量 First，其余的字符放到局部变量 Rest。
+>
+> 用 First 构造联合类型，剩余的元素递归的取。
+>
+> 这样就完成了不确定长度的字符串的提取和联合类型的构造
+
+结果：
+
+![](./imgs/img41.png)
+
+
+
+**例三：实现字符串的反转**
+
+```typescript
+type ReverseStr<Str extends string> =
+  Str extends `${infer First}${infer Rest}`
+    ? `${ReverseStr<Rest>}${First}`
+    : Str
+```
+
+结果：
+
+![](./imgs/img42.png)
+
+
+
+#### 索引类型的递归复用
+
+
+
+**例一：不确定层数的索引类型添加readonly**
+
+```typescript
+type DeepReadonly<Obj extends Record<string, any>> = {
+  readonly [Key in keyof Obj]: Obj[Key] extends Record<string, any>
+                                 ? Obj[Key] extends Function
+                                    ? Obj[Key]
+                                    : DeepReadonly<Obj[Key]>
+                                 : Obj[Key]
+}
+```
+
+> 解析：
+>
+> 类型参数 Obj 是待处理的索引类型，约束为 Record<string, any>，也就是索引为 string，值为任意类型的索引类型。
+>
+> 索引映射自之前的索引，也就是 Key in keyof Obj，只不过加上了 readonly 的修饰。
+>
+> 值要做下判断，如果是 object 类型并且还是 Function，那么就直接取之前的值 Obj[Key]。
+>
+> 如果是 object 类型但不是 Function，那就是说也是一个索引类型，就递归处理 DeepReadonly<Obj[Key]>。
+>
+> 否则，值不是 object 就直接返回之前的值 Obj[Key]。
+
+结果：
+
+![](./imgs/img43.png)
+
+
+
+但是，会发现，这里面的类型没有计算，为什么呢？
+
+**因为 ts 的类型只有被用到的时候才会做计算。**
+
+所以可以在前面加上一段 Obj extends never ? never 或者 Obj extends any 等，从而触发计算：
+
+```typescript
+type DeepReadonly2<Obj extends Record<string, any>> =
+  Obj extends any
+    ? {
+        readonly [Key in keyof Obj]: Obj[Key] extends Record<string, any>
+                                      ? Obj[Key] extends Function
+                                          ? Obj[Key]
+                                          : DeepReadonly2<Obj[Key]>
+                                      : Obj[Key]
+      }
+    : never
+```
+
+结果：
+
+![](./imgs/img44.png)
+
+
+
+#### 递归复用做循环总结
+
+递归是把问题分解成一个个子问题，通过解决一个个子问题来解决整个问题。形式是不断的调用函数自身，直到满足结束条件。
+
+在 TypeScript 类型系统中的高级类型也同样支持递归，**在类型体操中，遇到数量不确定的问题，要条件反射的想到递归。** 比如数组长度不确定、字符串长度不确定、索引类型层数不确定等。
+
+
+
+### 套路四：数组长度做计数
+
+
+
+
+
+
+
+
+
+
+
 
 
 
