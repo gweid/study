@@ -1254,9 +1254,103 @@ type DeepReadonly2<Obj extends Record<string, any>> =
 
 ### 套路四：数组长度做计数
 
+TypeScript 类型系统没有加减乘除运算符，怎么做数值运算呢？
+
+TypeScript 类型系统中没有加减乘除运算符，但是可以通过构造不同的数组然后取 length 的方式来完成数值计算，把数值的加减乘除转化为对数组的提取和构造。
+
+这是类型体操的第四个套路：数组长度做计数。
 
 
 
+#### 数组长度实现加减乘除
+
+
+
+**例一：加法**
+
+
+
+### 套路五：联合分散可简化
+
+联合类型在类型编程中是比较特殊的，TypeScript 对它做了专门的处理，写法上可以简化，但也增加了一些认知成本。
+
+这是类型体操的第五个套路：联合分散可简化
+
+
+
+#### 分布式条件类型
+
+**当类型参数为联合类型，并且在条件类型左边直接引用该类型参数的时候，TypeScript 会把每一个元素单独传入来做类型运算，最后再合并成联合类型，这种语法叫做分布式条件类型。**
+
+
+
+例如：
+
+```typescript
+type Union = 'a' | 'b' | 'c'
+```
+
+如果想要把其中的 a 大写，可以：
+
+```typescript
+type UppercaseUnion<Str extends string> = Str extends 'a' ? Uppercase<Str> : Str
+```
+
+结果：
+
+![](./imgs/img45.png)
+
+
+
+这样确实是简化了类型编程逻辑的，不需要递归提取每个元素再处理。
+
+TypeScript 之所以这样处理联合类型也很容易理解，因为联合类型的每个元素都是互不相关的，不像数组、索引、字符串那样元素之间是有关系的。所以设计成了每一个单独处理，最后合并。
+
+知道了 TypeScript 怎么处理的联合类型，趁热打铁来练习一下：
+
+
+
+#### BEM
+
+bem 是 css 命名规范，用 block__element--modifier 的形式来描述某个区块下面的某个元素的某个状态的样式。
+
+那么我们可以写这样一个高级类型，传入 block、element、modifier，返回构造出的 class 名。例如：
+
+```typescript
+type BENRes = BEN<'login', ['user', 'password'], ['name', 'txt']>
+```
+
+它的实现就是三部分的合并，但传入的是数组，要递归遍历取出每一个元素来和其他部分组合，这样太麻烦了。
+
+而如果是联合类型就不用递归遍历了，因为联合类型遇到字符串也是会单独每个元素单独传入做处理。
+
+数组转联合类型可以这样写：
+
+![](./imgs/img47.png)
+
+
+
+那么，BEM 的实现如下：
+
+```typescript
+type BEN<
+  Block extends string,
+  Element extends string[],
+  Modifiers extends string[]
+> = `${Block}__${Element[number]}--${Modifiers[number]}`
+```
+
+> 解析：
+>
+> 类型参数 Block、Element、Modifiers 分别是 bem 规范的三部分，其中 Element 和 Modifiers 都可能多个，约束为 string[]。
+>
+> 构造一个字符串类型，其中 Element 和 Modifiers 通过索引访问来变为联合类型。
+>
+> 字符串类型中遇到联合类型的时候，会每个元素单独传入计算
+
+结果：
+
+![](./imgs/img46.png)
 
 
 
