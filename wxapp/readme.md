@@ -409,3 +409,15 @@ https://developers.weixin.qq.com/community/search?page=1&block=1&type=1&query=we
 
  可以直接通过查看 jssdk 源码
 
+
+
+#### 公众号H5打开小程序
+
+官方文档：https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_Open_Tag.html#%E8%B7%B3%E8%BD%AC%E5%B0%8F%E7%A8%8B%E5%BA%8F%EF%BC%9Awx-open-launch-weapp
+
+
+
+具体步骤文档：https://www.cnblogs.com/Can-daydayup/p/15395932.html
+
+
+
