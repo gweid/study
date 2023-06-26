@@ -413,7 +413,15 @@ https://developers.weixin.qq.com/community/search?page=1&block=1&type=1&query=we
 
 #### 公众号H5打开小程序
 
+> 要在公众号或者微信内部浏览器打开
+
+
+
 官方文档：https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_Open_Tag.html#%E8%B7%B3%E8%BD%AC%E5%B0%8F%E7%A8%8B%E5%BA%8F%EF%BC%9Awx-open-launch-weapp
+
+
+
+https://developers.weixin.qq.com/community/develop/article/doc/00080243128590e1c24eb190c54413
 
 
 
@@ -421,3 +429,10 @@ https://developers.weixin.qq.com/community/search?page=1&block=1&type=1&query=we
 
 
 
+#### 外部浏览器H5打开小程序
+
+https://juejin.cn/post/7055551463489011749
+
+
+
+基于URL Scheme开放能力实现在H5页面打开小程序任意页面：https://www.csweigou.com/article/3147.html
