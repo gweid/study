@@ -436,3 +436,7 @@ https://juejin.cn/post/7055551463489011749
 
 
 基于URL Scheme开放能力实现在H5页面打开小程序任意页面：https://www.csweigou.com/article/3147.html
+
+
+
+https://www.phpriji.cn/blog/detail/h5-to-miniprogram.html
