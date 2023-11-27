@@ -593,7 +593,7 @@ docker run -it --name node node
 
 docker run 的基本流程：
 
- <img src="/imgs/img7.png" style="zoom:50%;" />
+<img src="./imgs/img7.png" style="zoom:50%;" />
 
 
 
