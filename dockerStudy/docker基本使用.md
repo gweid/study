@@ -651,7 +651,12 @@ CMD：
 ```shell
 docker logs [options] <容器id | 容器名>
   options:
-    -tail 显示多少条
+    --since  显示某个开始时间的所有日志
+    --tail   显示多少条
+
+
+# 例子
+docker logs --since="2023-07-01" --tail=20 node
 ```
 
 
