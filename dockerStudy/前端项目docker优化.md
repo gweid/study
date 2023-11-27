@@ -231,5 +231,5 @@ CMD yarn start
 
 此时，执行 build，编译时间从 30s 降到 2s，使用了缓存的层前面会有个 CACHED：
 
-![](./imgs/img1.png)
+![](./imgs/img22.png)
 
