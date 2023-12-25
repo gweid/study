@@ -30,14 +30,14 @@
 
 - IE 盒子模型：元素宽高＝内容（content）＋填充（padding）＋边框 （border） 的总宽高
 
-也就是说，IE 盒子模型把 padding 和 boder 都1算进元素宽高里面了
+也就是说，IE 盒子模型把 padding 和 boder 都算进元素宽高里面了
 
 
 
 标准盒子模型与 IE 盒子模型之间的转换：
 
 ```css
-box-sizing: content-box|border-box
+box-sizing: content-box | border-box
 ```
 
 默认是 content-box，代表标准盒子模型，需要转成 IE 盒子模型可以使用 border-box
@@ -221,24 +221,24 @@ display
   inset 阴影类型：内阴影或者外阴影
   ```
 
-- 渐变
+- 渐变：background: linear-gradient(blue, pink);
 
 - 多背景图
 
-- @font-face 属性
+- @font-face 属性（字体）
 
 - @media 媒体查询
 
 - CSS3 过渡 transition
 
   ```
-  transition: transition-property, transition-duration, transition-timing-function, transition-delay
-  
+  transition: transition-property, transition-duration,transition-timing-function, transition-delay
+
   transition-property 这个是过渡的属性，例如 all(全部) width(宽)
   transition-duration 这个是过渡效果花费的时间
   transition-timing-function 这个是过渡曲线，默认是 ease
   transition-delay 这个规定过渡效果何时开始，默认是 0 马上开始
-  
+
   例子：
   div {
     width: 100px;
