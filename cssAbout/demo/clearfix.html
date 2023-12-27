@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .box {
+      /* overflow: hidden; */
+    }
+    .son {
+      width: 100px;
+      height: 100px;
+      background-color: pink;
+      float: left;
+    }
+    .downele {
+      width: 200px;
+      height: 50px;
+      background-color: green;
+    }
+
+    /* 伪元素清除浮动 */
+    /* .clearfix:after {
+      content: "";
+      height: 0;
+      display: block;
+      visibility: hidden;
+      clear: both;
+    }
+    .clearfix {
+      *zoom: 1;
+    } */
+
+
+    /* 双伪元素清除浮动 */
+    .clearfix:before,
+    .clearfix:after {
+      content: "";
+      display: block;
+    }
+    .clearfix:after {
+      clear: both;
+    }
+    .clearfix {
+      *zoom: 1;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="box clearfix">
+      <div class="son"></div>
+    </div>
+    <div class="downele"></div>
+  </div>
+</body>
+</html>

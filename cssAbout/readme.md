@@ -342,8 +342,7 @@ display
 
 #### 9、简单介绍使用图片 base64 编码的优点和缺点
 
-base64 编码是一种图片处理格式，通过特定的算法将图片编码成一长串字符串，在页面上显示的时候，可以用该字符串来代替图片的
-url属性
+base64 编码是一种图片处理格式，通过特定的算法将图片编码成一长串字符串，在页面上显示的时候，可以用该字符串来代替图片的url属性
 
 使用 base64 的优点是：
 
@@ -351,12 +350,10 @@ url属性
 
 使用base64的缺点是：
 
-- 根据base64的编码原理，编码后的大小会比原文件大小大1/3，如果把大图片编码到html/css中，不仅会造成文件体
-  积的增加，影响文件的加载速度，还会增加浏览器对html或css文件解析渲染的时间
-
-- 使用base64无法直接缓存，要缓存只能缓存包含base64的文件，比如HTML或者CSS，这相比域直接缓存图片的效果要
-  差很多
-
+- 根据base64的编码原理，编码后的大小会比原文件大小大1/3，如果把大图片编码到html/css中，不仅会造成文件体积的增加，影响文件的加载速度，还会增加浏览器对html或css文件解析渲染的时间
+  
+- 使用base64无法直接缓存，要缓存只能缓存包含base64的文件，比如HTML或者CSS，这相比域直接缓存图片的效果要差很多
+  
 - 兼容性的问题，ie8以前的浏览器不支持
 
 一般一些网站的小图标可以使用 base64 图片来引入
@@ -401,7 +398,7 @@ url属性
   .clearfix:after,
   .clearfix:before {
       content: "";
-      display: table;
+      display: block;
   }
   
   .clearfix:after {
@@ -501,7 +498,7 @@ url属性
 
 **em**：相对单位，基准点为父节点字体的大小，如果自身定义了`font-size`按自身来计算，整个页面内`1em`不是一个固定的值
 
-**rem**：相对单位，相对根节点`html`的字体大小来计算
+**rem**：相对单位，相对根节点`html`的`font-size`来计算
 
 **vh、vw**：就是根据窗口的宽高，分成100等份
 
@@ -511,7 +508,7 @@ url属性
 
 #### 15、BFC
 
-块格式化上下文，它是一个独立的渲染区域，只有块级盒子参与，它规定了内部的块级盒子如何布局，并且与这个区域外部毫不相干。
+块级格式化上下文，它是一个独立的渲染区域，只有块级盒子参与，它规定了内部的块级盒子如何布局，并且与这个区域外部毫不相干。
 
 <img src="./imgs/img1.png" style="zoom:50%;" />
 
@@ -583,19 +580,24 @@ text-overflow: ellipsis;
 
 多行文本溢出省略号
 
-```
+```css
+overflow: hidden;
 display: -webkit-box;
 -webkit-box-orient: vertical;
 -webkit-line-clamp: 3;
-overflow: hidden;
 ```
+
+这个有一些问题：高也必须设置合理，不然会有出现如下问题
+
+![](./imgs/img6.png)
+
+
 
 
 
 #### 18、CSS提高性能的方法
 
 - 去除无用 CSS
-
 - 使用 CSS 动画替代 JS 动画，开启 GPU 加速
 - 资源压缩，将多个 CSS 合并压缩
 - 合理使用选择器，不要嵌套过深
@@ -617,11 +619,15 @@ overflow: hidden;
 
 
 
+总结：简单来说，就是**手机屏幕尺寸没有发生变化，但屏幕的分辨率却提高了一倍，即同样大小的屏幕上，像素多了一倍**
+
+
+
 解决 1px 问题的一些方法：
 
-- 直接使用一张图片，兼容性最好，灵活行最差，不能改变颜色、长度
+- 直接使用一张图片，兼容性最好，灵活性最差，不能改变颜色、长度
 
-- 使用 box-shadow 模拟边框，边框有阴影，颜色浅，同样也有兼容性问题
+- 使用 box-shadow 模拟边框，边框有阴影，颜色，同样也有兼容性问题
 
 - :after + transform:scale(0.5)
 
@@ -645,9 +651,14 @@ overflow: hidden;
   }
   ```
 
-  
 
-#### 20、设置元素浮动后，display 变为什么
+
+
+更详细的解决方案：https://zhuanlan.zhihu.com/p/535456539
+
+
+
+#### 20、设置元素浮动后，display 变成什么
 
 自动变成 display:block
 
@@ -655,7 +666,7 @@ overflow: hidden;
 
 #### 21、超链接访问过后 hover 样式就不出现的问题是什么？如何解决
 
-被点击访问过的超链接样式不在具有 hover 和 active 了, 解决方法是改变 CSS 属性的排列顺序: L-V-H-A（link, visited, hover, active）
+被点击访问过的超链接样式不再具有 hover 和 active 了, 解决方法是改变 CSS 属性的排列顺序: L-V-H-A（link, visited, hover, active）
 
 
 
@@ -729,6 +740,8 @@ css 的 content 属性专门应用在 before/after 伪元素上，用来插入�
 - 易于编写嵌套选择器
 - 引入变量，增添主题功能。可以在不同的项目中共享主题文件
 - 通过混合（Mixins）生成重复的 CSS
+- 条件语句：预处理器支持条件语句，允许根据特定条件设置样式
+- 强大的函数：预处理器支持函数，允许进行数学计算、颜色操作和其他复杂操作
 
 缺点：
 
@@ -740,8 +753,8 @@ css 的 content 属性专门应用在 before/after 伪元素上，用来插入�
 
 #### 28、如何脱离文档流
 
-- 使用浮动（float）会将元素脱离文档流，float: left 或者 float: right
-- 使用绝对定位（`position: absolute;`）或者固定定位（`position: fixed;`）也会使得元素脱离文档流
+- 使用浮动（f）也会使得元素脱离文档流loat）会将元素脱离文档流，float: left 或者 float: right
+- 使用绝对定位（`position: absolute;`）或者固定定位（`position: fixed;`
 
 
 
@@ -881,14 +894,12 @@ overflow：hidden；transition：all 1000 ms ease；
 
 #### 38、li 与 li 之间有看不见的空白间隔是什么原因引起的？有什么解决办法？
 
-浏览器会把inline元素间的空白字符（空格、换行、Tab等）渲染成一个空格。而为了美观。我们通常是一个`<li>`放在一行，
-这导致`<li>`换行后产生换行字符，它变成一个空格，占用了一个字符的宽度。
+浏览器会把inline元素间的空白字符（空格、换行、Tab等）渲染成一个空格。而为了美观。我们通常是一个`<li>`放在一行，这导致`<li>`换行后产生换行字符，它变成一个空格，占用了一个字符的宽度。
 
 解决方法：
 
-- 为`<li>`设置float:left。不足：有些容器是不能设置浮动，如左右切换的焦点图等
-- 将`<ul>`内的字符尺寸直接设为0，即font-size:0。不足：`<ul>`中的其他字符尺寸也被设为0，需要额外重新设定其他
-  字符尺寸，且在 Safari 浏览器依然会出现空白间隔
+- 为`<li>`设置float: left。不足：有些容器是不能设置浮动，如左右切换的焦点图等
+- 将`<ul>`内的字符尺寸直接设为0，即font-size:0。不足：`<ul>`中的其他字符尺寸也被设为0，需要额外重新设定其他字符尺寸，且在 Safari 浏览器依然会出现空白间隔
 - 可以将 ul{letter-spacing: -4px;}; li{letter-spacing: normal;}。letter-spacing 属性增加或减少字符间的空白（字符间距）
 
 
@@ -902,7 +913,7 @@ overflow：hidden；transition：all 1000 ms ease；
 最优的解决办是给 img 定义 vertical-align（消除底部边距）；注意：定义 vertical-align 为 middle 时在 IE6 中大概还有一像素的顶边距，最好为 top 或 bottom
 
 ```css
-img{    
+img {
     border: 0;    
     vertical-align: bottom;
 }
@@ -951,5 +962,5 @@ letter-spacing : 字母、中文
 #### 43、CSS 会阻塞 DOM 树的解析和渲染吗
 
 - DOM解析和CSS解析是两个并行的进程，所以 CSS 加载不会阻塞 DOM 的解析。
-- 由于 Render Tree 是依赖于 DOM Tree 和 CSSOM Tree 的，所以必须等待到 CSSOM Tree 构建完成，也就是 CS S资源加载完成(或者 CSS 资源加载失败)后，才能开始渲染。因此，CSS 加载是会阻塞 Dom 的渲染的。
-- 由于 js 可能会操作之前的 Dom 节点和 css 样式，因此浏览器会维持 html中 css 和 js 的顺序。因此，样式表会在后面的js执行前先加载执行完毕。所以 css 会阻塞后面js的执行。
+- 由于 Render Tree 是依赖于 DOM Tree 和 CSSDOM Tree 的，所以必须等待到 CSSDOM Tree 构建完成，也就是 CSS 资源加载完成(或者 CSS 资源加载失败)后，才能开始渲染。因此，CSS 加载是会阻塞 Dom 的渲染的。
+- 由于 js 可能会操作之前的 Dom 节点和 css 样式，因此浏览器会维持 html中 css 和 js 的顺序。因此，样式表会在后面的 js 执行前先加载执行完毕。所以 css 会阻塞后面 js 的执行。

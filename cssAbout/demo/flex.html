@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+      .box {
+        width: 600px;
+        display: flex;
+        /* flex-wrap: wrap; */
+        /* flex-wrap: wrap-reverse; */
+      }
+      p {
+        width: 100px;
+        height: 200px;
+        background-color: pink;
+      }
+      p:nth-child(2n) {
+          background-color: skyblue;
+      }
+      .p1 {
+          flex-shrink: 0;
+      }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <p class="p1">1</p>
+    <p class="p2">2</p>
+    <p class="p3">3</p>
+    <p class="p4">4</p>
+    <p class="p5">5</p>
+    <p class="p6">6</p>
+    <p class="p7">7</p>
+    <p class="p8">8</p>
+  </div>
+</body>
+</html>
