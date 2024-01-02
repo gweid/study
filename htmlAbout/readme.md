@@ -33,28 +33,28 @@
 
 **优点：**
 
-- iframe 可以实现无刷新文件上传
-- 如果有多个网页引用 iframe，那么你只需要修改 iframe 的内容，就可以实现调用的每一个页面内容的更改，方便快捷
-- iframe 能够原封不动的把嵌入的网页展现出来
-- 如果遇到加载缓慢的第三方内容如图标和广告，这些问题可以由 iframe 来解决
+- 内容隔离：iframe可以将第三方内容（如视频、地图、广告等）嵌入到页面中，而不会影响到主页面的布局和样式
+- 页面组织：可以通过iframe将复杂的内容分割成更小的部分，使得页面管理更加模块化
+- 并行加载：主页面和iframe可以同时加载，这可以提高页面加载的效率，尤其是当嵌入的内容很大或加载时间较长时
+- 安全性：由于同源策略，嵌入的iframe页面和父页面之间的交互是受限的，这可以防止一些跨站脚本攻击（XSS）
+
 
 **缺点：**
 
-- iframe 会阻塞主页面的 onload 事件，如果页面的 onload 事件不能及时触发，会让用户觉得网页加载很慢，用户体验不好
-- 无法被一些搜索引擎索引到，不利于 SEO
-- 框架结构中出现各种滚动条
-- 页面会增加服务器的 http 请求
-- 会产生很多页面，不容易管理
+- SEO影响：搜索引擎可能不会抓取或索引iframe中的内容，这可能对网站的搜索引擎优化（SEO）产生负面影响
+- 性能问题：如果页面中包含多个iframe，可能会对性能产生负面影响，因为浏览器需要加载额外的HTML、CSS和JavaScript文件
+- 跨域限制：由于同源策略，不同域的iframe和父页面之间的交互需要实现复杂的消息传递机制
+- 响应式设计挑战：iframe可能不会很好地适应不同屏幕尺寸和分辨率，这可能需要额外的工作来确保iframe内容的响应式设计
+- 用户体验：在移动设备上，iframe可能导致滚动问题，因为用户可能在不经意间滚动了iframe而不是主页面，造成混淆
 
-现在基本上都是用 Ajax 来代替 iframe，所以 iframe 已经渐渐的退出了前端开发
 
 
 
 #### 4、块级元素、行内元素、空元素
 
--   行内元素： a, b, span, img, input, select, strong, button
--   块级元素： div, ul, li, dl, dt, dd, h1-6, p 等
--   空元素： `<br>, <hr>, <img>, <link>, <meta>` 等
+- 行内元素： a, b, span, img, input, select, strong, button
+- 块级元素： div, ul, li, dl, dt, dd, h1-6, p 等
+- 空元素： `<br>, <hr>, <img>, <link>, <meta>` 等
 
 块级元素和行内元素区别：
 
@@ -69,14 +69,15 @@
 - 页面被加载时，link 会同时被加载，而 @import 引用的 css 会等到页面被加载完再加载
 - @import 只在 IE5 以上才能识别，而 link 是 HTML 标签，无兼容问题
 - link 方式的样式的权重高于 @import 的权重
+- link允许多个CSS文件并行下载，这可以提高页面加载速度；@import导入的CSS文件需要页面完全加载后才开始下载，这可能会导致页面在加载时没有样式
 
 
 
 #### 6、src 与 href 的区别
 
-- src 用于替换当前元素；href 用于当前文档与引用资源质检确立联系
+- src 用于替换当前元素（嵌入内容）；href 用于当前文档与引用资源质检确立联系
 - src 是 source 的缩写，指向的内容将会嵌入到文档中当前标签所在位置；在请求src 资源时会将其指向的资源下载并应用到文档内，例如 js 脚本，img 图片和 frame 等元素
-- href 是 Hypertext Reference 的缩写，指向网络资源所在位置，建立和当前元素（锚点）或当前文档（链接）之间的链接
+- href 是 Hypertext Reference 的缩写，指向网络资源所在位置，建立和当前元素（锚点）或当前文档（链接）之间的链接，常用于 a 标签和 link 标签
 
 
 
@@ -100,7 +101,7 @@
 
 - 有利于SEO：和搜索引擎建立良好沟通，有助于爬虫抓取更多的有效信息：爬虫依赖于标签来确定上下文和各个关键字的权重
 - 便于团队开发和维护，语义化更具可读性，遵循 W3C 标准的团队都遵循这个标准，可以减少差异化
-- 方便其他设备解析（如屏幕阅读器、盲人阅读器、移动设备）以意义的方式来渲染网页
+- 方便其他设备解析（如屏幕阅读器、盲人阅读器、移动设备）以语义的方式来渲染网页
 
 
 
@@ -150,7 +151,7 @@
 
 
 
-#### 10、script 标签的的 defer 与 async
+#### 10、script 标签的 defer 与 async
 
 浏览器在解析 HTML 的时候，如果遇到一个没有任何属性的 script 标签，就会暂停解析，先发送网络请求获取该 JS 脚本的代码内容，然后让 JS 引擎执行该代码，当代码执行完毕后恢复解析。整个过程如下图所示：
 
@@ -258,7 +259,7 @@
 
 
 
-可参考：[meta元素内容含义](https://juejin.cn/post/6844903957169438728) 、[meta标签的作用及整理](https://blog.csdn.net/yc123h/article/details/51356143?utm_medium=distribute.pc_feed_404.none-task-blog-2~default~BlogCommendFromMachineLearnPai2~default-2.nonecase&depth_1-utm_source=distribute.pc_feed_404.none-task-blog-2~default~BlogCommendFromMachineLearnPai2~default-2.nonecas)
+可参考：[meta元素内容含义](https://juejin.cn/post/6844903957169438728) 、[meta标签的作用及整理](https://blog.csdn.net/yc123h/article/details/51356143)
 
 
 
@@ -454,8 +455,8 @@ Viewport ：字面意思为视图窗口，在移动 web 开发中使用。表示
 #### 21、title 与 h1 的区别、b 与 strong 的区别、i与 em 的区别？
 
 - title 属性没有明确意义只表示是个标题，H1 则表示层次明确的标题，对页面信息的抓取有很大的影响
-- i 内容展示为斜体，em 表示强调的文本
 - strong 标签有语义，是起到加重语气的效果，而 b 标签是没有的，b 标签只是一个简单加粗标签。搜索引擎更侧重 strong 标签
+- i 内容展示为斜体，em 表示强调的文本
 
 
 
@@ -508,6 +509,10 @@ API 很简单，document.hidden 就返回一个布尔值，如果是 true, 表�
 
 **1、使用 cookies**
 
+> 这个前提是不能跨域
+
+
+
 在 A 页面，设置一个 cookies
 
 ```js
@@ -523,6 +528,10 @@ console.log(document.cookie);    // userName=Allen
 
 
 **2、使用 localStorage**
+
+>同样不能跨域
+
+
 
 A 页面存储
 
@@ -556,6 +565,86 @@ websocket 协议可以实现服务器推送，服务器就可以用来当做中�
 
 shareWorker 会在页面存在的生命周期内创建一个唯一的线程，并且开启多个页面也只会使用同一个线程。这个时候共享线程就可以充当中介者的角色。标签页间通过共享一个线程，然后通过这个共享的线程来实现数据的交换
 
+```js
+// 在所有标签页中创建一个SharedWorker
+var myWorker = new SharedWorker('worker.js');
+
+// 发送消息到worker
+myWorker.port.postMessage('Hello from Tab 1!');
+
+// 在worker.js中
+// 监听连接
+onconnect = function(e) {
+  var port = e.ports[0];
+
+  port.onmessage = function(e) {
+    // 将消息发送回所有连接的标签页
+    port.postMessage(e.data);
+  };
+};
+
+```
+
+
+
+**5、Service Workers**
+
+ervice Workers运行在浏览器背后，独立于任何网页，可以用来作为各个客户端（标签页）之间的中介
+
+```js
+// 在标签页中通过Service Worker发送消息
+navigator.serviceWorker.controller.postMessage('Hello from Tab 1!');
+
+// 在Service Worker中监听消息
+self.addEventListener('message', event => {
+  // 从一个标签页接收消息并传递给其他标签页
+  // ...
+});
+```
+
+
+
+**6、Broadcast Channel API**
+
+这是一个简单的API，允许同源的不同窗口、标签页或iframe之间进行通信。你可以创建一个`BroadcastChannel`对象，然后通过它发送和接收消息。
+
+```js
+// 在一个标签页中创建BroadcastChannel
+const channel = new BroadcastChannel('my_channel');
+
+// 发送消息
+channel.postMessage('Hello from Tab 1!');
+
+// 在另一个标签页中监听同一个频道的消息
+const channel = new BroadcastChannel('my_channel');
+channel.onmessage = function (e) {
+  console.log(e.data); // 'Hello from Tab 1!'
+};
+```
+
+
+
+**7、Window.postMessage**
+
+如果你有一个对其他标签页的引用（例如，通过`window.open`打开或是iframe内的页面），你可以使用`window.postMessage`方法进行跨文档通信
+
+```js
+// 在父标签页中
+var otherTab = window.open('http://example.com/other.html');
+
+// 发送消息
+otherTab.postMessage('Hello from the original tab!', 'http://example.com');
+
+// 在其他标签页中监听消息
+window.addEventListener('message', receiveMessage);
+
+function receiveMessage(event) {
+  // 确保消息来源是可信的
+  if (event.origin !== 'http://example.com') return;
+  console.log(event.data); // 'Hello from the original tab!'
+}
+```
+
 
 
 #### 26、HTML5 的 form 如何关闭自动完成功能
@@ -568,9 +657,9 @@ shareWorker 会在页面存在的生命周期内创建一个唯一的线程，�
 
 **什么是离线缓存**
 
-- 离线缓存可以将站点的一些文件缓存到本地，它是浏览器自己的一种机制，
+- 离线缓存可以将站点的一些文件缓存到本地，它是浏览器自己的一种机制
 
-- 将需要的文件缓存下来，以便后期即使没有连接网络，被缓存的页面也可以展示。
+- 将需要的文件缓存下来，以便后期即使没有连接网络，被缓存的页面也可以展示
 
 - 即使有网络，优先本地存储的资源
 
@@ -578,7 +667,7 @@ shareWorker 会在页面存在的生命周期内创建一个唯一的线程，�
 
 **离线缓存优势**
 
--  离线浏览：用户可在应用离线时使用它们
+- 离线浏览：用户可在应用离线时使用它们
 - 速度：已缓存资源加载得更快
 - 减少服务器负载：浏览器将只从服务器下载更新过或更改过的资源
 
@@ -588,7 +677,7 @@ shareWorker 会在页面存在的生命周期内创建一个唯一的线程，�
 
 - 首先，在需要使用离线缓存的页面
   ```html
-  <html manifest = "cache.manifest"></html>
+  <html manifest="cache.manifest"></html>
   ```
 - 接着，编写 manifest 文件，说明哪些资源需要缓存
 

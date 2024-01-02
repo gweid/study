@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="box" data-user="jack"></div>
+
+  <script>
+    const boxEle = document.getElementById('box')
+    // console.log(box.dataset.user) // jack
+    // box.dataset.user = 'mary'
+    // console.log(box.dataset.user) // mary
+
+    console.log(boxEle.getAttribute('data-user')) // jack
+    boxEle.setAttribute('data-user', 'mary')
+    console.log(boxEle.getAttribute('data-user')) // mary
+  </script>
+</body>
+</html>
