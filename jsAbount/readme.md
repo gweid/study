@@ -23,7 +23,7 @@ console.log(typeof undefined)       // undefined
 console.log(typeof null)            // object
 ```
 
-其中数组、对象、null都会被判断为object，其他判断都正确。
+其中数组、对象、null 都会被判断为 object，其他判断都正确。
 
 
 
@@ -33,13 +33,13 @@ console.log(typeof null)            // object
 console.log(2 instanceof Number)                    // false
 console.log(true instanceof Boolean)                // false 
 console.log('str' instanceof String)                // false 
- 
+
 console.log([] instanceof Array)                    // true
 console.log(function(){} instanceof Function)       // true
 console.log({} instanceof Object)                   // true
 ```
 
-instanceof **只能正确判断引用数据类型**，而不能判断基本数据类型
+instanceof **只能正确判断引用数据类型**，而不能判断基本数据类型，因为基础数据类型（如字符串、数字、布尔值等）不是对象，它们不具有原型链
 
 
 
@@ -91,13 +91,15 @@ console.log(Array.prototype.isPrototypeOf([])) // true
 typeof NaN    // 'number'
 ```
 
+NaN 是 Number 类型的一个值，NaN 被视为一个特殊的数值，代表的是一个不确定的数值
+
 
 
 #### 1-3、typeof null 问题
 
 typeof null 的结果是 object。为什么呢？
 
-这是 JS 存在的一个悠久 Bug。在 JS 的最初版本中使用的是 32 位系统，为了性能考虑使用低位存储变量的类型信息，000 开头代表是对象然而 null 表示为全零，所以将它错误的判断为 object 。
+这是 JS 存在的一个悠久 Bug。在 JS 的最初版本中使用的是 32 位系统，为了性能考虑使用低位存储变量的类型信息，000 开头代表是对象。而 null 为全零，所以将它错误的判断为 object 。
 
 
 
@@ -187,6 +189,9 @@ BigInt("9007199254740995");    // → 9007199254740995n
 ```
 
 
+需要注意的是，BigInt 不能与普通的 Number 类型直接进行算术运算，否则会抛出 TypeError
+
+
 
 #### 1-7、Object.is 和 === 的区别
 
@@ -206,16 +211,21 @@ console.log(Object.is(NaN, NaN)) // true
 **实现一个 Object.is**
 
 ```js
-function myIs(x, y) {
-  if (x === y) {
-    // 运行到 1/x === 1/y 的时候 x 和 y 都为0
-    // 但是 1/+0 = +Infinity， 1/-0 = -Infinity, 是不一样的
-    return x !== 0 || y !== 0 || 1 / x === 1 / y
-  } else {
-    // NaN === NaN 是 false, 这是不对的，在这里做一个拦截，x !== x，那么一定是 NaN, y 同理
-    // 两个都是 NaN 的时候返回 true
-    return x !== x && y !== y
+function myObjectIs(x, y) {
+  // 检查是否是 -0
+  if (x === 0 && y === 0) {
+    return 1 / x === 1 / y;
   }
+
+  // 检查是否是 NaN
+  // NaN === NaN 是 false, 这是不对的，在这里做一个拦截，x !== x，那么一定是 NaN, y 同理
+  // 两个都是 NaN 的时候返回 true
+  if (x !== x) {
+    return y !== y;
+  }
+
+  // 其他情况
+  return x === y;
 }
 ```
 
