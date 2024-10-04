@@ -1,4 +1,4 @@
-// ----------------- 队列
+// ----------------- 队列，规则：先进先出
 
 // const request = (num) => {
 //   return new Promise((resolve, reject) => {
