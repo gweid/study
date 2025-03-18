@@ -103,14 +103,14 @@ type FunctionTypes = {
 
 如果你想知道某个函数返回值的类型，可以这么做
 
-```type
+```typescript
 // foo 函数原作者并没有考虑会有人需要返回值类型的需求，利用了 TS 的隐式推断。
 // 没有显式声明返回值类型，并 export，外部无法复用
 function foo(bar: string) {
     return { baz: 1 };
 }
 
-// TS 提供了 ReturnType 工具类型，可以把推断的类型吐出
+// TS 提供了 ReturnType 工具类型，可以把推断的类型推出
 type FooReturn = ReturnType<typeof foo>; // { baz: number }
 ```
 
