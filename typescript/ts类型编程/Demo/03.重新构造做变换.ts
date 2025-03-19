@@ -21,6 +21,7 @@ type ZipTuple<
       : []
 type ZipTupleRes = ZipTuple<[1, 2], ['name', 'age']>
 
+// 不固定长度的数组
 type ZipAllTuple<
   T extends unknown[],
   P extends unknown[]
@@ -56,7 +57,7 @@ type DelSubStrAll<
   Str extends string,
   DelStr extends string
 > = Str extends `${infer Prefix}${DelStr}${infer Suffix}`
-    ? `${DelSubStrAll<`${Prefix}${Suffix}`, DelStr>}`
+    ? DelSubStrAll<`${Prefix}${Suffix}`, DelStr>
     : Str
 type DelSubStrAllRes = DelSubStrAll<'testDelDelDelStr', 'Del'>
 
@@ -81,7 +82,7 @@ type MapValueRes = MapValue<{ a: 1, b: 2 }>
 type UpperKey<T extends object> = {
   [K in keyof T as Uppercase<K & string>]: T[K]
 }
-type UpperKeyRes = UpperKey<{ name: 'jack' }>
+type UpperKeyRes = UpperKey <{ name: 'jack' }>
 
 // 将 Key 首字母变为大写
 type UpperFirstKey<T extends object> = {
