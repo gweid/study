@@ -18,7 +18,7 @@
 
 - 将程序划分成一个个小的结构
 - 在这个结构中可以编写属于自己的逻辑代码，有自己的作用域，不会影响到其他的模块结构
-- 并且可以将自己希望暴露的变量、函数、对象等导出给其结构使用
+- 并且可以将自己希望暴露的变量、函数、对象等导出给其它结构使用
 - 也可以通过某种方式，导入另外结构中的变量、函数、对象等
 
 
@@ -45,7 +45,7 @@ var moduleA = (function() {
   var userName = '张三'
 
   console.log('a模块：', userName)
-  
+
   // 将要导出给其他地方使用的用 return 返回
   return {
     userName
@@ -108,7 +108,7 @@ index.html 中：
 
 ### 2.1、CommonJs
 
-CommonJs 是一种模块化规范，最初是叫 ServerJS，用于浏览器以外的地方使用，后来也被用于浏览器，为了体现它的广泛性，修改为 CommonJS，简称 CJS。
+CommonJs 是一种模块化规范，最初是叫 ServerJS，用于浏览器以外的地方使用，后来也被用于浏览器，为了体现它的广泛性，修改为 CommonJS，简称 CJS
 
 - CommonJs 在服务端的体现：Node
 - CommonJs 在浏览器的体现：Browserify
@@ -338,9 +338,9 @@ require 主要用来引入一个文件（模块）中导入的对象；它有自
 
    ![](./imgs/img16.png)
 
-   很明显看到，c.js 同时被 a.js、b.js 引入，e.js 同时被d.js、b.js 引入，那么此时的加载顺序是什么呢？
+   很明显看到，c.js 同时被 a.js、b.js 引入，e.js 同时被 d.js、b.js 引入，那么此时的加载顺序是什么呢？
 
-   在 Node 中，采用的是深度优先算法，也就是模块加载顺序是：index.js --> a.js --> c.js --> d.js -->e.js --> b.js，其中遇到被加载过的模块，也就是模块的 loaded 被标记为 true 了，不会再去加载
+   在 Node 中，采用的是深度优先算法，也就是模块加载顺序是：index.js --> a.js --> c.js --> d.js --> e.js --> b.js，其中遇到被加载过的模块，也就是模块的 loaded 被标记为 true 了，不会再去加载
 
 采用深度优先算法的主要原因就是 **CommonJs 是同步加载**的，这就意味着：
 
@@ -357,13 +357,13 @@ const moduleB = require('./b')
 
 性能影响不会很大，因为 Node 是在服务端执行的，那么就意味着所有的文件都是在同一个服务器中，这就相当于在同一台电脑下操作不同目录文件而已，这是非常快的。
 
-如果是在客户端进行同步加载，就会带来很大的性能问题，因为这意味着需要从服务器中把文件下载下来，这就会严重收到文件大小、网络等的影响，阻塞后面的加载。所以在客户端一般不使用同步加载的模式。
+如果是在客户端进行同步加载，就会带来很大的性能问题，因为这意味着需要从服务器中把文件下载下来，这就会严重受到文件大小、网络等的影响，阻塞后面的加载。所以在客户端一般不使用同步加载的模式。
 
 
 
 所以在早期为了可以在浏览器中使用模块化，主要使用的方案有两种：AMD 和 CMD
 
-但是，由于 webpack 等工具可以实现对 Commons 或者 ES Module代码的转换，并且现代浏览器开始逐步支持 ES Moudle，AMD 和 CMD 其实已经很少使用了。更多的是在服务端使用 CommonJs，在浏览器端使用 es6 的模块化方案（低版本浏览器说用 webpack 转换）
+但是，由于 webpack 等工具可以实现对 CommonJs 或者 ES Module 代码的转换，并且现代浏览器开始逐步支持 ES Moudle，AMD 和 CMD 其实已经很少使用了。更多的是在服务端使用 CommonJs，在浏览器端使用 es6 的模块化方案（低版本浏览器使用 webpack 转换）
 
 
 
@@ -507,14 +507,14 @@ define 函数：
 AMD，**推崇依赖前置，依赖模块提前执行**，也就是：如下，依赖的 moduleA 加载完之后再执行回调函数
 
 ```js
-require(['moduleA'], function(moduleB) {})
+require(['moduleA'], function(moduleA) {})
 ```
 
 
 
 ### 2.3、CMD
 
-CMD，也是一种浏览器异步加载模块的规范，它吸收了 CommonJs 的优点，相对 AMD ，CMD 用法更加简单，也更加接近 CommonJs。
+CMD，也是一种浏览器异步加载模块的规范，它吸收了 CommonJs 的优点，相对 AMD，CMD 用法更加简单，也更加接近 CommonJs。
 
 实现 CMD 常用的库是 SeaJs。
 
@@ -605,11 +605,11 @@ define(function(require, exports, module) {
 
 ### 2.4、ES Module
 
-在早期，js 本身没有模块化一直是它的痛点。但是在 es6 之后，js 实现了 模块化的功能，这就是 es module。
+在早期，js 本身没有模块化一直是它的痛点。但是在 es6 之后，js 实现了 模块化的功能，这就是 ES Module。
 
-- es module 使用 export 和 import **关键字**来实现模块化，export 负责导出，import 负责导入
-- es module 采用编译期的静态分析，也加入了动态引入的方式
-- 使用 es module 将自动使用严格模式：use strict
+- ES Module 使用 export 和 import **关键字**来实现模块化，export 负责导出，import 负责导入
+- ES Module 采用编译时的静态分析，也加入了动态引入的方式
+- 使用 ES Module 将自动使用严格模式：use strict
 
 
 
@@ -645,11 +645,11 @@ ESModule
 </html>
 ```
 
-但是，如果直接将本地的 html 在浏览器打开（(即以 file:// 协议加载 html），会报 CORS 跨域错误。这是因为 js 模块安全性需要。
+但是，如果直接将本地的 html 在浏览器打开（即以 file:// 协议加载 html），会报 CORS 跨域错误。这是因为 js 模块安全性需要。
 
 ![](./imgs/img17.png)
 
-需要通过一个服务器来测试，在 vscode 中可以使用 Live Server 插件来开启服务器
+需要通过开启一个服务来测试，在 vscode 中可以使用 Live Server 插件来开启服务
 
 
 
@@ -859,7 +859,7 @@ ES Module 加载 js 模块是在**编译时加载**的，并且是**异步加载
 
 - 编译时加载，就意味着 import 关键字**不能与运行时相关的逻辑代码放到一起**。比如：不能将 import 放到 if 等语句的代码块中，不能动态获取 form 后面的路径等。所以，一般也称 ES Module 是**静态解析的**，而不是动态或者运行时解析的
 
-- 异步加载，意味着 js 在遇到 import 语法是，回去获取对应 js 模块，但并不会阻塞主线程的执行。也就是说，在 script 标签中添加 `type="module"`，相当于为 script 标签加上了 `async` 属性。如下：a.js 的加载并不会阻塞 m.js 的加载
+- 异步加载，意味着 js 在遇到 import 语法时，会去获取对应 js 模块，但并不会阻塞主线程的执行。也就是说，在 script 标签中添加 `type="module"`，相当于为 script 标签加上了 `async` 属性。如下：a.js 的加载并不会阻塞 m.js 的加载
 
   ```js
   <script src="./modules/a.js" type="module"></script>

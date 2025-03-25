@@ -1585,7 +1585,7 @@ console.log(flatFun(arr))
   - ES Module 使用 import 和 export 关键字
   - CommonJs 使用 require 和 module.exports 关键字
 - 加载方式：
-  - ES Module 是静态加载，模块的依赖关系在代码解析阶段（编译时）确定
+  - ES Module 是静态加载，模块的依赖关系在代码解析阶段（编译时）确定；也可以动态引入，需要使用 import() 函数
   - CommonJs 是动态加载，模块的依赖关系在运行时确定
 - 运行环境：
   - ES Module 主要用于浏览器端和现代 Node.js 环境（Node.js 12+），在浏览器中需要通过 `<script type="module">` 标签加载，在 Node.js 中需要通过 .mjs 文件扩展名或在 package.json 中设置 "type": "module"。
