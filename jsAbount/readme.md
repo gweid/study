@@ -1,14 +1,14 @@
-##  JS 知识点
+#  JS 知识点
 
 [收集的 JS 资料](./dataLink.md)
 
 
 
-### 1、数据类型
+## 1、数据类型
 
 
 
-#### 1-1、常见的类型检测方法
+### 1-1、常见的类型检测方法
 
 **typeof**
 
@@ -27,7 +27,7 @@ console.log(typeof null)            // object
 
 
 
-**instanceof**：判断一个对象的原型是否在另外一个对象的原型链上
+**instanceof**：判断一个对象的原型是否在另外一个对象的原型链上，换一种说法就是：判断一个对象是否是某个构造函数的实例
 
 ```js
 console.log(2 instanceof Number)                    // false
@@ -39,7 +39,12 @@ console.log(function(){} instanceof Function)       // true
 console.log({} instanceof Object)                   // true
 ```
 
-instanceof **只能正确判断引用数据类型**，而不能判断基本数据类型，因为基础数据类型（如字符串、数字、布尔值等）不是对象，它们不具有原型链
+instanceof **只能正确判断引用数据类型**，而不能判断基础数据类型，因为基础数据类型（如字符串、数字、布尔值等）不是对象，它们不具有原型链
+
+即 instanceof 的比对步骤：
+1. 获取对象的原型（object.__proto__）
+2. 获取构造函数的原型（constructor.prototype）
+3. 比较两者是否相等。如果不等，则继续沿着原型链向上查找，直到找到匹配的原型或到达原型链的顶端 null
 
 
 
@@ -54,11 +59,28 @@ console.log((function() {}).constructor === Function)    // true
 console.log(({}).constructor === Object)                 // true
 ```
 
-这种方法如果修改了原型，判断就不正确
+在 JavaScript 中，每个对象都有一个 constructor 属性，它指向创建该对象的构造函数。
+对于基础数据类型（如 number、string、boolean 等），JavaScript 在访问它们的属性或方法时，会临时将它们包装成对应的包装对象（如 Number、String、Boolean）。即隐式转换。
+
+
+
+constructor 与 instanceof 的区别：
+- 依赖于原型链，只能用于对象
+- constructor 依赖于对象的 constructor 属性，而基础数据类型在访问 constructor 时会隐式转换为对象，因此可以用于判断基础数据类型
+
+
+
+> 注意：
+>  1. 这种方法如果修改了原型，判断就不正确
+>  2. null 和 undefined 没有 constructor 属性，访问时会报错
 
 
 
 **Object.prototype.toString.call()**
+
+JavaScript 中的每个对象都有一个内部属性 [[Class]]，它表示对象的类型。Object.prototype.toString 会访问这个内部属性，并返回 [object Type]，其中 Type 就是 [[Class]] 的值
+
+Object.prototype.toString 是基于对象的内部 [[Class]] 属性，因此它不会受到手动修改对象属性（如 constructor 或 __proto__）的影响
 
 ```js
 Object.prototype.toString.call('name').slice(8, -1)      // 'String'
@@ -85,7 +107,7 @@ console.log(Array.prototype.isPrototypeOf([])) // true
 
 
 
-#### 1-2、typeof NaN 的结果
+### 1-2、typeof NaN 的结果
 
 ```js
 typeof NaN    // 'number'
@@ -95,7 +117,7 @@ NaN 是 Number 类型的一个值，NaN 被视为一个特殊的数值，代表�
 
 
 
-#### 1-3、typeof null 问题
+### 1-3、typeof null 问题
 
 typeof null 的结果是 object。为什么呢？
 
@@ -103,7 +125,7 @@ typeof null 的结果是 object。为什么呢？
 
 
 
-#### 1-4、isNaN 和 Number.isNaN 的区别
+### 1-4、isNaN 和 Number.isNaN 的区别
 
 基本用法：
 
@@ -131,7 +153,7 @@ console.log(Number.isNaN(NaN)) // true
 
 
 
-#### 1-5、0.1 + 0.2 === 0.3 吗？为什么？
+### 1-5、0.1 + 0.2 === 0.3 吗？为什么？
 
 JavaScript使用 Number 类型表示数字（整数和浮点数），遵循 [IEEE 754](https://zh.wikipedia.org/wiki/IEEE_754) 标准，通过64位来表示一个数字
 
@@ -156,7 +178,7 @@ JavaScript使用 Number 类型表示数字（整数和浮点数），遵循 [IEE
 
 **解决精度问题：**
 
-1. 将数字转换为整数
+1. 将数字转换为整数，后相加减，再除以放大的倍数
 
    ```js
    function add(num1, num2) {
@@ -171,7 +193,7 @@ JavaScript使用 Number 类型表示数字（整数和浮点数），遵循 [IEE
 
 
 
-#### 1-6、BigInt
+### 1-6、BigInt
 
 BigInt 是一种数字类型的数据，它可以表示任意精度格式的整数，使用 BigInt 可以安全地存储和操作大整数，即使这个数已经超出了 Number 能够表示的安全整数范围，例如表示高分辨率的时间戳，使用大整数id 等
 
@@ -193,7 +215,7 @@ BigInt("9007199254740995");    // → 9007199254740995n
 
 
 
-#### 1-7、Object.is 和 === 的区别
+### 1-7、Object.is 和 === 的区别
 
 Object.is 在 === 的基础上修复了一些特殊情况下的失误，具体来说就是 +0 和 -0，NaN 和 NaN
 
@@ -213,6 +235,8 @@ console.log(Object.is(NaN, NaN)) // true
 ```js
 function myObjectIs(x, y) {
   // 检查是否是 -0
+  // 使用 === 的时候，0 === -0 是 true
+  // 但是使用 1 除的时候，会有差异，1/0 是 Infinity，-1/0 是 -Infinity，这样就可以判断了
   if (x === 0 && y === 0) {
     return 1 / x === 1 / y;
   }
@@ -231,7 +255,7 @@ function myObjectIs(x, y) {
 
 
 
-#### 1-8、数据类型转换
+### 1-8、数据类型转换
 
 可参考：https://juejin.cn/post/6940945178899251230#heading-12
 
@@ -242,12 +266,12 @@ function myObjectIs(x, y) {
 js 中类型转换只有三种：
 
 - 转换为数字
-- 转换为布尔值
 - 转换为字符串
+- 转换为布尔值
 
 基本转化规则如下：
 
- <img src="./imgs/img2.png" style="zoom:50%;" />
+<img src="./imgs/img2.png" style="zoom:50%;" />
 
 其它值转字符串：
 
@@ -316,7 +340,7 @@ js 中类型转换只有三种：
     1  ==  1
    ```
 
-5. 如果其中一方为 Object，且另一方为 String、Number 或者 Symbol，会将 Object 转换成原始类型，再进行比较。
+5. 如果其中一方为 Object，且另一方为 String、Number 或者 Symbol 等原始类型的时候，会将 Object 转换成相应的原始类型，再进行比较。
 
 
 
@@ -394,16 +418,22 @@ console.log(a == 1 && a == 2) // true
 
 
 
-#### 1-9、|| 与 &&
+### 1-9、|| 与 &&
 
 - ||：这个就是找真，只要找到一个真，那么就是 true，找不到就是 false
 - &&：找假，只要找到一个是假，就返回 false，找不到就是 true
 
 
 
-#### 1-10、什么是 JavaScript 中的包装类型
+### 1-10、什么是 JavaScript 中的包装类型
 
-在 JavaScript 中，基本类型是没有属性和方法的，但是为了便于操作基本类型的值，在调用基本类型的属性或方法时 JavaScript 会在后台隐式地将基本类型的值转换为对象
+JavaScript 中的原始数据类型（如 number、string、boolean 等）本身不是对象，因此不能直接调用方法或访问属性。为了方便操作原始值，JavaScript 提供了对应的包装类型：
+
+- Number：对应原始类型 number。
+- String：对应原始类型 string。
+- Boolean：对应原始类型 boolean。
+
+这些包装类型是对象，可以调用方法或访问属性。所以包装类型的主要作用是为原始类型提供对象的行为。
 
 比如：
 
@@ -417,11 +447,11 @@ a.toUpperCase(); // "ABC"
 
 
 
-### 2、闭包、作用域链、执行上下文
+## 2、闭包、作用域、执行上下文
 
 
 
-#### 2-1、闭包
+### 2-1、闭包
 
 参考：https://juejin.cn/post/6844903974378668039#heading-23
 
@@ -435,7 +465,7 @@ a.toUpperCase(); // "ABC"
 
 **2、闭包产生的原因**
 
-要说这个，就先得从作用域链说起：当访问一个变量的时候，会先从当前作用域查找，如果没找到，就去上一层作用域去查找，还是没找到，继续往更上一层作用于查找，直到找到全局作用于，这一层层查找的链路就是作用域链
+要说这个，就先得从作用域链说起：当访问一个变量的时候，会先从当前作用域查找，如果没找到，就去上一层作用域去查找，还是没找到，继续往更上一层作用于查找，直到找到全局作用域，这一层层查找的链路就是作用域链
 
 也就是说，当前环境中存在指向父级作用域的引用，就产生了闭包
 
@@ -453,7 +483,7 @@ a.toUpperCase(); // "ABC"
      }
      return fn1
    }
-   
+
    var fn1 = fn()
    fn1()  // 1
    ```
@@ -477,14 +507,14 @@ a.toUpperCase(); // "ABC"
 
    ```js
    var a = 1;
-   function foo(){
+   function foo() {
      var a = 2;
-     function baz(){
+     function baz() {
        console.log(a);
      }
      bar(baz);
    }
-   function bar(fn){
+   function bar(fn) {
      // 这就是闭包
      fn();
    }
@@ -497,12 +527,12 @@ a.toUpperCase(); // "ABC"
 
    ```js
    // 定时器
-   setTimeout(function timeHandler(){
+   setTimeout(function timeHandler() {
      console.log('111');
    }，100)
    
    // 事件监听
-   $('#app').click(function(){
+   $('#app').click(function() {
      console.log('DOM Listener');
    })
    ```
@@ -517,15 +547,31 @@ a.toUpperCase(); // "ABC"
    })()
    ```
 
+5. 函数柯里化
+
+   ```js
+    function add(a) {
+      return function (b) {
+        return a + b;
+      };
+    }
+   
+    const add5 = add(5);
+    console.log(add5(3)); // 8
+   
+    // 在这个例子中，add5 是一个闭包，它“记住”了参数 a 的值
+   ```
 
 
 **4、闭包的优缺点**
 
 优点：
 
-- 在函数外部能够访问到函数内部的变量。通过使用闭包，可以通过在外部调用闭包函数，从而在外部访问到函数内部的变量，可以使用这种方法来创建私有变量。
-- 形成沙箱，避免环境污染
-- 使已经运行结束的函数上下文中的变量继续留在内存中，因为闭包函数保留了这个变量对象的引用，所以这个变量对象不会被回收
+- 访问外部变量。在外部访问到函数内部的变量，可以使用这种方法来创建私有变量。
+- 形成沙箱。避免环境污染
+- 保存状态。闭包可以“记住”其词法作用域中的变量值，从而实现状态的保存。
+- 延长变量生命周期。闭包会阻止其词法作用域中的变量被垃圾回收，从而延长变量的生命周期。
+
 
 缺点：
 
@@ -533,7 +579,7 @@ a.toUpperCase(); // "ABC"
 
 
 
-#### 2-2、作用域与作用域链
+### 2-2、作用域与作用域链
 
 
 
@@ -542,7 +588,7 @@ a.toUpperCase(); // "ABC"
 1. 全局作用域
 
    - 最外层函数和最外层函数外面定义的变量拥有全局作用域
-   - 所有window对象的属性拥有全局作用域
+   - 所有 window 对象的属性拥有全局作用域
    - 全局作用域有很大的弊端，过多的全局作用域变量会污染全局命名空间，容易引起命名冲突
 
 2. 函数作用域
@@ -552,13 +598,13 @@ a.toUpperCase(); // "ABC"
 
 3. 块级作用域
 
-   - 使用ES6中新增的let和const指令可以声明块级作用域，块级作用域可以在函数中创建也可以在一个代码块中的创建（由`{ }`包裹的代码片段）
+   - 使用 ES6 中新增的 let 和 const 指令可以声明块级作用域，块级作用域可以在函数中创建也可以在一个代码块中的创建（由`{ }`包裹的代码片段）
 
-   - let和const声明的变量不会有变量提升，也不可以重复声明
+   - let 和 const 声明的变量不会有变量提升，也不可以重复声明
 
    - 在循环中比较适合绑定块级作用域，这样就可以把声明的计数器变量限制在循环内部。
 
-     
+
 
 **2、作用域链**
 
@@ -566,7 +612,7 @@ a.toUpperCase(); // "ABC"
 
 
 
-#### 2-3、执行上下文
+### 2-3、执行上下文
 
 
 
@@ -599,11 +645,11 @@ javaScript 引擎使用 `上下文栈` 来管理执行上下文
 
 
 
-### 3、原型与原型链
+## 3、原型与原型链
 
 
 
-#### 3-1、原型
+### 3-1、原型
 
 一张图了解原型
 
@@ -615,7 +661,7 @@ javaScript 引擎使用 `上下文栈` 来管理执行上下文
 
 
 
-#### 3-2、原型链
+### 3-2、原型链
 
 当访问一个对象的属性时，如果这个对象内部不存在这个属性，那么它就会去它的原型对象里找这个属性，这个原型对象又会有自己的原型，于是就这样一直找下去，也就是原型链的概念。
 
@@ -625,11 +671,11 @@ javaScript 引擎使用 `上下文栈` 来管理执行上下文
 
 
 
-### 4、继承
+## 4、继承
 
 
 
-#### 4-1、借用 call 构造继承
+### 4-1、借用 call 构造继承
 
 ```js
 function Parent() {
@@ -653,7 +699,7 @@ console.log('call 构造继承', res.getName()) // 报错，res.getName is not a
 
 
 
-#### 4-2、原型链继承
+### 4-2、原型链继承
 
 ```js
 function Parent() {
@@ -667,7 +713,7 @@ function Child() {
   this.age = 18
 }
 Child.prototype = new Parent()
-Child.prototype.getage = function() {
+Child.prototype.getAge = function() {
   return this.age
 }
 
@@ -675,11 +721,29 @@ const res = new Child()
 console.log(res.getName()) // jack
 ```
 
-缺点：所有 Child 实例原型都指向同一个 Parent 实例, 父类引用类型变量修改会影响所有的 Child 实例
+缺点：所有 Child 实例原型都指向同一个 Parent 实例, 如果父类的属性是引用类型（如数组、对象），所有子类实例会共享该属性。修改一个实例的属性会影响其他实例。例如：
+
+```js
+function Parent() {
+  this.colors = ["red", "blue"];
+}
+
+function Child() {}
+
+Child.prototype = new Parent();
+
+const child1 = new Child();
+const child2 = new Child();
+
+child1.colors.push("green");
+console.log(child2.colors); // ["red", "blue", "green"]
+```
 
 
 
-#### 4-3、组合继承
+
+
+### 4-3、组合继承
 
 ```js
 function Parent() {
@@ -703,11 +767,11 @@ const res = new Child()
 console.log('组合继承', res.getName()) // jack
 ```
 
-组合继承就是结合了 call 与原型链，缺点：每次创建子类实例都执行了两次构造函数  SuperType.call() 和 new Parent())，虽然这并不影响对父类的继承，但子类创建实例时，原型中会存在两份相同的属性和方法，这并不优雅
+组合继承就是结合了 call 与原型链，缺点：每次创建子类实例都执行了两次构造函数  SuperType.call() 和 new Parent()，虽然这并不影响对父类的继承，但子类创建实例时，原型中会存在两份相同的属性和方法，这并不优雅
 
 
 
-#### 4-4、寄生组合继承
+### 4-4、寄生组合继承
 
 ```js
 function Parent() {
@@ -721,6 +785,7 @@ function Child() {
   Parent.call(this)
   this.age = 18
 }
+// Object.create 作用：创建一个新对象，并将新对象的原型指向指定的对象
 Child.prototype = Object.create(Parent.prototype) // 将`指向父类实例`改为`指向父类原型`
 Child.prototype.constructor = Child
 Child.prototype.getAge = function() {
@@ -735,7 +800,7 @@ console.log('寄生组合继承', res.getName()) // jack
 
 
 
-#### 4-5、class 继承
+### 4-5、class 继承
 
 ```js
 class Parent {
@@ -767,7 +832,7 @@ class 继承实际上就是寄生继承，只是包装了一层语法糖而已
 
 
 
-### 5、arguments
+## 5、arguments
 
 `arguments`是一个对象，它的属性是从 0 开始依次递增的数字，还有`callee`和`length`等属性，与数组相似；但是它却没有数组常见的方法属性，如`forEach`, `reduce`等，所以叫它们类数组。
 
@@ -778,7 +843,7 @@ class 继承实际上就是寄生继承，只是包装了一层语法糖而已
 1. 利用 `call` 或者 `apply`方法将数组的方法应用到类数组上
 
    ```js
-   function foo(){ 
+   function foo() { 
      const res = Array.prototype.slice.call(arguments)
    }
    ```
@@ -786,7 +851,7 @@ class 继承实际上就是寄生继承，只是包装了一层语法糖而已
 2. 通过 Array.from 转换为数组
 
    ```js
-   function foo(){ 
+   function foo() { 
      const res = Array.from(arguments) 
    }
    ```
@@ -794,16 +859,16 @@ class 继承实际上就是寄生继承，只是包装了一层语法糖而已
 3. 通过展开运算符转换为数组
 
    ```js
-   function foo(){ 
+   function foo() { 
      const res = [...arguments]
    }
    ```
 
 
 
-### 6、this 问题
+## 6、this 问题
 
-this 是执行上下文中的一个属性，它指向最后一次调用这个方法的对象。在实际开发中，this 的指向可以通过以下几种调用模式来判断：
+this 是执行上下文中的一个属性，**它指向最后一次调用这个方法的对象**。在实际开发中，this 的指向可以通过以下几种调用模式来判断：
 
 - **函数调用模式**：当一个函数不是一个对象的属性时，直接作为函数来调用时，this 指向全局对象 window
 
@@ -845,8 +910,6 @@ this 是执行上下文中的一个属性，它指向最后一次调用这个方
     console.log(this.a) // undefined
   }
   const res = new Func()
-  res.a = 'a'
-  console.log(res) // { a: 'a' }
   ```
 
   可以看到，new Func() 的时候，输出的 this.a 是 undefined，并不是 ’b‘，这就证明了 this 指向这个新创建的对象
@@ -858,53 +921,53 @@ this 是执行上下文中的一个属性，它指向最后一次调用这个方
     constructor(name) {
       this.name = name
     }
-    
+
     getName() {
       console.log(this.name)
     }
   }
-  
+
   const p = new Person('jack')
   p.getName() // jack
-  
+
   const func = p.getName
   func('jack') // 直接报错，因为此时没有绑定 this，this 为 undefined，undefined.name 会报错
   ```
 
   
 
-- **apply 、 call 和 bind 调用模式**：这三个方法都可以显示的指定调用函数的 this 指向
+- **apply、call 和 bind 调用模式**：这三个方法都可以显式指定调用函数的 this 指向
 
   ```js
   var name = 'marry'
   const obj = {
     name: 'jack'
   }
-  
+
   function fun() {
     console.log(this.name)
   }
-  
+
   fun()   // 'marry'
   fun.call(obj) // 'jack'
   ```
 
 
 
-### 7、call、apply 与 bind
+## 7、call、apply 与 bind
 
 
 
-#### 7-1、call 与 apply 的区别
+### 7-1、call 与 apply 的区别
 
-它们的总用都是改变 this 指向，并且马上执行，区别仅在于传入参数的形式的不同
+它们的作用都是改变 this 指向，并且马上执行，区别仅在于传入参数的形式的不同
 
 - apply 接受两个参数，第一个参数指定了函数体内 this 对象的指向，第二个参数可以为数组，也可以为类数组，apply 方法把这个集合中的元素作为参数传递给被调用的函数
 - call 传入的参数数量不固定，跟 apply 相同的是，第一个参数也是代表函数体内的 this 指向，从第二个开始往后，都被当做参数依次传递函数给被调用的函数
 
 
 
-#### 7-2、bind 与 call、apply 区别
+### 7-2、bind 与 call、apply 区别
 
 bind() 方法会创建一个函数的实例，其 this 值会被绑定到传给 bind() 函数的值。意思就是 bind() 会返回一个新函数。
 
@@ -913,7 +976,7 @@ bind() 方法会创建一个函数的实例，其 this 值会被绑定到传给 
 
 
 
-#### 7-3、手写 call、apply、bind
+### 7-3、手写 call、apply、bind
 
 [手写 call](#手写 call)
 
@@ -923,13 +986,13 @@ bind() 方法会创建一个函数的实例，其 this 值会被绑定到传给 
 
 
 
-### 8、Set、Map、WeakSet 和 WeakMap 的区别
+## 8、Set、Map、WeakSet 和 WeakMap 的区别
 
 set 是一种叫做**集合**的数据结构，map 是一种叫做**字典**的数据结构，主要的使用场景是**数据存储**和**数据重组**
 
 
 
-#### 8-1、Set
+### 8-1、Set
 
 set 类似数组，但是 set 的成员是**唯一且无序的**。
 
@@ -972,7 +1035,7 @@ set 的一些方法：
 
 - entries()：返回一个包含集合中所有**键值对**的迭代器
 
-- forEach(callbackFn,  thisArg)：遍历集合
+- forEach(callbackFn, thisArg)：遍历集合
 
   ```js
   const s = new Set([7,8,9])
@@ -1026,7 +1089,7 @@ set 转换为数组
 
 
 
-#### 8-2、WeakSet
+### 8-2、WeakSet
 
 WeakSet 是将一个**弱引用存储在集合中**
 
@@ -1045,15 +1108,15 @@ WeakSet 与 set 的区别：
 
   ```js
   const ws = new WeakSet([[1,2], [3,4]])
-  
+
   const target = [5, 6]
   ws.add(target)
   console.log(ws)
   console.log(ws.has(target))
   ws.delete(target)
   console.log(ws)
-  
-  
+
+
   // 注意：直接这样子添加，ws.has([5, 6]) 与 ws.delete([5, 6]) 都无效
   // 也就是只有对同一个对象进行弱引用会将其是为同一个值
   ws.add([5, 6])
@@ -1063,7 +1126,7 @@ WeakSet 与 set 的区别：
 
 
 
-#### 8-3、Map
+### 8-3、Map
 
 Map 类似对象，也是键值对的集合，但是“键”的范围不限制于字符串，任意类型（包含对象）都可以当作键；Map 也可以接受一个数组作为参数，数组的成员是一个个表示键值对的数组。注意Map里面也不可以放重复的项。
 
@@ -1088,7 +1151,7 @@ Map 的属性：
   ```js
   const m = new Map()
   m.set('a', '值是a')
-  
+
   console.log(m.size) // 1
   ```
 
@@ -1117,7 +1180,7 @@ Map 的一些方法：
       ['1', 'name'],
       ['2', 'age']
   ])
-  
+
   console.log(m.keys()) // MapIterator {"1", "2"}
   console.log(m.values()) // MapIterator {"name", "age"}
   console.log(m.entries()) //MapIterator {"1" => "name", "2" => "age"}
@@ -1172,7 +1235,7 @@ console.log(obj)
 
 
 
-#### 8-4、WeakMap
+### 8-4、WeakMap
 
 WeakMap 是一组键值对的字典，**键是弱引用对象，值可以是任意**
 
@@ -1206,11 +1269,11 @@ console.log(wm)
 
 
 
-#### 8-5、总结
+### 8-5、总结
 
 - Set
   - 成员唯一、无序且不重复，可以存储任意类型
-  - [value,  value]，键值与键名是一致的（或者说只有键值，没有键名）
+  - [value, value]，键值与键名是一致的（或者说只有键值，没有键名）
   - 可以遍历，方法有：add、delete、has
 - WeakSet
   - 成员都是对象
@@ -1218,17 +1281,16 @@ console.log(wm)
   - 不能遍历，方法有 add、delete、has
 - Map
   - 本质上是键值对的集合，键可以是任意类型
-  - 成员也是唯一的
+  - 成员也是唯一的（键 key 唯一）
   - 可以遍历，方法很多可以跟各种数据格式转换
-
 - WeakMap
-  - 只接受对象作为键名（null除外），不接受其他类型的值作为键名
+  - 只接受对象作为键名（null 除外），不接受其他类型的值作为键名
   - 键名是弱引用，键值可以是任意的，键名所指向的对象可以被垃圾回收，此时键名是无效的
   - 不能遍历，方法有 get、set、has、delete
 
 
 
-### 9、Map 与 Object 的区别
+## 9、Map 与 Object 的区别
 
 |          | Map                                                          | Object                                                       |
 | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -1241,11 +1303,11 @@ console.log(wm)
 
 
 
-### 10、操作数组
+## 10、操作数组
 
 
 
-#### 10-1、判断是否在数组里
+### 10-1、判断是否在数组里
 
 ```js
 const arr = [1, 2, 3]
@@ -1265,7 +1327,7 @@ console.log(arr.findIndex(item => item === 1))
 
 
 
-#### 10-2、遍历数组
+### 10-2、遍历数组
 
 **1、for 循环**
 
@@ -1344,10 +1406,10 @@ array.reduce((accumulator, currentValue, currentIndex, array) => {
 
 ```js
 const arr = [1, 2, 3]
-const newArr = arr.reduce((a, b) => {
+const total = arr.reduce((a, b) => {
   return a + b
 }, 0)
-console.log(newArr)
+console.log(total)
 ```
 
 
@@ -1427,7 +1489,7 @@ arr.every(item => {
 
 
 
-#### 10-3、数组去重
+### 10-3、数组去重
 
 **ES6 的 Set 去重**
 
@@ -1458,7 +1520,7 @@ console.log(unique(arr))
 
 
 
-#### 10-4、扁平化数组
+### 10-4、扁平化数组
 
 **flat 方法扁平化**
 
@@ -1509,7 +1571,7 @@ console.log(flatFun(arr))
 
 
 
-### 11、模块化
+## 11、模块化
 
 模块化放在另外一个文件
 
@@ -1519,15 +1581,28 @@ console.log(flatFun(arr))
 
 **ES Module 与 CommonJs 的区别：**
 
--   CommonJS 输出的是一个值的拷贝，ES Module 输出的是值的引用
--   CommonJS 是在运行的时候加载，ES Module 是在编译的时候
--   CommonJS 的 require 语法是同步的，所以 CommonJS 规范只适合于服务端，ES Module 是异步加载的
--   CommonJS 的 this 指向当前模块，ES Module 的 this 指向 undefined
--   CommonJs 导入的模块路径可以是一个表达式，因为它使用的是 require() 方法；而 ES6 Modules 只能是字符串
+- 语法区别：
+  - ES Module 使用 import 和 export 关键字
+  - CommonJs 使用 require 和 module.exports 关键字
+- 加载方式：
+  - ES Module 是静态加载，模块的依赖关系在代码解析阶段（编译时）确定
+  - CommonJs 是动态加载，模块的依赖关系在运行时确定
+- 运行环境：
+  - ES Module 主要用于浏览器端和现代 Node.js 环境（Node.js 12+），在浏览器中需要通过 `<script type="module">` 标签加载，在 Node.js 中需要通过 .mjs 文件扩展名或在 package.json 中设置 "type": "module"。
+  - CommonJs 主要用于 Node.js 环境，是 Node.js 的默认模块系统,在浏览器中不支持直接使用，需要通过打包工具（如 Webpack、Browserify）转换为浏览器可用的代码
+- 循环依赖：
+  - ES Module：支持循环依赖，但可能会导致部分模块未完全初始化
+  - CommonJS：也支持循环依赖，但由于动态加载特性，可能导致更复杂的初始化问题
+- 性能：
+  - ES Module：静态分析能力使其更适合现代化构建工具（如 Rollup、Vite），可以进行深度优化（如 Tree Shaking 和懒加载）
+  - CommonJS：动态加载特性使其在某些场景下更灵活，但无法享受静态分析带来的性能优化
 
 
 
-### 12、垃圾回收
+
+
+
+## 12、垃圾回收
 
 可参考：
 
@@ -1540,7 +1615,7 @@ JS 语言不像 C/C++, 让程序员自己去开辟或者释放内存，而是类
 
 
 
-#### 12-1、垃圾数据的产生
+### 12-1、垃圾数据的产生
 
 如下面代码：
 
@@ -1564,7 +1639,7 @@ obj = {}
 
 
 
-#### 13-2、V8 内存限制
+### 13-2、V8 内存限制
 
 V8 只能使用系统的一部分内存，具体来说，在`64`位系统下，V8最多只能分配`1.4G`, 在 32 位系统中，最多只能分配`0.7G`。在前端方面，这样的大内存需求其实并不大，但对于后端而言，比如 nodejs，如果遇到一个 2G 多的文件，那么将无法全部将其读入内存进行各种操作。
 
@@ -1595,7 +1670,7 @@ V8 为什么要给它设置内存上限？明明我的机器大几十G的内存�
 
 
 
-#### 12-3、V8 内存分代
+### 12-3、V8 内存分代
 
 在V8中，主要将内存分为`新生代`和`老生代`两种，新生代就是临时分配的内存，存活时间短，老生代是常驻内存，存活的时间长，如下图所示：
 
@@ -1607,7 +1682,7 @@ V8 堆内存的整体大小就是新生代内存空间加上老生代内存空�
 
 
 
-#### 12-4、新生代回收
+### 12-4、新生代回收
 
 新生代回收也叫副垃圾回收
 
@@ -1666,7 +1741,7 @@ V8 堆内存的整体大小就是新生代内存空间加上老生代内存空�
 
 
 
-#### 12-5、老生代回收
+### 12-5、老生代回收
 
 老生代回收也叫主垃圾回收。
 
@@ -1704,7 +1779,7 @@ V8 堆内存的整体大小就是新生代内存空间加上老生代内存空�
 
 
 
-#### 12-6、增量标记
+### 12-6、增量标记
 
 由于 JS 的单线程机制，V8 在进行垃圾回收的时候，不可避免地会阻塞业务逻辑的执行，倘若老生代的垃圾回收任务很重，那么耗时会非常可怕，严重影响应用的性能。那这个时候为了避免这样问题，V8 采取了增量标记的方案，即将一口气完成的标记任务分为很多小的部分完成，每做完一个小的部分就"歇"一下，换 js 应用逻辑执行一会儿，然后再执行下面的部分，如果循环，直到标记清除阶段完成才进入内存碎片的整理上面来。
 
@@ -1714,7 +1789,7 @@ V8 堆内存的整体大小就是新生代内存空间加上老生代内存空�
 
 
 
-#### 12-7、避免内存泄露
+### 12-7、避免内存泄露
 
 - 尽可能少地创建变量
 - 手动清除定时器
@@ -1724,17 +1799,17 @@ V8 堆内存的整体大小就是新生代内存空间加上老生代内存空�
 
 
 
-### 13、事件循环 Event Loop
+## 13、事件循环 Event Loop
 
 [事件循环Event Loop 与异步 IO](https://github.com/gweid/node_test#7%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AFevent-loop-%E4%B8%8E%E5%BC%82%E6%AD%A5-io)
 
 
 
-### 14、异步编程
+## 14、异步编程
 
 
 
-#### 14-1、异步编程的实现方式
+### 14-1、异步编程的实现方式
 
 - **回调函数** 的方式，使用回调函数的方式有一个缺点是，多个回调函数嵌套的时候会造成回调函数地狱
 - **generator** 的方式
@@ -1743,7 +1818,7 @@ V8 堆内存的整体大小就是新生代内存空间加上老生代内存空�
 
 
 
-#### 14-2、回调函数
+### 14-2、回调函数
 
 回调函数有一个致命的弱点，就是容易写出回调地狱（Callback hell）。假设多个请求存在依赖性，就会出现如下代码：
 
@@ -1763,17 +1838,17 @@ ajax(url, () => {
 
 
 
-#### 14-2、Promise
+### 14-2、Promise
 
 Promise 相关整理在 promise 文件夹下
 
 
 
-### 15、ES6 相关
+## 15、ES6 相关
 
 
 
-#### 15-1、var、let、const
+### 15-1、var、let、const
 
 主要的区别：
 
@@ -1788,7 +1863,7 @@ Promise 相关整理在 promise 文件夹下
 
 
 
-#### 15-2、箭头函数与普通函数的区别
+### 15-2、箭头函数与普通函数的区别
 
 - 箭头函数比普通函数更加简洁
 
@@ -1810,7 +1885,7 @@ Promise 相关整理在 promise 文件夹下
 
 
 
-#### 15-3、箭头函数为什么不能作为构造函数
+### 15-3、箭头函数为什么不能作为构造函数
 
 首先，构造函数是可以被 new 的，而 new 的过程分为以下几步：
 
@@ -1829,7 +1904,7 @@ Promise 相关整理在 promise 文件夹下
 
 
 
-#### 15-4、如何提取高度嵌套的对象里的指定属性
+### 15-4、如何提取高度嵌套的对象里的指定属性
 
 例如：
 
@@ -1852,7 +1927,7 @@ const { classes: { stu: { name } }} = school
 
 
 
-### 16、进程与线程
+## 16、进程与线程
 
 本质上来说，进程与线程都是 CPU 工作时间片的一个描述
 
@@ -1865,7 +1940,7 @@ const { classes: { stu: { name } }} = school
 
 
 
-### 17、V8 执行 JS 代码的过程
+## 17、V8 执行 JS 代码的过程
 
 基本流程如下：
 
@@ -1884,11 +1959,11 @@ const { classes: { stu: { name } }} = school
 
 
 
-### 其它 JS 知识
+## 其它 JS 知识
 
 
 
-#### 1、JS 延迟加载的方法
+### 1、JS 延迟加载的方法
 
 - **让 JS 最后加载：** 将 js 脚本放在文档的底部，来使 js 脚本尽可能的在最后来加载执行
 
@@ -1900,14 +1975,14 @@ const { classes: { stu: { name } }} = school
 
 
 
-#### 2、Javascript 中 callee 和 caller 的作用
+### 2、Javascript 中 callee 和 caller 的作用
 
 - caller：获取调用这个函数的引用 (我被谁调用了)，如果函数 b 中调用函数 a 那么函数 a 的 caller 就是函数 b，如果是全局调用(window调用) 那么函数的 caller 就是 null
 - callee：是属于 arguments 对象的，作用是获取函数本身，应用于匿名函数递归调用
 
 
 
-#### 3、什么是 DOM 和 BOM？
+### 3、什么是 DOM 和 BOM？
 
 - DOM 指的是文档对象模型，它指的是把文档当做一个对象，这个对象主要定义了处理网页内容的方法和接口。
 
@@ -1915,7 +1990,7 @@ const { classes: { stu: { name } }} = school
 
 
 
-#### 4、常见的 DOM 操作
+### 4、常见的 DOM 操作
 
 **获取元素**
 
@@ -1983,7 +2058,7 @@ container.insertBefore(content, title)
 
 
 
-#### 5、use strict是什么意思 ? 使用它区别是什么？
+### 5、use strict是什么意思 ? 使用它区别是什么？
 
 use strict 是一种 ECMAscript5 添加的（严格模式）运行模式，这种模式使得 Javascript 在更严格的条件下运行。设立严格模式的目的如下：
 
@@ -2012,7 +2087,7 @@ use strict 是一种 ECMAscript5 添加的（严格模式）运行模式，这�
 
 
 
-#### 6、利用原生 ajax 写一个请求
+### 6、利用原生 ajax 写一个请求
 
 **get 方法**
 
@@ -2056,7 +2131,7 @@ readyState 的状态解析：
 
 
 
-#### 7、js 为什么要进行变量提升
+### 7、js 为什么要进行变量提升
 
 首先，js 在执行代码的时候：
 
@@ -2070,7 +2145,7 @@ readyState 的状态解析：
 
 
 
-#### 8、什么是尾调用，使用尾调用有什么好处
+### 8、什么是尾调用，使用尾调用有什么好处
 
 - 尾调用指的是函数的最后一步调用另一个函数
 - 代码执行是基于执行栈的，所以当在一个函数里调用另一个函数时，会保留当前的执行上下文，然后再新建另外一个执行上下文加入栈中
@@ -2147,7 +2222,7 @@ const a = () => {
 
 
 
-#### 9、for...in 与 for...of
+### 9、for...in 与 for...of
 
 - for…of 是 ES6 新增的遍历方式，允许遍历一个含有iterator接口的数据结构（数组、类数组、Map 等）并且返回各项的值，一般不能对普通对象使用 for...of，因为对象没有 iterator 迭代器对象
 
@@ -2155,7 +2230,7 @@ const a = () => {
 
 
 
-#### 10、事件冒泡、事件捕获、事件委托
+### 10、事件冒泡、事件捕获、事件委托
 
 
 
@@ -2234,7 +2309,7 @@ target 和 currentTarget
 
 
 
-#### 11、ajax、axios、fetch 的区别
+### 11、ajax、axios、fetch 的区别
 
 **ajax**
 
@@ -2263,7 +2338,7 @@ fetch 号称是 AJAX 的替代品，是在 ES6 出现的，使用了 ES6 中的 
 
 
 
-#### 12、强类型语言与弱类型语言、解释型语言与编译型语言
+### 12、强类型语言与弱类型语言、解释型语言与编译型语言
 
 **强类型语言与弱类型语言**
 
@@ -2287,13 +2362,13 @@ JS 就是属于弱类型语言、解释型语言
 
 
 
-#### 13、高阶函数
+### 13、高阶函数
 
 `一个函数` 可以接收另一个函数作为参数或者返回值为一个函数，`这种函数`就称之为高阶函数。
 
 
 
-#### 14、获取 url 参数
+### 14、获取 url 参数
 
 ```js
 // 获取 url 参数
@@ -2315,7 +2390,7 @@ console.log(paramUrl(url))
 
 
 
-#### 15、柯里化
+### 15、柯里化
 
 在计算机科学中，柯里化（Currying）是把接受多个参数的函数变换成接受一个单一参数(最初函数的第一个参数)的函数，并且返回接受余下的参数且返回结果的新函数的技术。也就是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术
 
@@ -2367,7 +2442,7 @@ console.log(add(1)(2)(3))
 
 
 
-#### 16、if(a =\= 1 && a =\= 2 && a =\= 3) 成立、if(a =\=\= 1 && a =\=\= 2 && a =\=\= 3) 成立
+### 16、if(a =\= 1 && a =\= 2 && a =\= 3) 成立、if(a =\=\= 1 && a =\=\= 2 && a =\=\= 3) 成立
 
 使 if(a =\= 1 && a =\= 2 && a =\= 3) 成立：
 
@@ -2396,11 +2471,11 @@ Object.defineProperty(window, 'a', {
 
 
 
-### 手写题
+## 手写题
 
 
 
-#### 1、手写 instanceof
+### 1、手写 instanceof
 
 ```js
 // 一直查找左边的 __proto__ 是否与右边的 prototype 相等，直到指向 null
@@ -2424,19 +2499,26 @@ console.log(myInstanceof('', Array))
 
 
 
-#### 2、手写 Object.is
+### 2、手写 Object.is
 
 ```js
-function myIs(x, y) {
-  if (x === y) {
-    // 运行到 1/x === 1/y 的时候 x 和 y 都为0
-    // 但是 1/+0 = +Infinity， 1/-0 = -Infinity, 是不一样的
-    return x !== 0 || y !== 0 || 1 / x === 1 / y
-  } else {
-    // NaN === NaN 是 false, 这是不对的，在这里做一个拦截，x !== x，那么一定是 NaN, y 同理
-    // 两个都是 NaN 的时候返回 true
-    return x !== x && y !== y
+function myObjectIs(x, y) {
+  // 检查是否是 -0
+  // 使用 === 的时候，0 === -0 是 true
+  // 但是使用 1 除的时候，会有差异，1/0 是 Infinity，-1/0 是 -Infinity，这样就可以判断了
+  if (x === 0 && y === 0) {
+    return 1 / x === 1 / y;
   }
+
+  // 检查是否是 NaN
+  // NaN === NaN 是 false, 这是不对的，在这里做一个拦截，x !== x，那么一定是 NaN, y 同理
+  // 两个都是 NaN 的时候返回 true
+  if (x !== x) {
+    return y !== y;
+  }
+
+  // 其他情况
+  return x === y;
 }
 
 console.log(myIs(0, -0)) // false
@@ -2447,7 +2529,7 @@ console.log(myIs(NaN, NaN)) // true
 
 
 
-#### 3、手写 Object.create
+### 3、手写 Object.create
 
 步骤：
 
@@ -2469,7 +2551,7 @@ console.log(myCreate({ name: 'jack' }))
 
 
 
-#### 4、手写 new
+### 4、手写 new
 
 首先 new 做了什么
 
@@ -2507,7 +2589,7 @@ console.log('手写new', dog.name)
 
 
 
-#### 5、手写 call
+### 5、手写 call
 
 ```js
 // 1、更改this指向    2、函数立刻执行
@@ -2546,7 +2628,7 @@ console.log('手写call：', func.myCall(obj, 'myCall'))
 
 
 
-#### 6、手写 apply
+### 6、手写 apply
 
 ```js
 // 与 call 基本一致，只是传递的参数不一样
@@ -2580,7 +2662,7 @@ console.log('手写apply：', func.myApply(obj, ['myCall', 20]))
 
 
 
-#### 7、手写 bind
+### 7、手写 bind
 
 ```js
 // 返回一个函数  1、指定this；2、返回一个函数；3、传递参数并柯里化
@@ -2618,7 +2700,7 @@ console.log(res(20))
 
 
 
-#### 8、深拷贝
+### 8、深拷贝
 
 ```js
 function checkType(val) {
@@ -2662,7 +2744,7 @@ console.log('原数据：', obj.b)
 
 
 
-#### 9、防抖、节流
+### 9、防抖、节流
 
 **防抖**：
 
@@ -2728,7 +2810,7 @@ throttleBtn.addEventListener('click', throttle(clickFun, 1500))
 
 
 
-#### 10、发布订阅
+### 10、发布订阅
 
 发布订阅模式：
 
@@ -2774,7 +2856,7 @@ class EventEmitter {
 
 
 
-#### 11、六大排序算法
+### 11、六大排序算法
 
 - 冒泡排序
 - 快速排序
@@ -2787,7 +2869,7 @@ class EventEmitter {
 
 
 
-#### 12、斐波那契数列
+### 12、斐波那契数列
 
 斐波那契数列 1, 1, 2, 3, 5, 8, 13,...，求第 n 个的值
 
