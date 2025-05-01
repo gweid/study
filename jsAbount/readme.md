@@ -10,7 +10,7 @@
 
 ### 1-1、常见的类型检测方法
 
-**typeof**
+#### typeof
 
 ```js
 console.log(typeof 2)               // number
@@ -27,7 +27,9 @@ console.log(typeof null)            // object
 
 
 
-**instanceof**：判断一个对象的原型是否在另外一个对象的原型链上，换一种说法就是：判断一个对象是否是某个构造函数的实例
+#### instanceof
+
+判断一个对象的原型是否在另外一个对象的原型链上，换一种说法就是：判断一个对象是否是某个构造函数的实例，通过检查对象的原型链上是否存在该构造函数的 `prototype` 属性
 
 ```js
 console.log(2 instanceof Number)                    // false
@@ -48,7 +50,7 @@ instanceof **只能正确判断引用数据类型**，而不能判断基础数�
 
 
 
-**constructor**
+#### constructor
 
 ```js
 console.log((2).constructor === Number)                  // true
@@ -76,9 +78,9 @@ constructor 与 instanceof 的区别：
 
 
 
-**Object.prototype.toString.call()**
+#### Object.prototype.toString.call
 
-JavaScript 中的每个对象都有一个内部属性 [[Class]]，它表示对象的类型。Object.prototype.toString 会访问这个内部属性，并返回 [object Type]，其中 Type 就是 [[Class]] 的值
+JavaScript 中的每个对象都有一个内部属性 [[Class]]，该属性不可修改且唯一标识对象的类型。Object.prototype.toString 会访问这个内部属性，并返回 [object Type]，其中 Type 就是 [[Class]] 的值
 
 Object.prototype.toString 是基于对象的内部 [[Class]] 属性，因此它不会受到手动修改对象属性（如 constructor 或 __proto__）的影响
 
@@ -92,7 +94,7 @@ Object.prototype.toString.call([]).slice(8, -1)          // 'Array'
 
 
 
-**常用的判断数组方法**
+#### 常用的判断数组方法
 
 ```js
 console.log(Object.prototype.toString.call([]).slice(8, -1) === 'Array') // true
@@ -236,7 +238,7 @@ console.log(Object.is(NaN, NaN)) // true
 function myObjectIs(x, y) {
   // 检查是否是 -0
   // 使用 === 的时候，0 === -0 是 true
-  // 但是使用 1 除的时候，会有差异，1/0 是 Infinity，-1/0 是 -Infinity，这样就可以判断了
+  // 但是使用 1 除的时候，会有差异，1/0 是 Infinity，1/-0 是 -Infinity，这样就可以判断了
   if (x === 0 && y === 0) {
     return 1 / x === 1 / y;
   }
@@ -346,7 +348,7 @@ js 中类型转换只有三种：
 
 **4、Object 类型转原始类型的流程**
 
-1. 如果 Symbol.toPrimitive() 方法，优先调用再返回
+1. 如果有 Symbol.toPrimitive() 方法，优先调用再返回
 2. 调用 valueOf()，如果转换为原始类型，则返回
 3. 调用 toString()，如果转换为原始类型，则返回
 4. 如果都没有返回原始类型，会报错
@@ -1866,7 +1868,7 @@ Promise 相关整理在 promise 文件夹下
 
 ### 15-1、var、let、const
 
-主要的区别：
+主要区别：
 
 |               区别               |  var   |  let   | const  |
 | :------------------------------: | :----: | :----: | :----: |
@@ -1966,7 +1968,7 @@ const { classes: { stu: { name } }} = school
 2. 生成 AST 之后，直接通过 V8 的解释器(也叫Ignition)来生成字节码。但是字节码并不能让机器直接运行
    - 既然字节码不能直接让机器运行，那么为什么不直接转换成机器码呢？在 V8 的早期是这么做的，但后来因为机器码的体积太大，引发了严重的内存占用问题
    - 字节码是介于AST 和 机器码之间的一种代码，但是与特定类型的机器码无关，字节码需要通过解释器将其转换为机器码然后执行
-   - 字节码仍然需要转换为机器码，但和原来不同的是，现在不用一次性将全部的字节码都转换成机器码，而是通过解释器来逐行执行字节码，然后执行，省去了生成二进制文件的操作，这样就大大降低了内存的压力
+   - 字节码仍然需要转换为机器码，但和原来不同的是，现在不用一次性将全部的字节码都转换成机器码，而是通过解释器来逐行解释字节码，然后执行，省去了生成二进制文件的操作，这样就大大降低了内存的压力
 3. 最后就是字节码解释执行的阶段。在执行字节码的过程中，如果发现某一部分代码重复出现，那么 V8 将它记做`热点代码`(HotSpot)，然后将这么代码编译成`机器码`保存起来，这个用来编译的工具就是V8的`编译器`(也叫做`TurboFan`)，以优化执行效率。然后通过解析器逐行执行字节码
 
 
@@ -2151,13 +2153,14 @@ readyState 的状态解析：
 
 首先，js 在执行代码的时候：
 
-- **解析阶段**：JS会检查语法，并对函数进行预编译。解析的时候会先创建一个全局执行上下文环境，先把代码中即将执行的变量、函数声明都拿出来，变量先赋值为undefined，函数先声明好可使用。在一个函数执行之前，也会创建一个函数执行上下文环境，跟全局执行上下文类似，不过函数执行上下文会多出this、arguments和函数的参数
+- **解析阶段**：JS会检查语法，并对函数进行预编译。解析的时候会先创建一个全局执行上下文环境，先把代码中即将执行的变量、函数声明都拿出来，变量先赋值为 undefined，函数先声明好可使用。在一个函数执行之前，也会创建一个函数执行上下文环境，跟全局执行上下文类似，不过函数执行上下文会多出 this、arguments和函数的参数
 - **执行阶段**：按照代码的顺序依次执行
 
 而进行变量提升，主要是：
 
 - **提高性能**：在JS代码执行之前，会进行语法检查和预编译，并且这一操作只进行一次。这么做就是为了提高性能。在解析的过程中，还会为函数生成预编译代码。在预编译时，会统计声明了哪些变量、创建了哪些函数，并对函数的代码进行压缩，去除注释、不必要的空白等。这样做的好处就是每次执行函数时都可以直接为该函数分配栈空间（不需要再解析一遍去获取代码中声明了哪些变量，创建了哪些函数），并且因为代码压缩的原因，代码执行也更快了
-- **容错性更好**：比如变量在 var 声明之前就直接使用，如果没有变量提升，会直接报错，而有嗯变量提升，只是输出 undefined
+- **容错性更好**：比如变量在 var 声明之前就直接使用，如果没有变量提升，会直接报错，而有变量提升，只是输出 undefined
+- **更加灵活**：使得 JavaScript 的代码解析和执行更加灵活，允许开发者​先使用变量，后声明​（类似于某些脚本语言的行为），函数可以在声明前使用
 
 
 
@@ -2170,7 +2173,7 @@ readyState 的状态解析：
 例子：
 
 ```js
-function f(x) { 
+function f(x) {
  return g(x)
 }
 ```
@@ -2238,11 +2241,45 @@ const a = () => {
 
 
 
-### 9、for...in 与 for...of
+### 9、for...of 与 for...in
 
-- for…of 是 ES6 新增的遍历方式，允许遍历一个含有iterator接口的数据结构（数组、类数组、Map 等）并且返回各项的值，一般不能对普通对象使用 for...of，因为对象没有 iterator 迭代器对象
+- for…of 是 ES6 新增的遍历方式，允许遍历一个含有 iterator 接口的数据结构（数组、类数组、Map 等）并且返回各项的值，一般不能对普通对象使用 for...of，因为普通对象没有 iterator 迭代器对象
 
 - for...in 循环主要是为了遍历对象而生
+
+
+
+如何让普通对象支持 for...of？
+
+**方法 1：自定义迭代器**
+
+```js
+
+const obj = { a: 1, b: 2, c: 3 };
+
+// 实现迭代器
+obj[Symbol.iterator] = function* () {
+  for (const key in this) {
+    yield [key, this[key]]; // 返回键值对
+  }
+};
+
+// 现在可以用 for...of 遍历
+for (const [key, value] of obj) {
+  console.log(key, value); // 输出: a 1, b 2, c 3
+}
+```
+
+**方法 2：使用 Object.entries() 转换**
+
+```js
+const obj = { a: 1, b: 2 };
+
+// 先用 Object.entries() 转成可迭代的数组
+for (const [key, value] of Object.entries(obj)) {
+  console.log(key, value); // 输出: a 1, b 2
+}
+```
 
 
 
